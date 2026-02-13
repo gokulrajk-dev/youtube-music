@@ -1,0 +1,52 @@
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
+rootProject.buildDir = "../build"
+subprojects {
+    project.buildDir = "${rootProject.buildDir}/${project.name}"
+}
+subprojects {
+    project.evaluationDependsOn(":app")
+}
+
+tasks.register("clean", Delete) {
+    delete rootProject.buildDir
+}
+
+
+//
+//allprojects {
+//    repositories {
+//        google()
+//        mavenCentral()
+//    }
+//}
+//
+//rootProject.buildDir = "../build"
+//subprojects {
+//    project.buildDir = "${rootProject.buildDir}/${project.name}"
+//}
+//subprojects {
+//    project.evaluationDependsOn(":app")
+//}
+//
+//tasks.register("clean", Delete) {
+//    delete rootProject.buildDir
+//}
+//
+//// Add this block below to fix the on_audio_query error
+//subprojects {
+//    // This waits for the Android Library plugin to be applied to any subproject
+//    plugins.withId('com.android.library') {
+//        android {
+//            // If the plugin didn't set a namespace (the cause of your error)
+//            if (namespace == null) {
+//                namespace = "com.lucasjosino.on_audio_query"
+//            }
+//        }
+//    }
+//}
