@@ -1,14 +1,16 @@
 import 'package:get/get.dart';
 import 'package:youtube_music/core/base/base_controller.dart';
 import 'package:youtube_music/data/data_module/like_model.dart';
-import 'package:youtube_music/module/pages/home/controllers/all_song_controller.dart';
+
+// import 'package:youtube_music/module/pages/home/controllers/all_song_controller.dart';
 
 import '../../../../data/user_respository/user_like_repository.dart';
 
 class Like_Controller extends base_controller {
   final RxList<LikeModel> like_song = <LikeModel>[].obs;
   final like_crud likecrud = like_crud();
-  final get_current_song current_song = Get.find<get_current_song>();
+
+  // final get_current_song current_song = Get.find<get_current_song>();
 
   @override
   void onInit() {
@@ -40,13 +42,11 @@ class Like_Controller extends base_controller {
   }
 
   bool get_song_like_or_not(int songId) {
-    return like_song.any((e) => e.song.id == songId);
+    return like_song.any((e) => e.song?.id == songId);
   }
 
   Future<void> post_del_user_like(int songId) async {
     await likecrud.post_delete_user_like_song(songId);
     await get_current_user_like_songs();
   }
-
-
 }

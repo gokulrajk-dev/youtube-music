@@ -10,8 +10,7 @@ class Song_Repository{
 
   Future<List<Song>> get_all_song() async{
     final response = await dio.get(Api_Endpoint.get_song);
-    print('RAW RESPONSE: ${response.data}');
-    print('TYPE: ${response.data.runtimeType}');
+
     final List data = response.data;
     return data.map((e)=>Song.fromJson(e)).toList();
   }

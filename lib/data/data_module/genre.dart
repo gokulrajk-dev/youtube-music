@@ -1,16 +1,19 @@
 class Genre {
-    final String genreName;
-    final String description;
+    final int id;
+    final String? genreName;
+    final String? description;
 
     Genre({
-        required this.genreName,
-        required this.description,
+        required this.id,
+          this.genreName,
+          this.description,
     });
 
     factory Genre.fromJson(Map<String, dynamic> json) {
         return Genre(
-            genreName: json['genre_name'],
-            description: json['description'],
+            id:json['id'] ?? 0,
+            genreName: json['genre_name']?.toString(),
+            description: json['description']?.toString(),
         );
     }
 }

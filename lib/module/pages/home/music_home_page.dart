@@ -22,8 +22,8 @@ class _home_pageState extends State<home_page> {
   final get_current_song pick_current_song = Get.find<get_current_song>();
   final Like_Controller like = Get.find<Like_Controller>();
 
-  final GlobalKey<SliverAnimatedGridState> _gridKey =
-      GlobalKey<SliverAnimatedGridState>();
+  // final GlobalKey<SliverAnimatedGridState> _gridKey =
+  //     GlobalKey<SliverAnimatedGridState>();
 
   @override
   Widget build(BuildContext context) {
@@ -242,7 +242,7 @@ class _home_pageState extends State<home_page> {
                               color: Colors.transparent,
                               child: Row(
                                 children: [
-                                  Image.network(song.coverImage, height: 70),
+                                  Image.network(song.coverImage ?? '', height: 70),
                                   const Spacer(),
                                   Column(
                                     crossAxisAlignment:
@@ -250,14 +250,14 @@ class _home_pageState extends State<home_page> {
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       Text(
-                                        song.title,
+                                        song.title ?? "unknown",
                                         style: TextStyle(
                                             fontSize: 20,
                                             fontWeight: FontWeight.bold),
                                       ),
                                       Text(
                                         song.artist
-                                            .map((artist) => artist.artistName)
+                                            !.map((artist) => artist.artistName)
                                             .join(','),
                                         overflow: TextOverflow.ellipsis,
                                         maxLines: 1,
@@ -311,7 +311,7 @@ class _home_pageState extends State<home_page> {
                       like.get_current_user_like_songs();
                     },
                     child: Obx(() => Text(like.like_song
-                        .map((f) => f.song.title)
+                        .map((f) => f.song!.title)
                         .toList()
                         .toString()))),
               ),

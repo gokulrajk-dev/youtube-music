@@ -133,10 +133,10 @@ class _MainHomePageState extends State<MainHomePage> {
                             },
                             style: ListTileStyle.drawer,
                             leading: Image.network(current_use_song
-                                .current_song.value!.coverImage),
+                                .current_song.value!.coverImage ?? ""),
                             titleAlignment: ListTileTitleAlignment.center,
                             title: Text(
-                              current_use_song.current_song.value!.title,
+                              current_use_song.current_song.value!.title ?? 'unknown',
                               style: const TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold,
@@ -144,7 +144,7 @@ class _MainHomePageState extends State<MainHomePage> {
                             ),
                             subtitle: Text(
                               current_use_song.current_song.value!.artist
-                                  .map((artist) => artist.artistName)
+                                  !.map((artist) => artist.artistName)
                                   .join(','),
                               style: const TextStyle(
                                 color: Colors.grey,

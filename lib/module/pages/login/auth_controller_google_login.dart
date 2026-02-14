@@ -157,7 +157,6 @@ class auth_google_login extends GetxController {
     if (token == null) return false;
     bool hasexpired = JwtDecoder.isExpired(token);
     if (!hasexpired) {
-      print('the token is not expired $hasexpired');
       return true;
     }
 
@@ -172,7 +171,7 @@ class auth_google_login extends GetxController {
       // print('new tokens always false ${response.body}');
 
       if (response.statusCode != 200) {
-        print('the refresh is failed');
+
         return false;
       }
       final data = jsonDecode(response.body);
@@ -180,7 +179,7 @@ class auth_google_login extends GetxController {
       await _storage.write(key: 'refresh', value: data['refresh']);
       return true;
     } catch (e) {
-      print('${e.toString()}');
+
       return false;
     }
   }

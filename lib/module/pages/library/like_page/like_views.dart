@@ -45,21 +45,22 @@ class Like_Views extends GetView<Like_Controller> {
               final like = controller.like_song[index];
               return ListTile(
                   onTap: () {
-                    con.get_current_user_pick_song(like.song.id);
+                    con.get_current_user_pick_song(like.song!.id);
+                    print('like song id ${like.song!.id}');
                   },
                   style: ListTileStyle.drawer,
-                  leading: Image.network(like.song.coverImage),
+                  leading: Image.network(like.song!.coverImage ?? ""),
                   titleAlignment: ListTileTitleAlignment.center,
                   title: Text(
-                    like.song.title,
+                    like.song!.title ?? "Unknown" ,
                     style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
                         fontSize: 20),
                   ),
                   subtitle: Text(
-                    like.song.artist
-                        .map((artist) => artist.artistName)
+                    like.song!.artist
+                        !.map((artist) => artist.artistName)
                         .join(','),
                     style: TextStyle(
                       color: Colors.grey,
@@ -78,10 +79,10 @@ class Like_Views extends GetView<Like_Controller> {
                             builder: (context, scrollController) {
                               return globle_bottom_sheet(
                                 controllers: scrollController,
-                                song_cover_img: like.song.coverImage,
-                                song_title: like.song.title,
-                                song_artist: like.song.artist,
-                                song_id: like.song.id,
+                                song_cover_img: like.song!.coverImage,
+                                song_title: like.song!.title,
+                                song_artist: like.song!.artist,
+                                song_id: like.song!.id,
                               );
                             },
                           ),

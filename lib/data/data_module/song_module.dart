@@ -82,31 +82,31 @@ import 'genre.dart';
 
 class Song {
   final int id;
-  final String title;
-  final List<Artist> artist;
-  final List<Genre> genre;
-  final Album album;
-  final String songsFile;
-  final String coverImage;
-  final String duration;
-  final String releaseDate;
-  final String lyrics;
-  final String language;
+  final String? title;
+  final List<Artist>? artist;
+  final List<Genre>? genre;
+  final Album? album;
+  final String? songsFile;
+  final String? coverImage;
+  final String? duration;
+  final String? releaseDate;
+  final String? lyrics;
+  final String? language;
   final int views;
   final int likesCount;
 
   Song({
     required this.id,
-    required this.title,
-    required this.artist,
-    required this.genre,
-    required this.album,
-    required this.songsFile,
-    required this.coverImage,
-    required this.duration,
-    required this.releaseDate,
-    required this.lyrics,
-    required this.language,
+    this.title,
+    this.artist,
+    this.genre,
+    this.album,
+    this.songsFile,
+    this.coverImage,
+    this.duration,
+    this.releaseDate,
+    this.lyrics,
+    this.language,
     required this.views,
     required this.likesCount,
   });
@@ -114,20 +114,17 @@ class Song {
   factory Song.fromJson(Map<String, dynamic> json) {
     return Song(
       id: json['id'],
-      title: json['title'],
-      artist: (json['artist'] as List)
-          .map((e) => Artist.fromJson(e))
-          .toList(),
-      genre: (json['genre'] as List)
-          .map((e) => Genre.fromJson(e))
-          .toList(),
-      album: Album.fromJson(json['album']),
-      songsFile: json['songs_file'],
-      coverImage: json['cover_image'],
-      duration: json['duration'],
-      releaseDate: json['release_date'],
-      lyrics: json['lyrics'],
-      language: json['language'],
+      title: json['title']?.toString(),
+      artist:
+          (json['artist'] as List?)?.map((e) => Artist.fromJson(e)).toList(),
+      genre: (json['genre'] as List?)?.map((e) => Genre.fromJson(e)).toList(),
+      album: json['album'] != null ? Album.fromJson(json['album']) : null,
+      songsFile: json['songs_file']?.toString(),
+      coverImage: json['cover_image']?.toString(),
+      duration: json['duration']?.toString(),
+      releaseDate: json['release_date']?.toString(),
+      lyrics: json['lyrics']?.toString(),
+      language: json['language']?.toString(),
       views: json['views'] ?? 0,
       likesCount: json['likes_count'] ?? 0,
     );

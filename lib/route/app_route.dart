@@ -9,6 +9,7 @@ import 'package:youtube_music/module/pages/library/library_binding.dart';
 import 'package:youtube_music/module/pages/library/library_views.dart';
 import 'package:youtube_music/module/pages/library/like_page/like_binding.dart';
 import 'package:youtube_music/module/pages/library/like_page/like_views.dart';
+import 'package:youtube_music/module/pages/library/playlist_page/playlist_binding.dart';
 import 'package:youtube_music/module/pages/main_home_page/full_screen_media_player/full_screen_media_player.dart';
 import 'package:youtube_music/module/pages/main_home_page/main_home_page_binding.dart';
 import 'package:youtube_music/module/pages/profile/profile_binding.dart';
@@ -16,6 +17,7 @@ import 'package:youtube_music/module/pages/profile/profile_views.dart';
 import 'package:youtube_music/module/pages/shorts/short_binding.dart';
 import 'package:youtube_music/module/pages/shorts/short_views.dart';
 import 'package:youtube_music/route/middleware/auth_guard.dart';
+import '../module/pages/library/playlist_page/playlist_view.dart';
 import '../module/pages/main_home_page/Main_Home_Page.dart';
 import '../module/pages/home/home_binding.dart';
 import '../module/pages/home/music_home_page.dart';
@@ -38,6 +40,7 @@ class App_route{
   static const full_screen_media_player_page='/full_screen_media';
   static const like_page='/like_page';
   static const download_page = '/download_page';
+  static const playlist_page = '/playlist_page';
 
   static final route=[
     GetPage(name: splash, page: ()=>splash_screen(),bindings:[ auth_binding()],middlewares: [auth_guard()]),
@@ -51,5 +54,6 @@ class App_route{
     GetPage(name: full_screen_media_player_page, page: ()=>full_screen_media_player()),
     GetPage(name: like_page, page: ()=>Like_Views(),binding: Like_Binding()),
     GetPage(name: download_page, page: ()=>Download_Views(),binding: download_binding()),
+    GetPage(name: playlist_page, page: ()=>Playlist_Views(),binding: Playlist_Binding()),
   ];
 }

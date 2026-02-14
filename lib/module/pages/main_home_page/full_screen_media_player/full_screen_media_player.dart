@@ -93,7 +93,7 @@ class _full_screen_media_playerState extends State<full_screen_media_player> {
                 shape: CircleBorder(),
                 clipBehavior: Clip.hardEdge,
                 child: Image.network(
-                  song.current_song.value!.coverImage,
+                  song.current_song.value!.coverImage ?? "",
                   fit: BoxFit.cover,
                 ),
               ),
@@ -104,7 +104,7 @@ class _full_screen_media_playerState extends State<full_screen_media_player> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      song.current_song.value!.title,
+                      song.current_song.value!.title ?? "Unknown",
                       style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
@@ -112,7 +112,7 @@ class _full_screen_media_playerState extends State<full_screen_media_player> {
                     ),
                     Text(
                       song.current_song.value!.artist
-                          .map((artist) => artist.artistName)
+                          !.map((artist) => artist.artistName)
                           .join(',') as String,
                       style: TextStyle(
                         color: Colors.grey,
