@@ -1,3 +1,5 @@
+import 'package:youtube_music/data/data_module/song_module.dart';
+
 import 'artist.dart';
 
 class Album {
@@ -7,6 +9,7 @@ class Album {
   final String? releaseDate;
   final String? description;
   final List<Artist>? artists;
+  final List<Song>? songAlbum;
 
   Album({
     required this.id,
@@ -15,6 +18,7 @@ class Album {
     this.releaseDate,
     this.description,
     this.artists,
+    this.songAlbum
   });
 
   factory Album.fromJson(Map<String, dynamic> json) {
@@ -27,6 +31,7 @@ class Album {
       artists: (json['artists'] as List?)
           ?.map((e) => Artist.fromJson(e))
           .toList(),
+      songAlbum: (json['song_album'] as List?)?.map((song)=>Song.fromJson(song)).toList(),
     );
   }
 }

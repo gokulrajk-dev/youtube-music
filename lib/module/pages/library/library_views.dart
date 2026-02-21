@@ -2,12 +2,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:youtube_music/module/pages/home/music_home_page.dart';
-import 'package:youtube_music/module/pages/library/download/download_views.dart';
 import 'package:youtube_music/module/pages/library/library_controller.dart';
-import 'package:youtube_music/module/pages/library/playlist_page/playlist_controller.dart';
 
 import '../../../route/app_route.dart';
+import '../download/download_views.dart';
 import '../home/controllers/user_data_controller.dart';
+import '../playlist_page/playlist_controller.dart';
 
 class Library_Views extends StatefulWidget {
   const Library_Views({super.key});
@@ -30,6 +30,11 @@ class _Library_ViewsState extends State<Library_Views> {
   ];
 
   final Library_Nest_Page = [library_body(), Download_Views()];
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -91,7 +96,8 @@ class _Library_ViewsState extends State<Library_Views> {
                                     ),
                                     ListTile(
                                       onTap: () {
-                                        library_controller.get_current_lib_index();
+                                        library_controller
+                                            .get_current_lib_index();
                                         Get.back();
                                       },
                                       title: Text(
@@ -188,7 +194,8 @@ class _Library_ViewsState extends State<Library_Views> {
                                         AssetImage('assets/_joker1.png'),
                                   )
                                 : CircleAvatar(
-                                    backgroundImage: NetworkImage(user.photoUrl),
+                                    backgroundImage:
+                                        NetworkImage(user.photoUrl),
                                   );
                           }),
                         );
@@ -227,17 +234,21 @@ class _Library_ViewsState extends State<Library_Views> {
               ],
             ),
             Obx(
-              ()=> library_controller.current_library_index.value == 0
-                  ?Positioned(
-                bottom: 90,
-                right: 20,
-                child: FloatingActionButton(
-                  backgroundColor: Colors.white,
-                  shape: CircleBorder(),
-                  onPressed: () {},
-                  child: Icon(Icons.add,color: Colors.black,),
-                ),
-              ):SizedBox(),
+              () => library_controller.current_library_index.value == 0
+                  ? Positioned(
+                      bottom: 90,
+                      right: 20,
+                      child: FloatingActionButton(
+                        backgroundColor: Colors.white,
+                        shape: CircleBorder(),
+                        onPressed: () {},
+                        child: Icon(
+                          Icons.add,
+                          color: Colors.black,
+                        ),
+                      ),
+                    )
+                  : SizedBox(),
             ),
           ],
         ),
@@ -257,6 +268,12 @@ class _library_bodyState extends State<library_body> {
   final Library_Controller controller = Get.find<Library_Controller>();
   final user_details_controller user = Get.find<user_details_controller>();
   final Playlist_Controller playlist_song = Get.find<Playlist_Controller>();
+
+  @override
+  void initState() {
+    playlist_song.show_user_playlist();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -295,6 +312,11 @@ class _library_bodyState extends State<library_body> {
             ),
           ),
         ),
+        // ElevatedButton(
+        //     onPressed: () {
+        //       playlist_song.show_user_playlist();
+        //     },
+        //     child: Text('playlist')),
         Obx(() {
           if (controller.is_loading.value) {
             return Center(child: CircularProgressIndicator());
@@ -306,21 +328,19 @@ class _library_bodyState extends State<library_body> {
           }
           return ListView.builder(
             shrinkWrap: true,
-
-            itemCount: controller.user_playlist.length,
+            itemCount: playlist_song.user_playlist.length,
             itemBuilder: (context, index) {
-              final playlist = controller.user_playlist[index];
+              final playlist = playlist_song.user_playlist[index];
               return ListTile(
-                onTap: (){
+                onTap: () {
                   playlist_song.get_user_pick_song_playlist(playlist.id);
-                  Get.toNamed(App_route.playlist_page,id: 4);
+                  Get.toNamed(App_route.playlist_page, id: 4);
                 },
                 leading: playlist.playlistcoverimage == ''
                     ? Image.network(playlist.playlistcoverimage ?? "")
                     : Container(
                         decoration: BoxDecoration(
-                            border:
-                                Border.all(color: Colors.white, width: 0.5)),
+                            border: Border.all(color: Colors.white, width: 0.5)),
                         width: 55,
                         height: 55,
                         child: Icon(
@@ -329,13 +349,21 @@ class _library_bodyState extends State<library_body> {
                         )),
                 title: Text(
                   playlist.playlistName ?? 'unknown',
-                  style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 20),
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20),
                 ),
                 subtitle: Text(
                   'Playlist . ${user.user.value!.userName}',
                   style: TextStyle(color: Colors.grey),
                 ),
-                trailing: IconButton(onPressed: (){}, icon: Icon(Icons.more_vert,color: Colors.white,)),
+                trailing: IconButton(
+                    onPressed: () {},
+                    icon: Icon(
+                      Icons.more_vert,
+                      color: Colors.white,
+                    )),
               );
             },
           );

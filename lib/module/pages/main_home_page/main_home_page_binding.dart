@@ -1,9 +1,9 @@
 import 'package:get/get.dart';
-import 'package:youtube_music/module/pages/home/controllers/user_data_controller.dart';
+
 import 'package:youtube_music/module/pages/main_home_page/main_home_page_controller.dart';
 
 import '../home/controllers/all_song_controller.dart';
-import '../login/auth_controller_google_login.dart';
+
 
 class Main_Home_Page_Binding extends Bindings{
   @override

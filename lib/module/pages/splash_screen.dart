@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:youtube_music/route/app_route.dart';
 
-import 'login/auth_controller_google_login.dart';
+
 
 class splash_screen extends StatefulWidget {
   const splash_screen({super.key});

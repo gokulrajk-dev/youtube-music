@@ -2,8 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:youtube_music/module/pages/home/controllers/all_song_controller.dart';
-import 'package:youtube_music/module/pages/library/like_page/like_controller.dart';
 
+
+import '../../globle_bottom_sheet/globle_bottom_sheet_views.dart';
+import '../../like_page/like_controller.dart';
 import '../../profile/profile_views.dart';
 
 enum type_name { like, commant, save, share, download, mix }
@@ -81,7 +83,26 @@ class _full_screen_media_playerState extends State<full_screen_media_player> {
                 ),
                 titleAlignment: ListTileTitleAlignment.center,
                 trailing: IconButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Get.bottomSheet(
+                        elevation: 5,
+                        DraggableScrollableSheet(
+                          expand: false,
+                          builder: (context,
+                              scrollController) {
+                            return globle_bottom_sheet(
+                              controllers:
+                              scrollController,
+                              song_artist: song.current_song.value!.artist,
+                              song_title: song.current_song.value!.title,
+                              song_cover_img: song.current_song.value!.coverImage,
+                              song_id: song.current_song.value!.id,
+                            );
+                          },
+                        ),
+                        isScrollControlled: true,
+                      );
+                    },
                     icon: Icon(
                       Icons.more_vert,
                       color: Colors.white,

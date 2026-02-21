@@ -81,6 +81,7 @@ flutter:
     - .env
     - assets/_joker1.png
     - assets/liked_pic.png
+    - assets/img.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

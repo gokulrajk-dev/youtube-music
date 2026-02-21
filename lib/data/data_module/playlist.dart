@@ -1,6 +1,8 @@
 import 'package:youtube_music/data/data_module/song_module.dart';
 
 
+
+
 //  todo after finish the project remove the user
 class Playlist {
   final int id;
@@ -28,11 +30,27 @@ class Playlist {
         isPublic: json['is_public'] ?? false,
         description: json['description']?.toString(),
         createdAt: json['created_at'] !=null ?DateTime.parse(json['created_at']):null,
-        user: json['user'],
+        user: json['user'] ?? 0,
         playlistName: json['playlist_name']?.toString(),
       playlistcoverimage: json['playlist_cover_image']?.toString(),
     );
   }
+
+  // @override
+  // // TODO: implement image
+  // String? get image => playlistcoverimage;
+  //
+  // @override
+  // // TODO: implement song_id
+  // int get song_id => songs!.map((son)=>son.id);
+  //
+  // @override
+  // // TODO: implement song_title
+  // String? get song_title => throw UnimplementedError();
+  //
+  // @override
+  // // TODO: implement subtitle
+  // String? get subtitle => throw UnimplementedError();
 }
 
 //
@@ -81,4 +99,4 @@ class Playlist {
 //       playlistcoverimage: json['playlist_cover_image']?.toString()
 //     );
 //   }
-// }
+//

@@ -2,8 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:youtube_music/module/pages/home/controllers/all_song_controller.dart';
-import 'package:youtube_music/module/pages/library/like_page/like_controller.dart';
 
+
+import '../like_page/like_controller.dart';
 import '../profile/profile_views.dart';
 
 class globle_bottom_sheet extends StatefulWidget {
@@ -49,121 +50,123 @@ class _globle_bottom_sheetState extends State<globle_bottom_sheet> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.transparent.withOpacity(0.85),
-      body: Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: ListView(
-            controller: widget.controllers,
-            children: [
-              ListTile(
-                focusColor: Colors.black,
-                leading: Container(
-                  clipBehavior: Clip.hardEdge,
-                  decoration: BoxDecoration(
-                      border: Border.all(width: 0.5, color: Colors.white)),
-                  child: Image.network(
-                    widget.song_cover_img ?? '',
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: Colors.transparent.withOpacity(0.85),
+        body: Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: ListView(
+              controller: widget.controllers,
+              children: [
+                ListTile(
+                  focusColor: Colors.black,
+                  leading: Container(
+                    clipBehavior: Clip.hardEdge,
+                    decoration: BoxDecoration(
+                        border: Border.all(width: 0.5, color: Colors.white)),
+                    child: Image.network(
+                      widget.song_cover_img ?? '',
+                    ),
                   ),
+                  title: Text(
+                    widget.song_title ?? '',
+                    maxLines: 1,
+                    softWrap: true,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20,
+                        color: Colors.white),
+                  ),
+                  subtitle: Text(
+                    widget.song_artist
+                            .map((artist) => artist.artistName)
+                            .join(',') ??
+                        '',
+                    maxLines: 1,
+                    softWrap: true,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(color: Colors.grey),
+                  ),
+                  trailing: Builder(builder: (context) {
+                    return Obx(
+                      () => IconButton(
+                          onPressed: () async {
+                            await like.post_del_user_like(widget.song_id);
+                           await controller.get_current_user_pick_song(widget.song_id);
+                          },
+                          icon: Icon(
+                            like.get_song_like_or_not(widget.song_id)
+                                ? CupertinoIcons.hand_thumbsup_fill
+                                : CupertinoIcons.hand_thumbsup,
+                            color: Colors.white,
+                          )),
+                    );
+                  }),
                 ),
-                title: Text(
-                  widget.song_title ?? '',
-                  maxLines: 1,
-                  softWrap: true,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20,
-                      color: Colors.white),
-                ),
-                subtitle: Text(
-                  widget.song_artist
-                          .map((artist) => artist.artistName)
-                          .join(',') ??
-                      '',
-                  maxLines: 1,
-                  softWrap: true,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(color: Colors.grey),
-                ),
-                trailing: Builder(builder: (context) {
-                  return Obx(
-                    () => IconButton(
-                        onPressed: () async {
-                          await like.post_del_user_like(widget.song_id);
-                         await controller.get_current_user_pick_song(widget.song_id);
-                        },
-                        icon: Icon(
-                          like.get_song_like_or_not(widget.song_id)
-                              ? CupertinoIcons.hand_thumbsup_fill
-                              : CupertinoIcons.hand_thumbsup,
-                          color: Colors.white,
-                        )),
-                  );
-                }),
-              ),
-              Divider(),
-              SizedBox(
-                height: 125,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: featrue.map((most) {
-                    return Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          GestureDetector(
-                            // todo the playnext,save,share
-                            child: Container(
-                              height: 80,
-                              width: 100,
-                              decoration: BoxDecoration(
-                                  color: Colors.grey.withOpacity(0.5),
-                                  borderRadius: BorderRadius.circular(20)),
-                              child: Center(
-                                child: Icon(
-                                  most.icon,
-                                  color: Colors.white,
+                Divider(),
+                SizedBox(
+                  height: 125,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: featrue.map((most) {
+                      return Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            GestureDetector(
+                              // todo the playnext,save,share
+                              child: Container(
+                                height: 80,
+                                width: 100,
+                                decoration: BoxDecoration(
+                                    color: Colors.grey.withOpacity(0.5),
+                                    borderRadius: BorderRadius.circular(20)),
+                                child: Center(
+                                  child: Icon(
+                                    most.icon,
+                                    color: Colors.white,
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                          Spacer(),
-                          Text(
-                            most.text,
-                            style: TextStyle(color: Colors.white),
-                          )
-                        ],
+                            Spacer(),
+                            Text(
+                              most.text,
+                              style: TextStyle(color: Colors.white),
+                            )
+                          ],
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                ),
+                Column(
+                  children: featrue_all.map((all) {
+                    return GestureDetector(
+                      onTap: () {
+                        //   todo all feature
+                      },
+                      child: ListTile(
+                        leading: Icon(
+                          all.icon,
+                          color: Colors.white,
+                        ),
+                        title: Text(
+                          all.text,
+                          style: TextStyle(
+                              color: Colors.white, fontWeight: FontWeight.bold),
+                        ),
                       ),
                     );
                   }).toList(),
                 ),
-              ),
-              Column(
-                children: featrue_all.map((all) {
-                  return GestureDetector(
-                    onTap: () {
-                      //   todo all feature
-                    },
-                    child: ListTile(
-                      leading: Icon(
-                        all.icon,
-                        color: Colors.white,
-                      ),
-                      title: Text(
-                        all.text,
-                        style: TextStyle(
-                            color: Colors.white, fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  );
-                }).toList(),
-              ),
-            ],
-          )),
+              ],
+            )),
+      ),
     );
   }
 }

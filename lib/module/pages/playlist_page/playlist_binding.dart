@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
-import 'package:youtube_music/module/pages/library/playlist_page/playlist_controller.dart';
+
+import 'package:youtube_music/module/pages/playlist_page/playlist_controller.dart';
 
 class Playlist_Binding extends Bindings{
   @override

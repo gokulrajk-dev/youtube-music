@@ -34,7 +34,7 @@ class _demoState extends State<demo> {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      initialBinding: Init_Binding(),
+
       debugShowCheckedModeBanner: false,
       initialRoute: App_route.splash,
       getPages: App_route.route,

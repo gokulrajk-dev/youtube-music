@@ -76,11 +76,29 @@
 //   };
 // }
 
+
+
 import 'album_module.dart';
 import 'artist.dart';
 import 'genre.dart';
 
-class Song {
+class Song  {
+
+  // @override
+  // String? get song_title => title;
+  //
+  // @override
+  // // TODO: implement song_id
+  // int get song_id => id;
+  //
+  //
+  // @override
+  // String? get subtitle => artist?.map((e) => e.artistName).join(',');
+  //
+  // @override
+  // String? get image => coverImage;
+
+
   final int id;
   final String? title;
   final List<Artist>? artist;
@@ -129,4 +147,7 @@ class Song {
       likesCount: json['likes_count'] ?? 0,
     );
   }
+
+
+
 }

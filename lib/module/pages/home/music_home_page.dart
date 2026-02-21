@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:youtube_music/module/pages/Album/album_controller.dart';
 import 'package:youtube_music/module/pages/home/controllers/user_data_controller.dart';
-import 'package:youtube_music/module/pages/library/like_page/like_controller.dart';
 import 'package:youtube_music/route/app_route.dart';
 
 import '../globle_bottom_sheet/globle_bottom_sheet_views.dart';
+import '../like_page/like_controller.dart';
 import 'controllers/all_song_controller.dart';
 
 class home_page extends StatefulWidget {
@@ -21,6 +22,7 @@ class _home_pageState extends State<home_page> {
       Get.find<get_all_song_controller>();
   final get_current_song pick_current_song = Get.find<get_current_song>();
   final Like_Controller like = Get.find<Like_Controller>();
+  final Album_Controller album_song = Get.find<Album_Controller>();
 
   // final GlobalKey<SliverAnimatedGridState> _gridKey =
   //     GlobalKey<SliverAnimatedGridState>();
@@ -216,7 +218,7 @@ class _home_pageState extends State<home_page> {
 
             SliverToBoxAdapter(
               child: SizedBox(
-                  height: 500,
+                  height: 100,
                   child: Obx(() {
                     if (controller_song.is_loading.value) {
                       return Center(child: CircularProgressIndicator());
@@ -238,11 +240,30 @@ class _home_pageState extends State<home_page> {
                               pick_current_song
                                   .get_current_user_pick_song(song.id);
                             },
+                            onLongPress: () {
+                              Get.bottomSheet(
+                                elevation: 5,
+                                DraggableScrollableSheet(
+                                  expand: false,
+                                  builder: (context, scrollController) {
+                                    return globle_bottom_sheet(
+                                      controllers: scrollController,
+                                      song_artist: song.artist,
+                                      song_title: song.title,
+                                      song_cover_img: song.coverImage,
+                                      song_id: song.id,
+                                    );
+                                  },
+                                ),
+                                isScrollControlled: true,
+                              );
+                            },
                             child: Container(
                               color: Colors.transparent,
                               child: Row(
                                 children: [
-                                  Image.network(song.coverImage ?? '', height: 70),
+                                  Image.network(song.coverImage ?? '',
+                                      height: 70),
                                   const Spacer(),
                                   Column(
                                     crossAxisAlignment:
@@ -256,8 +277,8 @@ class _home_pageState extends State<home_page> {
                                             fontWeight: FontWeight.bold),
                                       ),
                                       Text(
-                                        song.artist
-                                            !.map((artist) => artist.artistName)
+                                        song.artist!
+                                            .map((artist) => artist.artistName)
                                             .join(','),
                                         overflow: TextOverflow.ellipsis,
                                         maxLines: 1,
@@ -270,24 +291,23 @@ class _home_pageState extends State<home_page> {
                                   const Spacer(),
                                   IconButton(
                                       onPressed: () {
-                                         Get.bottomSheet(
-                                                  elevation: 5,
-                                                  DraggableScrollableSheet(
-                                                    expand: false,
-                                                    builder: (context,
-                                                        scrollController) {
-                                                      return globle_bottom_sheet(
-                                                        controllers:
-                                                            scrollController,
-                                                        song_artist: song.artist,
-                                                        song_title: song.title,
-                                                        song_cover_img: song.coverImage,
-                                                        song_id: song.id,
-                                                      );
-                                                    },
-                                                  ),
-                                                  isScrollControlled: true,
-                                                );
+                                        Get.bottomSheet(
+                                          elevation: 5,
+                                          DraggableScrollableSheet(
+                                            expand: false,
+                                            builder:
+                                                (context, scrollController) {
+                                              return globle_bottom_sheet(
+                                                controllers: scrollController,
+                                                song_artist: song.artist,
+                                                song_title: song.title,
+                                                song_cover_img: song.coverImage,
+                                                song_id: song.id,
+                                              );
+                                            },
+                                          ),
+                                          isScrollControlled: true,
+                                        );
                                       },
                                       icon: Icon(
                                         Icons.more_vert,
@@ -302,6 +322,109 @@ class _home_pageState extends State<home_page> {
                     );
                   })),
             ),
+
+            const SliverToBoxAdapter(
+              child: Padding(
+                padding: EdgeInsets.all(16),
+                child: Text(
+                  "Quick Picks Album",
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+              ),
+            ),
+
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.only(left: 8.0, bottom: 10),
+                child: SizedBox(
+                  height: 225,
+                  child: Obx(
+                    () => SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: album_song.album_song.map((album) {
+                          return album.songAlbum!.isEmpty
+                              ? SizedBox()
+                              : GestureDetector(
+                                  onTap: () {
+                                    album_song.retrive_album_song_con(album.id);
+                                    Get.toNamed(App_route.album_page, id: 1);
+                                  },
+                                  child: Container(
+                                    width: 160,
+                                    color: Colors.transparent,
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(
+                                          left: 8.0, right: 8),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Container(
+                                            clipBehavior: Clip.hardEdge,
+                                            width: 150,
+                                            height: 150,
+                                            // margin: const EdgeInsets.symmetric(horizontal: 8),
+                                            decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                                image: DecorationImage(
+                                                    fit: BoxFit.cover,
+                                                    image: album.coverImage ==
+                                                            null
+                                                        ? AssetImage(
+                                                            'assets/_joker1.png')
+                                                        : NetworkImage(
+                                                            album.coverImage ??
+                                                                "",
+                                                          ))),
+                                          ),
+                                          const SizedBox(
+                                            height: 5,
+                                          ),
+                                          Text(
+                                            album.title ?? "unknown",
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 18),
+                                          ),
+                                          Text(
+                                            album.artists!
+                                                .map(
+                                                    (alart) => alart.artistName)
+                                                .join(','),
+                                            maxLines: 2,
+                                            overflow: TextOverflow.ellipsis,
+                                            style:
+                                                TextStyle(color: Colors.grey),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                );
+                        }).toList(),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+
+            // Obx(
+            //   ()=> SliverList(delegate: SliverChildListDelegate(
+            //       album_song.album_song.map((song){
+            //         return Column(
+            //           children: [
+            //             CircleAvatar(
+            //               backgroundImage: NetworkImage(song.coverImage ?? ""),
+            //             ),
+            //             Text(song.songAlbum!.map((songname)=> songname.title).join(','))
+            //           ],
+            //         );
+            //       }).toList()
+            //   )),
+            // ),
             SliverToBoxAdapter(
               child: SizedBox(
                 height: 50,
@@ -341,7 +464,6 @@ class pinnedHeaderDelegate extends SliverPersistentHeaderDelegate {
   @override
   Widget build(
       BuildContext context, double shrinkOffset, bool overlapsContent) {
-    // TODO: implement build
     return Material(
       // color: Colors.white,
       child: child,

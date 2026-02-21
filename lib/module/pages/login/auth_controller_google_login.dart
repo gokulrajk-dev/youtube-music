@@ -9,10 +9,12 @@ import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:youtube_music/data/user_respository/user_respository.dart';
 
 import 'package:youtube_music/module/pages/home/controllers/user_data_controller.dart';
-import 'package:youtube_music/module/pages/library/like_page/like_controller.dart';
+
 import 'package:youtube_music/route/app_route.dart';
 import 'package:youtube_music/services/Token_Service.dart';
 import 'package:youtube_music/services/auth_service.dart';
+
+import '../like_page/like_controller.dart';
 
 class auth_google_login extends GetxController {
   final FirebaseAuth _auth = FirebaseAuth.instance;

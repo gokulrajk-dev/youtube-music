@@ -1,7 +1,9 @@
 import 'package:get/get.dart';
 import 'package:youtube_music/module/pages/home/controllers/user_data_controller.dart';
 
-import '../library/like_page/like_controller.dart';
+import '../like_page/like_controller.dart';
+
+
 
 
 class home_binding extends Bindings{

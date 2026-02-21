@@ -1,8 +1,8 @@
 import 'package:get/get.dart';
 import 'package:youtube_music/module/pages/library/library_controller.dart';
-import 'package:youtube_music/module/pages/library/playlist_page/playlist_controller.dart';
 
-import 'download/download_controller.dart';
+import '../download/download_controller.dart';
+import '../playlist_page/playlist_controller.dart';
 
 class Library_Binding extends Bindings{
   @override

@@ -7,13 +7,12 @@ import 'package:youtube_music/data/user_respository/user_playlist_respository.da
 class Library_Controller extends base_controller {
   final current_library_index = 0.obs;
   final current_page_title = 'Library'.obs;
-  final RxList<Playlist> user_playlist = <Playlist>[].obs;
-  final UserPlaylistCrud playlistCrud = UserPlaylistCrud();
+
 
   @override
   void onInit() {
     get_current_lib_index();
-    show_user_playlist();
+
     super.onInit();
   }
 
@@ -34,18 +33,7 @@ class Library_Controller extends base_controller {
     await pref.setString('current_page_title', current_page_title.value);
   }
 
-  Future<void> show_user_playlist() async {
-    try {
-      get_isloading(true);
-      noerror();
-      final result = await playlistCrud.Get_user_playlist();
-      user_playlist.value = result;
-    } catch (e) {
-      get_error(e.toString());
-    } finally {
-      get_isloading(false);
-    }
-  }
+
 }
 //
 // import 'package:get/get.dart';
