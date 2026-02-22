@@ -1,16 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:youtube_music/module/pages/Album/album_controller.dart';
+import 'package:youtube_music/module/pages/Artist/artist_controller.dart';
 import 'package:youtube_music/module/pages/home/controllers/all_song_controller.dart';
 
 import '../../../services/helper_code/helper_code.dart';
 import '../../../widgets/songListView.dart';
 import '../like_page/like_views.dart';
 
-class Album_Views extends GetView<Album_Controller>{
+class Artist_Views extends GetView<Artist_Controller>{
   final get_current_song song = Get.find<get_current_song>();
-
   @override
   Widget build(BuildContext context) {
     final helper_code help = helper_code();
@@ -28,12 +27,12 @@ class Album_Views extends GetView<Album_Controller>{
             )),
       ),
       body: Obx(() {
-        final album_song = controller.retrive_album_song.value;
-        final song_only = album_song?.songAlbum ?? [];
-        final song_date = album_song!.releaseDate;
-        DateTime dateTime = DateTime.parse(song_date!);
-        final year = dateTime.year.toString();
-        
+        final artist_song = controller.retrive_artist.value;
+        final song_only = artist_song?.SongArtist ?? [];
+        // final song_date = song_only.releaseDate;
+        // DateTime dateTime = DateTime.parse(song_date!);
+        // final year = dateTime.year.toString();
+
         if(controller.is_loading.value){
           return Center(
             child: CircularProgressIndicator(color: Colors.white,),
@@ -47,30 +46,8 @@ class Album_Views extends GetView<Album_Controller>{
 
         return ListView(
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                CircleAvatar(
-                  backgroundImage: album_song.artists!.first.artistImage == null
-                      ? AssetImage('assets/img.png')
-                      : NetworkImage(
-                    album_song.artists!.first.artistImage ?? "",
-                    scale: 1,
-                  ),
-                ),
-                const SizedBox(
-                  width: 10,
-                ),
-                Text(
-                  album_song.artists!.first.artistName ?? 'unknown',
-                  style: TextStyle(color: Colors.white),
-                )
-              ],
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 8.0),
-              child: Center(child: Text('Album.${year}',style: TextStyle(color: Colors.grey),)),
-            ),
+
+
             Center(
               child: Container(
                 height: 200,
@@ -78,10 +55,10 @@ class Album_Views extends GetView<Album_Controller>{
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
                     image: DecorationImage(
-                        image:album_song.coverImage == null
+                        image:artist_song!.artistImage == null
                             ? AssetImage('assets/_joker1.png')
                             : NetworkImage(
-                            album_song.coverImage ?? ""),
+                            artist_song.artistImage ?? ""),
                         scale: 1)),
               ),
             ),
@@ -92,7 +69,7 @@ class Album_Views extends GetView<Album_Controller>{
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    album_song.title ?? 'unknown',
+                    artist_song.artistName ?? 'unknown',
                     style: TextStyle(
                         color: Colors.white,
                         fontSize: 25,
@@ -106,8 +83,8 @@ class Album_Views extends GetView<Album_Controller>{
                   Padding(
                     padding: const EdgeInsets.only(top: 10, bottom: 10),
                     child:
-                        Text(
-                      album_song.description ?? 'unknown',
+                    Text(
+                      artist_song.artistBio ?? 'unknown',
                       style: TextStyle(color: Colors.grey, fontSize: 13),
                     ),
                   ),

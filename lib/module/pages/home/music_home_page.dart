@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:youtube_music/module/pages/Album/album_controller.dart';
+import 'package:youtube_music/module/pages/Artist/artist_controller.dart';
 import 'package:youtube_music/module/pages/home/controllers/user_data_controller.dart';
 import 'package:youtube_music/route/app_route.dart';
 
@@ -23,6 +24,7 @@ class _home_pageState extends State<home_page> {
   final get_current_song pick_current_song = Get.find<get_current_song>();
   final Like_Controller like = Get.find<Like_Controller>();
   final Album_Controller album_song = Get.find<Album_Controller>();
+  final Artist_Controller artist_song = Get.find<Artist_Controller>();
 
   // final GlobalKey<SliverAnimatedGridState> _gridKey =
   //     GlobalKey<SliverAnimatedGridState>();
@@ -71,7 +73,9 @@ class _home_pageState extends State<home_page> {
               floating: true,
               actions: [
                 IconButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Get.toNamed(App_route.history_page, id: 1);
+                  },
                   icon: Icon(Icons.history),
                   color: Colors.black,
                 ),
@@ -252,6 +256,8 @@ class _home_pageState extends State<home_page> {
                                       song_title: song.title,
                                       song_cover_img: song.coverImage,
                                       song_id: song.id,
+                                      album_id: song.album!.id,
+                                      artist_id: song.artist!.first.id,
                                     );
                                   },
                                 ),
@@ -303,6 +309,8 @@ class _home_pageState extends State<home_page> {
                                                 song_title: song.title,
                                                 song_cover_img: song.coverImage,
                                                 song_id: song.id,
+                                                album_id: song.album!.id,
+                                                artist_id: song.artist!.first.id,
                                               );
                                             },
                                           ),
@@ -411,6 +419,76 @@ class _home_pageState extends State<home_page> {
               ),
             ),
 
+            const SliverToBoxAdapter(
+              child: Padding(
+                padding: EdgeInsets.all(16),
+                child: Text(
+                  "Quick Picks Artist",
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+              ),
+            ),
+
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.only(left: 8.0, bottom: 10),
+                child: SizedBox(
+                  height: 225,
+                  child: Obx(
+                    () => SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: artist_song.get_artist.map((artist) {
+                          return artist.artistName!.isEmpty
+                              ? SizedBox()
+                              : GestureDetector(
+                                  onTap: () {
+                                    artist_song.retrive_artist_with_song(artist.id);
+                                    Get.toNamed(App_route.artist_page, id: 1);
+                                  },
+                                  child: Container(
+                                    width: 160,
+                                    color: Colors.transparent,
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(
+                                          left: 8.0,),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          Card(
+                                            semanticContainer: true,
+                                            borderOnForeground: true,
+                                            shape: CircleBorder(),
+                                            clipBehavior: Clip.hardEdge,
+                                            child: artist.artistImage != null?Image.network(
+                                             artist.artistImage ?? "" ,
+                                              fit: BoxFit.cover,
+                                            ):Image.asset(
+                                          'assets/_joker1.png'),
+                                          ),
+                                          const SizedBox(
+                                            height: 5,
+                                          ),
+                                          Text(
+                                            artist.artistName ?? "unknown",
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 18),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                );
+                        }).toList(),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+
             // Obx(
             //   ()=> SliverList(delegate: SliverChildListDelegate(
             //       album_song.album_song.map((song){
@@ -432,6 +510,7 @@ class _home_pageState extends State<home_page> {
                     onPressed: () {
                       controller_song.get_all_songs();
                       like.get_current_user_like_songs();
+                      artist_song.get_full_aritist_list();
                     },
                     child: Obx(() => Text(like.like_song
                         .map((f) => f.song!.title)

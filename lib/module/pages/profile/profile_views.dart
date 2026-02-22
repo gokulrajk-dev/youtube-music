@@ -31,7 +31,7 @@ class _Profile_ViewsState extends State<Profile_Views> {
         text: 'Your Channel',
         g: App_route.home_pages),
     Feature(icon: Icons.save, text: 'Downloads', g: App_route.home_pages),
-    Feature(icon: Icons.history, text: 'History', g: App_route.home_pages),
+    Feature(icon: Icons.history, text: 'History', g: App_route.history_page),
     Feature(icon: CupertinoIcons.backward_fill,
         text: 'Your Recap',
         g: App_route.home_pages),
@@ -126,7 +126,9 @@ class _Profile_ViewsState extends State<Profile_Views> {
                       k.Switch_google_Account();
                       return;
                     }
-                    Get.toNamed(wid.g);
+
+                    Get.toNamed(wid.g,id: 4);
+                    Get.back();
                   },
                   child: ListTile(
                     leading: Icon(wid.icon),

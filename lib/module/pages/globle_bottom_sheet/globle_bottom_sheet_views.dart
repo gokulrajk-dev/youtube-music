@@ -1,7 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:youtube_music/module/pages/Album/album_controller.dart';
+import 'package:youtube_music/module/pages/Artist/artist_controller.dart';
 import 'package:youtube_music/module/pages/home/controllers/all_song_controller.dart';
+import 'package:youtube_music/route/app_route.dart';
 
 
 import '../like_page/like_controller.dart';
@@ -13,6 +16,8 @@ class globle_bottom_sheet extends StatefulWidget {
   final dynamic song_title;
   final dynamic song_artist;
   final dynamic song_id;
+  final dynamic album_id;
+  final dynamic artist_id;
 
   globle_bottom_sheet({
     super.key,
@@ -21,6 +26,8 @@ class globle_bottom_sheet extends StatefulWidget {
     required this.song_title,
     required this.song_artist,
     required this.song_id,
+    required this.album_id,
+    required this.artist_id,
   });
 
   @override
@@ -30,20 +37,32 @@ class globle_bottom_sheet extends StatefulWidget {
 class _globle_bottom_sheetState extends State<globle_bottom_sheet> {
   final get_current_song controller = Get.find<get_current_song>();
   final Like_Controller like = Get.find<Like_Controller>();
+  final Album_Controller album = Get.find<Album_Controller>();
+  final Artist_Controller artist = Get.find<Artist_Controller>();
 
-  List<Feature> featrue = [
+  List<Feature>  featrue = [
     Feature(icon: Icons.playlist_play, text: 'Play Next'),
     Feature(icon: Icons.playlist_add, text: 'Save to playlist'),
     Feature(icon: CupertinoIcons.share, text: 'Share'),
   ];
-  List<Feature> featrue_all = [
+  List<Feature> get featrue_all => [
     Feature(icon: CupertinoIcons.dot_radiowaves_left_right, text: 'Start mix'),
     Feature(icon: Icons.queue_music, text: 'Add to Queue'),
     Feature(icon: Icons.playlist_add, text: 'Add to Library'),
     Feature(icon: CupertinoIcons.arrow_down_to_line_alt, text: 'Download'),
     Feature(icon: CupertinoIcons.delete, text: 'Remove from playlist'),
-    Feature(icon: Icons.album_outlined, text: 'Go to Album'),
-    Feature(icon: Icons.person_outline, text: 'Go to Artist'),
+    Feature(icon: Icons.album_outlined, text: 'Go to Album',onTap: () async{
+      await album.retrive_album_song_con(widget.album_id);
+      Get.back();
+      Get.toNamed(App_route.album_page);
+
+    }),
+    Feature(icon: Icons.person_outline, text: 'Go to Artist',onTap: () async{
+      await artist.retrive_artist_with_song(widget.artist_id);
+      Get.back();
+      Get.toNamed(App_route.artist_page);
+
+    }),
     Feature(icon: CupertinoIcons.person_3, text: 'View song credits'),
     Feature(icon: CupertinoIcons.pin_fill, text: 'Pin to Speed dial'),
   ];
@@ -147,9 +166,7 @@ class _globle_bottom_sheetState extends State<globle_bottom_sheet> {
                 Column(
                   children: featrue_all.map((all) {
                     return GestureDetector(
-                      onTap: () {
-                        //   todo all feature
-                      },
+                      onTap: all.onTap,
                       child: ListTile(
                         leading: Icon(
                           all.icon,

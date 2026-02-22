@@ -97,6 +97,8 @@ class _full_screen_media_playerState extends State<full_screen_media_player> {
                               song_title: song.current_song.value!.title,
                               song_cover_img: song.current_song.value!.coverImage,
                               song_id: song.current_song.value!.id,
+                              album_id: song.current_song.value!.album!.id,
+                              artist_id: song.current_song.value!.artist!.first.id,
                             );
                           },
                         ),

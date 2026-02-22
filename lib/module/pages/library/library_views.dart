@@ -158,7 +158,9 @@ class _Library_ViewsState extends State<Library_Views> {
                     ),
                     actions: [
                       IconButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Get.toNamed(App_route.history_page,id: 4);
+                        },
                         icon: Icon(
                           Icons.history,
                           color: Colors.white,

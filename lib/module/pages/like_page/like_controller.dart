@@ -1,11 +1,9 @@
 import 'package:get/get.dart';
 import 'package:youtube_music/core/base/base_controller.dart';
 import 'package:youtube_music/data/data_module/like_model.dart';
-
-// import 'package:youtube_music/module/pages/home/controllers/all_song_controller.dart';
-
 import '../../../../data/user_respository/user_like_repository.dart';
 
+// todo after complete the app like need optimization.
 class Like_Controller extends base_controller {
   final RxList<LikeModel> like_song = <LikeModel>[].obs;
   final like_crud likecrud = like_crud();
@@ -18,11 +16,11 @@ class Like_Controller extends base_controller {
     super.onInit();
   }
 
-  @override
-  void onReady() {
-    super.onReady();
-    get_current_user_like_songs();
-  }
+  // @override
+  // void onReady() {
+  //   super.onReady();
+  //   get_current_user_like_songs();
+  // }
 
   Future<void> get_current_user_like_songs() async {
     try {

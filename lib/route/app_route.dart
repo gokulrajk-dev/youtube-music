@@ -1,9 +1,12 @@
 import 'package:get/get.dart';
 import 'package:youtube_music/module/pages/Album/album_binding.dart';
 import 'package:youtube_music/module/pages/Album/album_views.dart';
+import 'package:youtube_music/module/pages/Artist/artist_binding.dart';
+import 'package:youtube_music/module/pages/Artist/artist_views.dart';
 
 import 'package:youtube_music/module/pages/explore/explore_binding.dart';
 import 'package:youtube_music/module/pages/explore/explore_views.dart';
+import 'package:youtube_music/module/pages/history/history_binding.dart';
 
 import 'package:youtube_music/module/pages/library/library_binding.dart';
 import 'package:youtube_music/module/pages/library/library_views.dart';
@@ -20,6 +23,7 @@ import '../app/binding/init_binding.dart';
 import '../module/pages/download/download_binding.dart';
 import '../module/pages/download/download_views.dart';
 
+import '../module/pages/history/history_views.dart';
 import '../module/pages/like_page/like_binding.dart';
 import '../module/pages/like_page/like_views.dart';
 import '../module/pages/main_home_page/Main_Home_Page.dart';
@@ -48,11 +52,13 @@ class App_route{
   static const download_page = '/download_page';
   static const playlist_page = '/playlist_page';
   static const album_page ='/album_page';
+  static const history_page ='/history_page';
+  static const artist_page ='/artist_page';
 
   static final route=[
     GetPage(name: splash, page: ()=>splash_screen(),bindings:[ auth_binding()],middlewares: [auth_guard()]),
     GetPage(name: login_pag, page: ()=>login_page(),binding: auth_binding(),middlewares: [auth_guard()]),
-    GetPage(name: main_home_pages, page: ()=>MainHomePage(),bindings: [Main_Home_Page_Binding(),Album_Binding(),Init_Binding()],middlewares: [auth_guard()]),
+    GetPage(name: main_home_pages, page: ()=>MainHomePage(),bindings: [Main_Home_Page_Binding(),Album_Binding(),Init_Binding(),Artist_Binding()],middlewares: [auth_guard()]),
     GetPage(name: home_pages, page: ()=>home_page(),binding: home_binding(),middlewares: [auth_guard()]),
     GetPage(name: short_page, page: ()=>Shorts_Views(),binding: Short_Binding(),),
     GetPage(name: explore_page, page: ()=>Explore_Views(),binding: Explore_Binding(),),
@@ -63,5 +69,7 @@ class App_route{
     GetPage(name: download_page, page: ()=>Download_Views(),binding: download_binding()),
     GetPage(name: playlist_page, page: ()=>Playlist_Views(),binding: Playlist_Binding()),
     GetPage(name: album_page, page: ()=>Album_Views(),binding: Album_Binding()),
+    GetPage(name: history_page, page: ()=>History_Views(),binding: Histroy_Binding()),
+    GetPage(name: artist_page, page: ()=>Artist_Views()),
   ];
 }

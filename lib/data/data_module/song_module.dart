@@ -106,7 +106,7 @@ class Song  {
   final Album? album;
   final String? songsFile;
   final String? coverImage;
-  final String? duration;
+  final Duration? duration;
   final String? releaseDate;
   final String? lyrics;
   final String? language;
@@ -139,7 +139,7 @@ class Song  {
       album: json['album'] != null ? Album.fromJson(json['album']) : null,
       songsFile: json['songs_file']?.toString(),
       coverImage: json['cover_image']?.toString(),
-      duration: json['duration']?.toString(),
+      duration: json['duration']!=null? _parseDuration(json['duration']):null,
       releaseDate: json['release_date']?.toString(),
       lyrics: json['lyrics']?.toString(),
       language: json['language']?.toString(),
@@ -148,6 +148,14 @@ class Song  {
     );
   }
 
+  static Duration _parseDuration(String duration){
+    final part  = duration.split(':');
+    return Duration(
+      hours: int.parse(part[0]),
+      minutes: int.parse(part[1]),
+      seconds: int.parse(part[2])
+    );
+  }
 
 
 }

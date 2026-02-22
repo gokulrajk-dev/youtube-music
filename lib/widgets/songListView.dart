@@ -67,6 +67,8 @@ class SongListViews extends StatelessWidget {
                       song_title: playlist_songs.title,
                       song_artist: playlist_songs.artist,
                       song_id: playlist_songs.id,
+                      album_id: playlist_songs.album!.id,
+                      artist_id: playlist_songs.artist!.first.id,
                     );
                   },
                 ),

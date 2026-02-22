@@ -35,3 +35,4 @@ class Album_Controller extends base_controller {
     }
   }
 }
+

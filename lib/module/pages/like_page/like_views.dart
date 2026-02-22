@@ -205,6 +205,8 @@ class Like_Views extends GetView<Like_Controller> {
                                     song_title: like.song!.title,
                                     song_artist: like.song!.artist,
                                     song_id: like.song!.id,
+                                    album_id: like.song!.album!.id,
+                                    artist_id: like.song!.artist!.first.id,
                                   );
                                 },
                               ),
