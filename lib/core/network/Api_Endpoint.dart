@@ -11,6 +11,7 @@ class Api_Endpoint {
   static const get_user_pic_playlist ='/songs_app/playlist_edit_views/';
   static const get_album_song ='/songs_app/album_views/';
   static const get_current_user_history = '/songs_app/listen_history_views/';
+  static const post_histroy ='/songs_app/listen_history_views_post/';
   static const get_artist ='/songs_app/artist_views/';
   static String get_modity_current_song_id(int CurrentSongId){
     return '${get_current_id_song}$CurrentSongId/';
@@ -25,6 +26,4 @@ class Api_Endpoint {
   static String get_artist_song(int ArtistId){
     return '${get_artist}$ArtistId/';
   }
-
-
 }

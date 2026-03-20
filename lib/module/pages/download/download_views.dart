@@ -71,7 +71,7 @@ class Download_Views extends GetView<download_Controller> {
               child: Container(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
+
                   children: [
                     Text(
                       'Allow to Access to the files',
@@ -82,7 +82,7 @@ class Download_Views extends GetView<download_Controller> {
                     ),
                     ElevatedButton(
                         onPressed: () async {
-                          await Permission.audio.request();
+                          await controller.check_permission();
                         },
                         child: Text(
                           'Allow',

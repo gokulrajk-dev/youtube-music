@@ -1,4 +1,4 @@
-import 'package:dio/dio.dart';
+
 import 'package:get/get.dart';
 import 'package:youtube_music/core/base/base_controller.dart';
 import 'package:youtube_music/data/data_module/artist.dart';

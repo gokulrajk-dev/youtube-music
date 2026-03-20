@@ -46,8 +46,6 @@ class Artist_Views extends GetView<Artist_Controller>{
 
         return ListView(
           children: [
-
-
             Center(
               child: Container(
                 height: 200,

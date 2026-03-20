@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:youtube_music/module/pages/Album/album_controller.dart';
@@ -219,7 +220,6 @@ class _home_pageState extends State<home_page> {
             //     );
             //   },
             // ),
-
             SliverToBoxAdapter(
               child: SizedBox(
                   height: 100,
@@ -243,6 +243,8 @@ class _home_pageState extends State<home_page> {
                             onTap: () {
                               pick_current_song
                                   .get_current_user_pick_song(song.id);
+                              Get.toNamed(
+                                  App_route.full_screen_media_player_page);
                             },
                             onLongPress: () {
                               Get.bottomSheet(
@@ -268,8 +270,19 @@ class _home_pageState extends State<home_page> {
                               color: Colors.transparent,
                               child: Row(
                                 children: [
-                                  Image.network(song.coverImage ?? '',
-                                      height: 70),
+                                  CachedNetworkImage(
+                                    imageUrl: song.coverImage ?? '',
+                                    height: 70,
+                                    placeholder: (context, url) => Center(
+                                      child: Container(
+                                        height: 70,
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                    errorWidget: (context, url, error) =>
+                                        Icon(Icons.error),
+                                    fit: BoxFit.cover,
+                                  ),
                                   const Spacer(),
                                   Column(
                                     crossAxisAlignment:
@@ -310,7 +323,8 @@ class _home_pageState extends State<home_page> {
                                                 song_cover_img: song.coverImage,
                                                 song_id: song.id,
                                                 album_id: song.album!.id,
-                                                artist_id: song.artist!.first.id,
+                                                artist_id:
+                                                    song.artist!.first.id,
                                               );
                                             },
                                           ),
@@ -377,15 +391,14 @@ class _home_pageState extends State<home_page> {
                                                 borderRadius:
                                                     BorderRadius.circular(10),
                                                 image: DecorationImage(
-                                                    fit: BoxFit.cover,
-                                                    image: album.coverImage ==
-                                                            null
-                                                        ? AssetImage(
-                                                            'assets/_joker1.png')
-                                                        : NetworkImage(
-                                                            album.coverImage ??
-                                                                "",
-                                                          ))),
+                                                  fit: BoxFit.cover,
+                                                  image: album.coverImage ==
+                                                          null
+                                                      ? AssetImage(
+                                                          'assets/_joker1.png')
+                                                      : CachedNetworkImageProvider(
+                                                          album.coverImage!),
+                                                )),
                                           ),
                                           const SizedBox(
                                             height: 5,
@@ -443,7 +456,8 @@ class _home_pageState extends State<home_page> {
                               ? SizedBox()
                               : GestureDetector(
                                   onTap: () {
-                                    artist_song.retrive_artist_with_song(artist.id);
+                                    artist_song
+                                        .retrive_artist_with_song(artist.id);
                                     Get.toNamed(App_route.artist_page, id: 1);
                                   },
                                   child: Container(
@@ -451,7 +465,8 @@ class _home_pageState extends State<home_page> {
                                     color: Colors.transparent,
                                     child: Padding(
                                       padding: const EdgeInsets.only(
-                                          left: 8.0,),
+                                          // left: 8.0,
+                                          ),
                                       child: Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.center,
@@ -461,11 +476,25 @@ class _home_pageState extends State<home_page> {
                                             borderOnForeground: true,
                                             shape: CircleBorder(),
                                             clipBehavior: Clip.hardEdge,
-                                            child: artist.artistImage != null?Image.network(
-                                             artist.artistImage ?? "" ,
-                                              fit: BoxFit.cover,
-                                            ):Image.asset(
-                                          'assets/_joker1.png'),
+                                            child: artist.artistImage != null
+                                                ? CachedNetworkImage(
+                                                    imageUrl:
+                                                        artist.artistImage ??
+                                                            '',
+                                                    placeholder:
+                                                        (context, url) =>
+                                                            Center(
+                                                      child: Container(
+                                                        color: Colors.black,
+                                                      ),
+                                                    ),
+                                                    errorWidget:
+                                                        (context, url, error) =>
+                                                            Icon(Icons.error),
+                                                    fit: BoxFit.cover,
+                                                  )
+                                                : Image.asset(
+                                                    'assets/_joker1.png'),
                                           ),
                                           const SizedBox(
                                             height: 5,

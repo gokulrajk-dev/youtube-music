@@ -13,6 +13,7 @@ import 'package:youtube_music/module/pages/library/library_views.dart';
 
 
 import 'package:youtube_music/module/pages/main_home_page/full_screen_media_player/full_screen_media_player.dart';
+import 'package:youtube_music/module/pages/main_home_page/full_screen_media_player/full_screen_player_binding.dart';
 import 'package:youtube_music/module/pages/main_home_page/main_home_page_binding.dart';
 import 'package:youtube_music/module/pages/profile/profile_binding.dart';
 import 'package:youtube_music/module/pages/profile/profile_views.dart';
@@ -64,7 +65,7 @@ class App_route{
     GetPage(name: explore_page, page: ()=>Explore_Views(),binding: Explore_Binding(),),
     GetPage(name: library_page, page: ()=>Library_Views(),binding:Library_Binding()),
     GetPage(name: profile_page, page: ()=>Profile_Views(),binding: Profile_binding(),transition: Transition.downToUp,),
-    GetPage(name: full_screen_media_player_page, page: ()=>full_screen_media_player()),
+    GetPage(name: full_screen_media_player_page, page: ()=>full_screen_media_player(),binding: full_player_binding()),
     GetPage(name: like_page, page: ()=>Like_Views(),binding: Like_Binding()),
     GetPage(name: download_page, page: ()=>Download_Views(),binding: download_binding()),
     GetPage(name: playlist_page, page: ()=>Playlist_Views(),binding: Playlist_Binding()),

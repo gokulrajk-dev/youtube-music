@@ -1,9 +1,9 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:youtube_music/module/pages/home/controllers/all_song_controller.dart';
-
-
+import 'package:youtube_music/module/pages/main_home_page/full_screen_media_player/full_screen_player_controller.dart';
 import '../../globle_bottom_sheet/globle_bottom_sheet_views.dart';
 import '../../like_page/like_controller.dart';
 import '../../profile/profile_views.dart';
@@ -18,9 +18,10 @@ class full_screen_media_player extends StatefulWidget {
       _full_screen_media_playerState();
 }
 
-class _full_screen_media_playerState extends State<full_screen_media_player> {
+class _full_screen_media_playerState extends State<full_screen_media_player> with SingleTickerProviderStateMixin {
   final get_current_song song = Get.find<get_current_song>();
   final Like_Controller like = Get.find<Like_Controller>();
+  final full_screen_media_player_controller music_player = Get.find<full_screen_media_player_controller>();
 
   List<Feature> get feature => [
     Feature(
@@ -115,8 +116,14 @@ class _full_screen_media_playerState extends State<full_screen_media_player> {
                 borderOnForeground: true,
                 shape: CircleBorder(),
                 clipBehavior: Clip.hardEdge,
-                child: Image.network(
-                  song.current_song.value!.coverImage ?? "",
+                child:CachedNetworkImage(
+                  imageUrl:song.current_song.value!.coverImage ?? "",
+                  placeholder: (context, url) => Center(
+                    child: Container(
+                      color: Colors.black,
+                    ),
+                  ),
+                  errorWidget: (context, url, error) => Icon(Icons.error),
                   fit: BoxFit.cover,
                 ),
               ),
@@ -213,11 +220,237 @@ class _full_screen_media_playerState extends State<full_screen_media_player> {
                         });
                       }),
                 ),
-              )
+              ),
+              // todo optimize the rebuild issue after complete the project.
+              Expanded(
+                child: Column(
+                  children: [
+                    Container(
+                      height: 100,
+                      child: Obx(() {
+                        final position = music_player.position.value;
+                        final bufferposition = music_player.buffer_position.value;
+                        final duration = music_player.duration.value;
+                        final max = duration.inMilliseconds.toDouble();
+                        return Column(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(15.0),
+                              child: Stack(
+                                alignment: Alignment.centerLeft,
+                                children: [
+                                  SliderTheme(
+                                      data: SliderTheme.of(context).copyWith(
+                                        thumbShape:
+                                        SliderComponentShape.noThumb,
+                                        overlayShape:
+                                        SliderComponentShape.noOverlay,
+                                        // trackHeight: 4,
+                                      ),
+                                      child: Slider(
+                                        min: 0,
+                                        max: max == 0 ? 1 : max,
+                                        value: bufferposition.inMilliseconds
+                                            .clamp(0, duration.inMilliseconds)
+                                            .toDouble(),
+                                        onChanged: (_) {},
+                                        activeColor: Colors.red,
+                                        inactiveColor: Colors.grey.shade800,
+                                      )),
+                                  Slider(
+                                    min: 0,
+                                    max: max == 0 ? 1 : max,
+                                    value: position.inMilliseconds
+                                        .clamp(0, duration.inMilliseconds)
+                                        .toDouble(),
+                                    onChanged: (value) {
+                                      final seekTo = Duration(milliseconds: value.round());
+                                      music_player.control_seek(seekTo);
+                                    },
+                                    activeColor: Colors.white,
+                                    inactiveColor: Colors.transparent,
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 50),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          formatDuration(position),
+                                          style: const TextStyle(
+                                              color: Colors.white),
+                                        ),
+                                        Text(
+                                          formatDuration(duration),
+                                          style: const TextStyle(
+                                              color: Colors.white),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            // Padding(
+                            //   padding: const EdgeInsets.only(
+                            //       left: 10.0, right: 10),
+                            //   child: Row(
+                            //     mainAxisAlignment:
+                            //     MainAxisAlignment.spaceBetween,
+                            //     crossAxisAlignment: CrossAxisAlignment.center,
+                            //     children: [
+                            //       IconButton(
+                            //         onPressed: () async {
+                            //           await download_controller
+                            //               .shuffle_mode();
+                            //         },
+                            //         icon: Icon(CupertinoIcons.shuffle),
+                            //         color: download_controller
+                            //             .isshuffleenabled.value
+                            //             ? Colors.white
+                            //             : Colors.grey,
+                            //         iconSize: 30,
+                            //       ),
+                            //       IconButton(
+                            //           onPressed: () async {
+                            //             await download_controller.pre_song();
+                            //
+                            //           },
+                            //           icon: Icon(Icons.skip_previous),
+                            //           color: Colors.white,
+                            //           iconSize: 40),
+                            //       IconButton(
+                            //         onPressed: () async {
+                            //           await download_controller
+                            //               .contorller_for_song();
+                            //         },
+                            //         icon: AnimatedIcon(
+                            //           icon: AnimatedIcons.play_pause,
+                            //           progress: download_controller
+                            //               .animationController,
+                            //         ),
+                            //         color: Colors.white,
+                            //         iconSize: 80,
+                            //       ),
+                            //       IconButton(
+                            //           onPressed: () async {
+                            //             await download_controller.next_song();
+                            //           },
+                            //           icon: Icon(Icons.skip_next),
+                            //           color: Colors.white,
+                            //           iconSize: 40),
+                            //       IconButton(
+                            //           onPressed: () async {
+                            //             await download_controller
+                            //                 .repeat_or_one();
+                            //           },
+                            //           icon: Icon(download_controller
+                            //               .Loopmode.value ==
+                            //               LoopMode.off
+                            //               ? Icons.repeat_rounded
+                            //               : download_controller
+                            //               .Loopmode.value ==
+                            //               LoopMode.all
+                            //               ? Icons.repeat_rounded
+                            //               : Icons.repeat_one_outlined),
+                            //           color: download_controller
+                            //               .Loopmode.value ==
+                            //               LoopMode.off
+                            //               ? Colors.grey
+                            //               : Colors.white,
+                            //           iconSize: 30),
+                            //     ],
+                            //   ),
+                            // ),
+                          ],
+                        );
+                      }),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(
+                          left: 10.0, right: 10),
+                      child: Row(
+                        mainAxisAlignment:
+                        MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          IconButton(
+                            onPressed: () async {
+
+                            },
+                            icon: Icon(CupertinoIcons.shuffle),
+                            // color: download_controller
+                            //     .isshuffleenabled.value
+                            //     ? Colors.white
+                            //     : Colors.grey,
+                            iconSize: 30,
+                          ),
+                          IconButton(
+                              onPressed: () async {
+
+
+                              },
+                              icon: Icon(Icons.skip_previous),
+                              color: Colors.white,
+                              iconSize: 40),
+                          IconButton(
+                            onPressed: () async {
+                              music_player.contorller_for_song();
+                            },
+                            icon: AnimatedIcon(
+                              icon: AnimatedIcons.play_pause,
+                              progress: music_player
+                                  .animationController,
+                            ),
+                            color: Colors.white,
+                            iconSize: 80,
+                          ),
+                          IconButton(
+                              onPressed: () async {
+
+                              },
+                              icon: Icon(Icons.skip_next),
+                              color: Colors.white,
+                              iconSize: 40),
+                          IconButton(
+                              onPressed: () async {
+
+                              },
+                              icon: Icon(
+                                  // download_controller
+                                  // .Loopmode.value ==
+                                  // LoopMode.off
+                                  // ? Icons.repeat_rounded
+                                  // : download_controller
+                                  // .Loopmode.value ==
+                                  // LoopMode.all
+                                  // ? Icons.repeat_rounded
+                                  // :
+                                  Icons.repeat_one_outlined),
+                              // color: download_controller
+                              //     .Loopmode.value ==
+                              //     LoopMode.off
+                              //     ? Colors.grey
+                              //     : Colors.white,
+                              iconSize: 30
+                          ),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+              ),
             ],
           ),
         ),
       ),
     );
   }
+}
+
+String formatDuration(Duration d) {
+  final minutes = d.inMinutes.remainder(60).toString().padLeft(2, '0');
+  final seconds = d.inSeconds.remainder(60).toString().padLeft(2, '0');
+  return "$minutes:$seconds";
 }

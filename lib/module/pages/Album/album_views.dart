@@ -4,12 +4,15 @@ import 'package:get/get.dart';
 import 'package:youtube_music/module/pages/Album/album_controller.dart';
 import 'package:youtube_music/module/pages/home/controllers/all_song_controller.dart';
 
+import '../../../route/app_route.dart';
 import '../../../services/helper_code/helper_code.dart';
 import '../../../widgets/songListView.dart';
+import '../Artist/artist_controller.dart';
 import '../like_page/like_views.dart';
 
 class Album_Views extends GetView<Album_Controller>{
   final get_current_song song = Get.find<get_current_song>();
+  final Artist_Controller artist_song = Get.find<Artist_Controller>();
 
   @override
   Widget build(BuildContext context) {
@@ -47,25 +50,31 @@ class Album_Views extends GetView<Album_Controller>{
 
         return ListView(
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                CircleAvatar(
-                  backgroundImage: album_song.artists!.first.artistImage == null
-                      ? AssetImage('assets/img.png')
-                      : NetworkImage(
-                    album_song.artists!.first.artistImage ?? "",
-                    scale: 1,
+            GestureDetector(
+              onTap: () async {
+                await artist_song.retrive_artist_with_song(album_song.artists!.first.id);
+                Get.toNamed(App_route.artist_page, id: 1);
+              },
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CircleAvatar(
+                    backgroundImage: album_song.artists!.first.artistImage == null
+                        ? AssetImage('assets/img.png')
+                        : NetworkImage(
+                      album_song.artists!.first.artistImage ?? "",
+                      scale: 1,
+                    ),
                   ),
-                ),
-                const SizedBox(
-                  width: 10,
-                ),
-                Text(
-                  album_song.artists!.first.artistName ?? 'unknown',
-                  style: TextStyle(color: Colors.white),
-                )
-              ],
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  Text(
+                    album_song.artists!.first.artistName ?? 'unknown',
+                    style: TextStyle(color: Colors.white),
+                  )
+                ],
+              ),
             ),
             Padding(
               padding: const EdgeInsets.only(top: 8.0),
@@ -101,7 +110,6 @@ class Album_Views extends GetView<Album_Controller>{
                   const SizedBox(
                     height: 7,
                   ),
-
 
                   Padding(
                     padding: const EdgeInsets.only(top: 10, bottom: 10),

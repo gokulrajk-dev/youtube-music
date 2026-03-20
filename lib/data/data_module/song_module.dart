@@ -78,6 +78,8 @@
 
 
 
+import 'package:youtube_music/data/data_module/song_stream.dart';
+
 import 'album_module.dart';
 import 'artist.dart';
 import 'genre.dart';
@@ -97,8 +99,7 @@ class Song  {
   //
   // @override
   // String? get image => coverImage;
-
-
+  
   final int id;
   final String? title;
   final List<Artist>? artist;
@@ -112,6 +113,7 @@ class Song  {
   final String? language;
   final int views;
   final int likesCount;
+  final SongStream? stream;
 
   Song({
     required this.id,
@@ -127,6 +129,7 @@ class Song  {
     this.language,
     required this.views,
     required this.likesCount,
+    required this.stream,
   });
 
   factory Song.fromJson(Map<String, dynamic> json) {
@@ -145,6 +148,7 @@ class Song  {
       language: json['language']?.toString(),
       views: json['views'] ?? 0,
       likesCount: json['likes_count'] ?? 0,
+      stream: json['stream']!=null?SongStream.fromJson(json['stream']):null,
     );
   }
 

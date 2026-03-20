@@ -11,4 +11,11 @@ class UserHistoryCrud {
     return result.map((history)=>UserHistory.fromJson(history)).toList();
   }
 
+  Future<void> post_user_song_histroy(int songId,int Song_Duration) async{
+    await dio.post(Api_Endpoint.post_histroy,data: {
+      "songs_id":songId,
+      "duration":Song_Duration
+    });
+  }
+
 }

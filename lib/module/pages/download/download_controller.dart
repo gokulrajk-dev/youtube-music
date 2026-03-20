@@ -7,8 +7,7 @@ import 'package:on_audio_query_forked/on_audio_query.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:youtube_music/core/base/base_controller.dart';
 
-class download_Controller extends base_controller
-    with GetSingleTickerProviderStateMixin {
+class download_Controller extends base_controller with GetSingleTickerProviderStateMixin {
   final allow = false.obs;
   final current_index = 0.obs;
   final OnAudioQuery onAudioQuery = OnAudioQuery();
@@ -25,7 +24,8 @@ class download_Controller extends base_controller
 
   @override
   void onInit() {
-    check_permission();
+   check_permission();
+
     animationController =
         AnimationController(vsync: this, duration: Duration(milliseconds: 300));
     audioPlayer.positionStream.listen((postion) {
@@ -60,15 +60,27 @@ class download_Controller extends base_controller
     }
   }
 
-
-
   Future<bool> check_permission() async {
     final permission =
-        Platform.isAndroid ? Permission.audio : Permission.storage;
-    final status = permission.status;
-    allow.value = await status.isGranted;
+    Platform.isAndroid ? Permission.audio : Permission.storage;
+
+    var status = await permission.status;
+
+    // 🔁 If denied → ask again
+    if (status.isDenied) {
+      status = await permission.request();
+    }
+
+    // ❌ Permanently denied
+    if (status.isPermanentlyDenied) {
+      openAppSettings(); // 🔥 send user to settings
+      return false;
+    }
+
+    allow.value = status.isGranted;
+
     if (allow.value) {
-      LocalPhoneSong();
+      await LocalPhoneSong();
     }
 
     return allow.value;
@@ -91,18 +103,18 @@ class download_Controller extends base_controller
     }
   }
 
-  Future<void> local_song_player(SongModel song) async {
-    try {
-      await audioPlayer.setAudioSource(
-          AudioSource.file(
-            song.data,
-          ),
-          initialIndex: 0);
-      await audioPlayer.play();
-    } catch (e) {
-      get_error(e.toString());
-    }
-  }
+  // Future<void> local_song_player(SongModel song) async {
+  //   try {
+  //     await audioPlayer.setAudioSource(
+  //         AudioSource.file(
+  //           song.data,
+  //         ),
+  //         initialIndex: 0);
+  //     await audioPlayer.play();
+  //   } catch (e) {
+  //     get_error(e.toString());
+  //   }
+  // }
 
   Future<void> playlist_song_loading(
       List<SongModel> song, int startindex) async {
@@ -198,6 +210,5 @@ class download_Controller extends base_controller
     }
   }
 
-  /// Get current playing song
   SongModel get currentSong => songmodel[current_index.value];
 }

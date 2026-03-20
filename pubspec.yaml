@@ -49,6 +49,7 @@ dependencies:
   just_audio_background:
   permission_handler: ^11.3.0
   shared_preferences: ^2.5.3
+  cached_network_image: any
 
 dev_dependencies:
   flutter_test:

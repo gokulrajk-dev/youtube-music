@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:youtube_music/module/pages/home/controllers/all_song_controller.dart';
+import 'package:youtube_music/module/pages/main_home_page/full_screen_media_player/full_screen_player_controller.dart';
 import 'package:youtube_music/module/pages/main_home_page/main_home_page_controller.dart';
 import 'package:youtube_music/module/pages/main_home_page/main_page_navigation_key.dart';
 import 'package:youtube_music/route/app_route.dart';
@@ -44,6 +45,7 @@ class _MainHomePageState extends State<MainHomePage> {
   final controller = Get.find<Main_Home_Page_Controller>();
   final current_use_song = Get.find<get_current_song>();
   final helper_code help = helper_code();
+  full_screen_media_player_controller get music_player  => Get.find<full_screen_media_player_controller>();
 
   Route? Get_Page_Navigator(RouteSettings setting, List<GetPage> routes) {
     for (var route in routes) {
@@ -64,8 +66,8 @@ class _MainHomePageState extends State<MainHomePage> {
   Widget build(BuildContext context) {
     return PopScope(
       canPop: false,
-      onPopInvoked: (didpop) {
-        if (didpop) return;
+      onPopInvoked: (did_pop) {
+        if (did_pop) return;
         help.helper();
       },
       child: Scaffold(
@@ -154,9 +156,17 @@ class _MainHomePageState extends State<MainHomePage> {
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),
-                            trailing: const Icon(
-                              Icons.play_arrow,
+                            trailing: IconButton(
+                              onPressed: () async {
+                                music_player.contorller_for_song();
+                              },
+                              icon: AnimatedIcon(
+                                icon: AnimatedIcons.play_pause,
+                                progress: music_player
+                                    .animationController,
+                              ),
                               color: Colors.white,
+                              iconSize: 35,
                             ),
                           ),
                         ),
