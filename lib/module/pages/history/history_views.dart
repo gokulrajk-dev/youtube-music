@@ -58,9 +58,7 @@ class History_Views extends GetView<Histroy_Controller> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      if (index == 0 ||
-                          history_song.days !=
-                              controller.history[index - 1].days)
+                      if (index == 0 || history_song.days != controller.history[index - 1].days)
                         Padding(
                           padding: const EdgeInsets.only(bottom: 10.0),
                           child: Text(

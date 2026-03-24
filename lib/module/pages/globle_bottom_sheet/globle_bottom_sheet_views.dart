@@ -6,7 +6,6 @@ import 'package:youtube_music/module/pages/Artist/artist_controller.dart';
 import 'package:youtube_music/module/pages/home/controllers/all_song_controller.dart';
 import 'package:youtube_music/route/app_route.dart';
 
-
 import '../like_page/like_controller.dart';
 import '../profile/profile_views.dart';
 
@@ -40,32 +39,38 @@ class _globle_bottom_sheetState extends State<globle_bottom_sheet> {
   final Album_Controller album = Get.find<Album_Controller>();
   final Artist_Controller artist = Get.find<Artist_Controller>();
 
-  List<Feature>  featrue = [
+  List<Feature> featrue = [
     Feature(icon: Icons.playlist_play, text: 'Play Next'),
     Feature(icon: Icons.playlist_add, text: 'Save to playlist'),
     Feature(icon: CupertinoIcons.share, text: 'Share'),
   ];
+
   List<Feature> get featrue_all => [
-    Feature(icon: CupertinoIcons.dot_radiowaves_left_right, text: 'Start mix'),
-    Feature(icon: Icons.queue_music, text: 'Add to Queue'),
-    Feature(icon: Icons.playlist_add, text: 'Add to Library'),
-    Feature(icon: CupertinoIcons.arrow_down_to_line_alt, text: 'Download'),
-    Feature(icon: CupertinoIcons.delete, text: 'Remove from playlist'),
-    Feature(icon: Icons.album_outlined, text: 'Go to Album',onTap: () async{
-      await album.retrive_album_song_con(widget.album_id);
-      Get.back();
-      Get.toNamed(App_route.album_page);
-
-    }),
-    Feature(icon: Icons.person_outline, text: 'Go to Artist',onTap: () async{
-      await artist.retrive_artist_with_song(widget.artist_id);
-      Get.back();
-      Get.toNamed(App_route.artist_page);
-
-    }),
-    Feature(icon: CupertinoIcons.person_3, text: 'View song credits'),
-    Feature(icon: CupertinoIcons.pin_fill, text: 'Pin to Speed dial'),
-  ];
+        Feature(
+            icon: CupertinoIcons.dot_radiowaves_left_right, text: 'Start mix'),
+        Feature(icon: Icons.queue_music, text: 'Add to Queue'),
+        Feature(icon: Icons.playlist_add, text: 'Add to Library'),
+        Feature(icon: CupertinoIcons.arrow_down_to_line_alt, text: 'Download'),
+        Feature(icon: CupertinoIcons.delete, text: 'Remove from playlist'),
+        Feature(
+            icon: Icons.album_outlined,
+            text: 'Go to Album',
+            onTap: () async {
+              Get.back();
+              await album.retrive_album_song_con(widget.album_id);
+              Get.toNamed(App_route.album_page);
+            }),
+        Feature(
+            icon: Icons.person_outline,
+            text: 'Go to Artist',
+            onTap: () async {
+              Get.back();
+              await artist.retrive_artist_with_song(widget.artist_id);
+              Get.toNamed(App_route.artist_page);
+            }),
+        Feature(icon: CupertinoIcons.person_3, text: 'View song credits'),
+        Feature(icon: CupertinoIcons.pin_fill, text: 'Pin to Speed dial'),
+      ];
 
   @override
   Widget build(BuildContext context) {
@@ -112,7 +117,8 @@ class _globle_bottom_sheetState extends State<globle_bottom_sheet> {
                       () => IconButton(
                           onPressed: () async {
                             await like.post_del_user_like(widget.song_id);
-                           await controller.get_current_user_pick_song(widget.song_id);
+                            await controller
+                                .get_current_user_pick_song(widget.song_id);
                           },
                           icon: Icon(
                             like.get_song_like_or_not(widget.song_id)

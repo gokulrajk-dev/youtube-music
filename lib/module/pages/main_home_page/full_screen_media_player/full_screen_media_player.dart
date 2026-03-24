@@ -3,7 +3,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:youtube_music/module/pages/home/controllers/all_song_controller.dart';
+
 import 'package:youtube_music/module/pages/main_home_page/full_screen_media_player/full_screen_player_controller.dart';
+
 import '../../globle_bottom_sheet/globle_bottom_sheet_views.dart';
 import '../../like_page/like_controller.dart';
 import '../../profile/profile_views.dart';
@@ -18,41 +20,65 @@ class full_screen_media_player extends StatefulWidget {
       _full_screen_media_playerState();
 }
 
-class _full_screen_media_playerState extends State<full_screen_media_player> with SingleTickerProviderStateMixin {
+class _full_screen_media_playerState extends State<full_screen_media_player>
+    with SingleTickerProviderStateMixin {
   final get_current_song song = Get.find<get_current_song>();
   final Like_Controller like = Get.find<Like_Controller>();
-  final full_screen_media_player_controller music_player = Get.find<full_screen_media_player_controller>();
+  final full_screen_media_player_controller music_player =
+      Get.find<full_screen_media_player_controller>();
+  late TabController tabcontroller;
+
+  @override
+  void initState() {
+    super.initState();
+    tabcontroller = TabController(length: 3, vsync: this);
+  }
+
+  @override
+  void dispose() {
+    tabcontroller.dispose();
+    super.dispose();
+  }
+
+  Widget text(String text) {
+    return Text(
+      text,
+      style: TextStyle(color: Colors.white, fontSize: 20),
+    );
+  }
 
   List<Feature> get feature => [
-    Feature(
-      icon: like.get_song_like_or_not(song.current_song.value!.id)?CupertinoIcons.hand_thumbsup_fill:CupertinoIcons.hand_thumbsup,
-      text: type_name.like,
-      onTap: () async {
-        await like.post_del_user_like(song.current_song.value!.id);
-        await song.get_current_user_pick_song(song.current_song.value!.id);
-      }
-    ),
-    Feature(
-      icon: Icons.insert_comment_outlined,
-      text: type_name.commant,
-    ),
-    Feature(
-      icon: Icons.playlist_add,
-      text: type_name.save,
-    ),
-    Feature(
-      icon: CupertinoIcons.arrow_turn_up_right,
-      text: type_name.share,
-    ),
-    Feature(
-      icon: CupertinoIcons.arrow_down_to_line_alt,
-      text: type_name.download,
-    ),
-    Feature(
-      icon: CupertinoIcons.dot_radiowaves_left_right,
-      text: type_name.mix,
-    ),
-  ];
+        Feature(
+            icon: like.get_song_like_or_not(song.current_song.value!.id)
+                ? CupertinoIcons.hand_thumbsup_fill
+                : CupertinoIcons.hand_thumbsup,
+            text: type_name.like,
+            onTap: () async {
+              await like.post_del_user_like(song.current_song.value!.id);
+              await song
+                  .get_current_user_pick_song(song.current_song.value!.id);
+            }),
+        Feature(
+          icon: Icons.insert_comment_outlined,
+          text: type_name.commant,
+        ),
+        Feature(
+          icon: Icons.playlist_add,
+          text: type_name.save,
+        ),
+        Feature(
+          icon: CupertinoIcons.arrow_turn_up_right,
+          text: type_name.share,
+        ),
+        Feature(
+          icon: CupertinoIcons.arrow_down_to_line_alt,
+          text: type_name.download,
+        ),
+        Feature(
+          icon: CupertinoIcons.dot_radiowaves_left_right,
+          text: type_name.mix,
+        ),
+      ];
 
   @override
   Widget build(BuildContext context) {
@@ -60,325 +86,262 @@ class _full_screen_media_playerState extends State<full_screen_media_player> wit
       child: Scaffold(
         backgroundColor: Colors.black,
         body: Obx(
-          () => Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              ListTile(
-                leading: IconButton(
-                    onPressed: () {
-                      Get.back();
-                    },
-                    icon: Icon(
-                      Icons.arrow_drop_down_outlined,
-                      color: Colors.white,
-                      size: 30,
-                    )),
-                title: Center(
-                  child: Text(
-                    'No Video Support',
-                    style: TextStyle(
+          () {
+            if (song.is_loading.value) {
+              return Center(
+                child: CircularProgressIndicator(
+                  color: Colors.white,
+                ),
+              );
+            }
+            if (song.error.value.isNotEmpty) {
+              return Center(
+                child: Text(song.error.value),
+              );
+            }
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ListTile(
+                  leading: IconButton(
+                      onPressed: () {
+                        Get.back();
+                      },
+                      icon: Icon(
+                        Icons.arrow_drop_down_outlined,
                         color: Colors.white,
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold),
-                  ),
-                ),
-                titleAlignment: ListTileTitleAlignment.center,
-                trailing: IconButton(
-                    onPressed: () {
-                      Get.bottomSheet(
-                        elevation: 5,
-                        DraggableScrollableSheet(
-                          expand: false,
-                          builder: (context,
-                              scrollController) {
-                            return globle_bottom_sheet(
-                              controllers:
-                              scrollController,
-                              song_artist: song.current_song.value!.artist,
-                              song_title: song.current_song.value!.title,
-                              song_cover_img: song.current_song.value!.coverImage,
-                              song_id: song.current_song.value!.id,
-                              album_id: song.current_song.value!.album!.id,
-                              artist_id: song.current_song.value!.artist!.first.id,
-                            );
-                          },
-                        ),
-                        isScrollControlled: true,
-                      );
-                    },
-                    icon: Icon(
-                      Icons.more_vert,
-                      color: Colors.white,
-                    )),
-              ),
-              Card(
-                semanticContainer: true,
-                borderOnForeground: true,
-                shape: CircleBorder(),
-                clipBehavior: Clip.hardEdge,
-                child:CachedNetworkImage(
-                  imageUrl:song.current_song.value!.coverImage ?? "",
-                  placeholder: (context, url) => Center(
-                    child: Container(
-                      color: Colors.black,
-                    ),
-                  ),
-                  errorWidget: (context, url, error) => Icon(Icons.error),
-                  fit: BoxFit.cover,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 30.0, left: 20, right: 20),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      song.current_song.value!.title ?? "Unknown",
+                        size: 30,
+                      )),
+                  title: Center(
+                    child: Text(
+                      'No Video Support',
                       style: TextStyle(
                           color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 30),
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold),
                     ),
-                    Text(
-                      song.current_song.value!.artist
-                          !.map((artist) => artist.artistName)
-                          .join(',') as String,
-                      style: TextStyle(
-                        color: Colors.grey,
-                        fontSize: 13,
-                      ),
-                      softWrap: true,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ],
+                  ),
+                  titleAlignment: ListTileTitleAlignment.center,
+                  trailing: IconButton(
+                      onPressed: () {
+                        Get.bottomSheet(
+                          elevation: 5,
+                          DraggableScrollableSheet(
+                            expand: false,
+                            builder: (context, scrollController) {
+                              return globle_bottom_sheet(
+                                controllers: scrollController,
+                                song_artist: song.current_song.value!.artist,
+                                song_title: song.current_song.value!.title,
+                                song_cover_img:
+                                    song.current_song.value!.coverImage,
+                                song_id: song.current_song.value!.id,
+                                album_id: song.current_song.value!.album!.id,
+                                artist_id:
+                                    song.current_song.value!.artist!.first.id,
+                              );
+                            },
+                          ),
+                          isScrollControlled: true,
+                        );
+                      },
+                      icon: Icon(
+                        Icons.more_vert,
+                        color: Colors.white,
+                      )),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 20.0, bottom: 20),
-                child: SizedBox(
-                  height: 65,
-                  child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      shrinkWrap: true,
-                      itemCount: feature.length,
-                      itemBuilder: (context, index) {
-                        final item = feature[index];
-                        return Obx(() {
-                          final featrue = song.current_song.value;
-                          dynamic value = '';
-                          switch (item.text) {
-                            case type_name.like:
-                              value = featrue!.likesCount.toString();
-                              break;
-                            case type_name.commant:
-                              value = 'Command';
-                              break;
-                            case type_name.save:
-                              value = 'Save';
-                              break;
-                            case type_name.share:
-                              value = 'Share';
-                              break;
-                            case type_name.download:
-                              value = 'Download';
-                              break;
-                            case type_name.mix:
-                              value = 'Mix';
-                              break;
-                          }
-                          return Padding(
-                            padding: const EdgeInsets.only(top: 8.0,left: 10,bottom: 8),
-                            child: GestureDetector(
-                              onTap: item.onTap,
-                              child: Container(
-                                width: 120,
-                                decoration: BoxDecoration(
-                                  color: Colors.grey.shade800,
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(30)),
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsets.only(right: 8.0,left: 8),
-                                  child: Row(
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
-                                    children: [
-                                      Icon(item.icon,color: Colors.white,),
-                                      value==''?SizedBox():Text(
-                                        value,
-                                        style: TextStyle(color: Colors.white),
-                                      ),
-                                    ],
+                Card(
+                  semanticContainer: true,
+                  borderOnForeground: true,
+                  shape: CircleBorder(),
+                  clipBehavior: Clip.hardEdge,
+                  child: CachedNetworkImage(
+                    imageUrl: song.current_song.value!.coverImage ?? "",
+                    placeholder: (context, url) => Center(
+                      child: Container(
+                        color: Colors.black,
+                      ),
+                    ),
+                    errorWidget: (context, url, error) => Icon(Icons.error),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                Padding(
+                  padding:
+                      const EdgeInsets.only(top: 30.0, left: 20, right: 20),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        song.current_song.value!.title ?? "Unknown",
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 30),
+                      ),
+                      Text(
+                        song.current_song.value!.artist!
+                            .map((artist) => artist.artistName)
+                            .join(',') as String,
+                        style: TextStyle(
+                          color: Colors.grey,
+                          fontSize: 13,
+                        ),
+                        softWrap: true,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 20.0),
+                  child: SizedBox(
+                    height: 65,
+                    child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        shrinkWrap: true,
+                        itemCount: feature.length,
+                        itemBuilder: (context, index) {
+                          final item = feature[index];
+                          return Obx(() {
+                            final featrue = song.current_song.value;
+                            dynamic value = '';
+                            switch (item.text) {
+                              case type_name.like:
+                                value = featrue!.likesCount.toString();
+                                break;
+                              case type_name.commant:
+                                value = 'Command';
+                                break;
+                              case type_name.save:
+                                value = 'Save';
+                                break;
+                              case type_name.share:
+                                value = 'Share';
+                                break;
+                              case type_name.download:
+                                value = 'Download';
+                                break;
+                              case type_name.mix:
+                                value = 'Mix';
+                                break;
+                            }
+                            return Padding(
+                              padding: const EdgeInsets.only(
+                                  top: 8.0, left: 10, bottom: 10),
+                              child: GestureDetector(
+                                onTap: item.onTap,
+                                child: Container(
+                                  width: 120,
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey.shade800,
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(30)),
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(
+                                        right: 8.0, left: 8),
+                                    child: Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        Icon(
+                                          item.icon,
+                                          color: Colors.white,
+                                        ),
+                                        value == ''
+                                            ? SizedBox()
+                                            : Text(
+                                                value,
+                                                style: TextStyle(
+                                                    color: Colors.white),
+                                              ),
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                          );
-                        });
-                      }),
+                            );
+                          });
+                        }),
+                  ),
                 ),
-              ),
-              // todo optimize the rebuild issue after complete the project.
-              Expanded(
-                child: Column(
+                // todo optimize the stream buffer and rebuild issue after complete the project.
+                Column(
                   children: [
                     Container(
-                      height: 100,
+                      height: 70,
                       child: Obx(() {
                         final position = music_player.position.value;
-                        final bufferposition = music_player.buffer_position.value;
+                        final bufferposition =
+                            music_player.buffer_position.value;
                         final duration = music_player.duration.value;
                         final max = duration.inMilliseconds.toDouble();
-                        return Column(
+                        return Stack(
+                          alignment: Alignment.centerLeft,
                           children: [
+                            SliderTheme(
+                                data: SliderTheme.of(context).copyWith(
+                                  thumbShape: SliderComponentShape.noThumb,
+                                ),
+                                child: Slider(
+                                  min: 0,
+                                  max: max == 0 ? 1 : max,
+                                  value: bufferposition.inMilliseconds
+                                      .clamp(0, duration.inMilliseconds)
+                                      .toDouble(),
+                                  onChanged: (_) {},
+                                  activeColor: Colors.grey,
+                                  inactiveColor: Colors.black,
+                                )),
+                            Slider(
+                              min: 0,
+                              max: max == 0 ? 1 : max,
+                              value: position.inMilliseconds
+                                  .clamp(0, duration.inMilliseconds)
+                                  .toDouble(),
+                              onChanged: (value) {
+                                final seekTo =
+                                    Duration(milliseconds: value.round());
+                                music_player.control_seek(seekTo);
+                              },
+                              activeColor: Colors.white,
+                              inactiveColor: Colors.transparent,
+                            ),
                             Padding(
-                              padding: const EdgeInsets.all(15.0),
-                              child: Stack(
-                                alignment: Alignment.centerLeft,
+                              padding: const EdgeInsets.only(
+                                  top: 50, left: 20, right: 20),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
-                                  SliderTheme(
-                                      data: SliderTheme.of(context).copyWith(
-                                        thumbShape:
-                                        SliderComponentShape.noThumb,
-                                        overlayShape:
-                                        SliderComponentShape.noOverlay,
-                                        // trackHeight: 4,
-                                      ),
-                                      child: Slider(
-                                        min: 0,
-                                        max: max == 0 ? 1 : max,
-                                        value: bufferposition.inMilliseconds
-                                            .clamp(0, duration.inMilliseconds)
-                                            .toDouble(),
-                                        onChanged: (_) {},
-                                        activeColor: Colors.red,
-                                        inactiveColor: Colors.grey.shade800,
-                                      )),
-                                  Slider(
-                                    min: 0,
-                                    max: max == 0 ? 1 : max,
-                                    value: position.inMilliseconds
-                                        .clamp(0, duration.inMilliseconds)
-                                        .toDouble(),
-                                    onChanged: (value) {
-                                      final seekTo = Duration(milliseconds: value.round());
-                                      music_player.control_seek(seekTo);
-                                    },
-                                    activeColor: Colors.white,
-                                    inactiveColor: Colors.transparent,
+                                  Text(
+                                    formatDuration(position),
+                                    style: const TextStyle(color: Colors.white),
                                   ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 50),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(
-                                          formatDuration(position),
-                                          style: const TextStyle(
-                                              color: Colors.white),
-                                        ),
-                                        Text(
-                                          formatDuration(duration),
-                                          style: const TextStyle(
-                                              color: Colors.white),
-                                        ),
-                                      ],
-                                    ),
+                                  Text(
+                                    formatDuration(duration),
+                                    style: const TextStyle(color: Colors.white),
                                   ),
                                 ],
                               ),
                             ),
-                            // Padding(
-                            //   padding: const EdgeInsets.only(
-                            //       left: 10.0, right: 10),
-                            //   child: Row(
-                            //     mainAxisAlignment:
-                            //     MainAxisAlignment.spaceBetween,
-                            //     crossAxisAlignment: CrossAxisAlignment.center,
-                            //     children: [
-                            //       IconButton(
-                            //         onPressed: () async {
-                            //           await download_controller
-                            //               .shuffle_mode();
-                            //         },
-                            //         icon: Icon(CupertinoIcons.shuffle),
-                            //         color: download_controller
-                            //             .isshuffleenabled.value
-                            //             ? Colors.white
-                            //             : Colors.grey,
-                            //         iconSize: 30,
-                            //       ),
-                            //       IconButton(
-                            //           onPressed: () async {
-                            //             await download_controller.pre_song();
-                            //
-                            //           },
-                            //           icon: Icon(Icons.skip_previous),
-                            //           color: Colors.white,
-                            //           iconSize: 40),
-                            //       IconButton(
-                            //         onPressed: () async {
-                            //           await download_controller
-                            //               .contorller_for_song();
-                            //         },
-                            //         icon: AnimatedIcon(
-                            //           icon: AnimatedIcons.play_pause,
-                            //           progress: download_controller
-                            //               .animationController,
-                            //         ),
-                            //         color: Colors.white,
-                            //         iconSize: 80,
-                            //       ),
-                            //       IconButton(
-                            //           onPressed: () async {
-                            //             await download_controller.next_song();
-                            //           },
-                            //           icon: Icon(Icons.skip_next),
-                            //           color: Colors.white,
-                            //           iconSize: 40),
-                            //       IconButton(
-                            //           onPressed: () async {
-                            //             await download_controller
-                            //                 .repeat_or_one();
-                            //           },
-                            //           icon: Icon(download_controller
-                            //               .Loopmode.value ==
-                            //               LoopMode.off
-                            //               ? Icons.repeat_rounded
-                            //               : download_controller
-                            //               .Loopmode.value ==
-                            //               LoopMode.all
-                            //               ? Icons.repeat_rounded
-                            //               : Icons.repeat_one_outlined),
-                            //           color: download_controller
-                            //               .Loopmode.value ==
-                            //               LoopMode.off
-                            //               ? Colors.grey
-                            //               : Colors.white,
-                            //           iconSize: 30),
-                            //     ],
-                            //   ),
-                            // ),
                           ],
                         );
                       }),
                     ),
                     Padding(
-                      padding: const EdgeInsets.only(
-                          left: 10.0, right: 10),
+                      padding: const EdgeInsets.only(left: 10.0, right: 10),
                       child: Row(
-                        mainAxisAlignment:
-                        MainAxisAlignment.spaceBetween,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           IconButton(
-                            onPressed: () async {
-
-                            },
+                            onPressed: () async {},
                             icon: Icon(CupertinoIcons.shuffle),
                             // color: download_controller
                             //     .isshuffleenabled.value
@@ -387,10 +350,7 @@ class _full_screen_media_playerState extends State<full_screen_media_player> wit
                             iconSize: 30,
                           ),
                           IconButton(
-                              onPressed: () async {
-
-
-                              },
+                              onPressed: () async {},
                               icon: Icon(Icons.skip_previous),
                               color: Colors.white,
                               iconSize: 40),
@@ -400,23 +360,18 @@ class _full_screen_media_playerState extends State<full_screen_media_player> wit
                             },
                             icon: AnimatedIcon(
                               icon: AnimatedIcons.play_pause,
-                              progress: music_player
-                                  .animationController,
+                              progress: music_player.animationController,
                             ),
                             color: Colors.white,
                             iconSize: 80,
                           ),
                           IconButton(
-                              onPressed: () async {
-
-                              },
+                              onPressed: () async {},
                               icon: Icon(Icons.skip_next),
                               color: Colors.white,
                               iconSize: 40),
                           IconButton(
-                              onPressed: () async {
-
-                              },
+                              onPressed: () async {},
                               icon: Icon(
                                   // download_controller
                                   // .Loopmode.value ==
@@ -433,21 +388,62 @@ class _full_screen_media_playerState extends State<full_screen_media_player> wit
                               //     LoopMode.off
                               //     ? Colors.grey
                               //     : Colors.white,
-                              iconSize: 30
-                          ),
+                              iconSize: 30),
                         ],
                       ),
-                    )
+                    ),
                   ],
                 ),
-              ),
-            ],
-          ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 58.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              return Dialog(
+                                child: Container(
+                                  height: 500,
+                                  width: 500,
+                                  child: Text("data"),
+                                ),
+                              );
+                            },
+                          );
+                        },
+                        child: text("UP NEXT"),
+                      ),
+                      text("LYRICS"),
+                      text("RELATED")
+                    ],
+                  ),
+                ),
+              ],
+            );
+          },
         ),
       ),
     );
   }
 }
+
+// class List_song extends StatelessWidget {
+//   const List_song({super.key});
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return ReorderableListView(
+//       onReorder: ,
+//       children: [
+//
+//       ],
+//     );
+//   }
+// }
+
 
 String formatDuration(Duration d) {
   final minutes = d.inMinutes.remainder(60).toString().padLeft(2, '0');

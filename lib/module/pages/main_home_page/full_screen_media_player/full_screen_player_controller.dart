@@ -4,10 +4,13 @@ import 'package:flutter/animation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:youtube_music/core/base/base_controller.dart';
 import 'package:youtube_music/data/user_respository/user_history_respository.dart';
 import 'package:youtube_music/module/pages/home/controllers/all_song_controller.dart';
 
-class full_screen_media_player_controller extends GetxController with GetSingleTickerProviderStateMixin{
+import '../../../../data/data_module/song_module.dart';
+
+class full_screen_media_player_controller extends base_controller with GetSingleTickerProviderStateMixin{
   final AudioPlayer audioPlayer = AudioPlayer();
   final get_current_song song = Get.find<get_current_song>();
   final Rx<Duration> position = Duration.zero.obs;
@@ -23,6 +26,8 @@ class full_screen_media_player_controller extends GetxController with GetSingleT
   final UserHistoryCrud historyCrud =UserHistoryCrud();
   late AnimationController animationController;
   final isplaying = false.obs;
+  late ConcatenatingAudioSource playlist;
+  final current_index = 0.obs;
 
   @override
   void onInit()  {
@@ -85,6 +90,31 @@ class full_screen_media_player_controller extends GetxController with GetSingleT
     await audioPlayer.stop();
     await audioPlayer.setUrl(fullurl);
     await audioPlayer.play();
+  }
+
+  Future<void> playlist_song_loading(
+      List<Song> song, int startindex) async {
+    try {
+      playlist = ConcatenatingAudioSource(
+          children: song.map((play) {
+            return AudioSource.file(play.stream!.hlsMasterUrl!);
+          }).toList());
+
+      await audioPlayer.setAudioSource(playlist, initialIndex: startindex);
+
+
+      current_index.value = startindex;
+
+      audioPlayer.currentIndexStream.listen((newIndex) {
+        if (newIndex != null) {
+          current_index.value = newIndex;
+        }
+      });
+
+      await audioPlayer.play();
+    } catch (e) {
+      get_error(e.toString());
+    }
   }
 
   void steam_position() {
