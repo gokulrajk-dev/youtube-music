@@ -8,7 +8,7 @@ import 'package:youtube_music/core/base/base_controller.dart';
 import 'package:youtube_music/data/user_respository/user_history_respository.dart';
 import 'package:youtube_music/module/pages/home/controllers/all_song_controller.dart';
 
-import '../../../../data/data_module/song_module.dart';
+
 
 class full_screen_media_player_controller extends base_controller with GetSingleTickerProviderStateMixin{
   final AudioPlayer audioPlayer = AudioPlayer();
@@ -28,6 +28,10 @@ class full_screen_media_player_controller extends base_controller with GetSingle
   final isplaying = false.obs;
   late ConcatenatingAudioSource playlist;
   final current_index = 0.obs;
+
+
+
+
 
   @override
   void onInit()  {
@@ -51,9 +55,12 @@ class full_screen_media_player_controller extends base_controller with GetSingle
       isshuffleenabled.value = enable;
     });
 
-    audioPlayer.playerStateStream.listen((playing) {
+    audioPlayer.playerStateStream.listen((playing) async {
       isplaying.value = playing.playing;
       play_pause_controller();
+      if(playing.processingState == ProcessingState.completed){
+       await song.play_Next();
+      }
     });
 
     ever(song.current_song, (newSong) {
@@ -92,30 +99,6 @@ class full_screen_media_player_controller extends base_controller with GetSingle
     await audioPlayer.play();
   }
 
-  Future<void> playlist_song_loading(
-      List<Song> song, int startindex) async {
-    try {
-      playlist = ConcatenatingAudioSource(
-          children: song.map((play) {
-            return AudioSource.file(play.stream!.hlsMasterUrl!);
-          }).toList());
-
-      await audioPlayer.setAudioSource(playlist, initialIndex: startindex);
-
-
-      current_index.value = startindex;
-
-      audioPlayer.currentIndexStream.listen((newIndex) {
-        if (newIndex != null) {
-          current_index.value = newIndex;
-        }
-      });
-
-      await audioPlayer.play();
-    } catch (e) {
-      get_error(e.toString());
-    }
-  }
 
   void steam_position() {
     positionSub = audioPlayer.positionStream.listen((pos) async {

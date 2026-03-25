@@ -539,6 +539,7 @@ class _home_pageState extends State<home_page> {
                       controller_song.get_all_songs();
                       like.get_current_user_like_songs();
                       artist_song.get_full_aritist_list();
+                      album_song.get_song_album();
                     },
                     child: Obx(() => Text(like.like_song
                         .map((f) => f.song!.title)

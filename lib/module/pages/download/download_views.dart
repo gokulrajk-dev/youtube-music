@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:on_audio_query_forked/on_audio_query.dart';
-import 'package:permission_handler/permission_handler.dart';
+
 
 import 'download_controller.dart';
 

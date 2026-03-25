@@ -220,8 +220,10 @@ class Album_Views extends GetView<Album_Controller>{
             // }).toList()),
             SongListViews(
               songs: song_only,
-              onTap: (selectedSong) {
-                song.get_current_user_pick_song(selectedSong.id);
+              onTap: (selectedSong) async {
+                final index = song_only.indexOf(selectedSong);
+                await song.setQueue(song_only, index);
+                Get.toNamed(App_route.full_screen_media_player_page);
               },
             ),
             Container(

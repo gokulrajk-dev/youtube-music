@@ -13,5 +13,4 @@ abstract class base_controller extends GetxController{
   void noerror(){
     error.value='';
   }
-
 }

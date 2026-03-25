@@ -28,7 +28,7 @@ class SongListViews extends StatelessWidget {
     return Column(
       children: songs.map((playlist_songs) {
         return ListTile(
-          onTap: () => onTap(playlist_songs), // ✅ FIXED
+          onTap: () => onTap(playlist_songs),
           style: ListTileStyle.drawer,
           leading: playlist_songs.coverImage != null
               ? Image.network(playlist_songs.coverImage!)

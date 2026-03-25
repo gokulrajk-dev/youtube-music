@@ -3,9 +3,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:youtube_music/module/pages/home/controllers/all_song_controller.dart';
-
 import 'package:youtube_music/module/pages/main_home_page/full_screen_media_player/full_screen_player_controller.dart';
 
+import '../../../../data/data_module/song_module.dart';
 import '../../globle_bottom_sheet/globle_bottom_sheet_views.dart';
 import '../../like_page/like_controller.dart';
 import '../../profile/profile_views.dart';
@@ -87,13 +87,11 @@ class _full_screen_media_playerState extends State<full_screen_media_player>
         backgroundColor: Colors.black,
         body: Obx(
           () {
-            if (song.is_loading.value) {
-              return Center(
-                child: CircularProgressIndicator(
-                  color: Colors.white,
-                ),
-              );
-            }
+            // if (song.is_loading.value) {
+            //   return Center(
+            //     child:SizedBox.shrink()
+            //   );
+            // }
             if (song.error.value.isNotEmpty) {
               return Center(
                 child: Text(song.error.value),
@@ -350,7 +348,9 @@ class _full_screen_media_playerState extends State<full_screen_media_player>
                             iconSize: 30,
                           ),
                           IconButton(
-                              onPressed: () async {},
+                              onPressed: () async {
+                                await song.play_Previous();
+                              },
                               icon: Icon(Icons.skip_previous),
                               color: Colors.white,
                               iconSize: 40),
@@ -366,7 +366,9 @@ class _full_screen_media_playerState extends State<full_screen_media_player>
                             iconSize: 80,
                           ),
                           IconButton(
-                              onPressed: () async {},
+                              onPressed: () async {
+                                await song.play_Next();
+                              },
                               icon: Icon(Icons.skip_next),
                               color: Colors.white,
                               iconSize: 40),
@@ -406,9 +408,12 @@ class _full_screen_media_playerState extends State<full_screen_media_player>
                             builder: (context) {
                               return Dialog(
                                 child: Container(
-                                  height: 500,
+                                  height: 300,
                                   width: 500,
-                                  child: Text("data"),
+                                  color: Colors.black,
+                                  child: List_song(
+                                    songs: song.queue.toList(),
+                                  ),
                                 ),
                               );
                             },
@@ -430,20 +435,56 @@ class _full_screen_media_playerState extends State<full_screen_media_player>
   }
 }
 
-// class List_song extends StatelessWidget {
-//   const List_song({super.key});
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return ReorderableListView(
-//       onReorder: ,
-//       children: [
-//
-//       ],
-//     );
-//   }
-// }
+class List_song extends StatelessWidget {
+  List<Song> songs;
 
+  List_song({super.key, required this.songs});
+
+  @override
+  Widget build(BuildContext context) {
+    final get_current_song current_song = Get.find<get_current_song>();
+    return ReorderableListView(
+        onReorder: (oldIndex, newIndex) {
+        },
+        children: songs.map((songss) {
+          return ListTile(
+            key: ValueKey(songss.id),
+            onTap: () async {
+              final index = songs.indexOf(songss);
+              await current_song.setQueue(songs, index);
+              Get.back();
+            },
+            style: ListTileStyle.drawer,
+            leading: songss.coverImage != null
+                ? Image.network(songss.coverImage!)
+                : const Icon(Icons.music_note, color: Colors.white),
+            title: Text(
+              songss.title ?? "Unknown",
+              style: const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20),
+            ),
+            subtitle: Text(
+              songss.artist?.map((artist) => artist.artistName).join(', ') ?? "",
+              style: const TextStyle(
+                color: Colors.grey,
+                fontSize: 13,
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+            trailing: IconButton(
+              onPressed: () {},
+              icon: const Icon(
+                Icons.more_vert,
+                color: Colors.white,
+              ),
+            ),
+          );
+        }).toList());
+  }
+}
 
 String formatDuration(Duration d) {
   final minutes = d.inMinutes.remainder(60).toString().padLeft(2, '0');

@@ -1,9 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:youtube_music/data/data_module/song_module.dart';
 import 'package:youtube_music/module/pages/home/controllers/all_song_controller.dart';
 import 'package:youtube_music/module/pages/home/controllers/user_data_controller.dart';
 import 'package:youtube_music/module/pages/playlist_page/playlist_controller.dart';
+import 'package:youtube_music/route/app_route.dart';
 import 'package:youtube_music/services/helper_code/helper_code.dart';import '../../../../widgets/songListView.dart';
 import '../like_page/like_views.dart';
 
@@ -227,8 +229,10 @@ class Playlist_Views extends GetView<Playlist_Controller> {
             // }).toList()),
             SongListViews(
               songs: songs_only,
-              onTap: (selectedSong) {
-                song.get_current_user_pick_song(selectedSong.id);
+              onTap: (selectedSong) async {
+                final index = songs_only.indexOf(selectedSong);
+                await song.setQueue(songs_only, index);
+                Get.toNamed(App_route.full_screen_media_player_page);
               },
             ),
             Container(
