@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:youtube_music/module/pages/Artist/artist_controller.dart';
 import 'package:youtube_music/module/pages/home/controllers/all_song_controller.dart';
 
+import '../../../route/app_route.dart';
 import '../../../services/helper_code/helper_code.dart';
 import '../../../widgets/songListView.dart';
 import '../like_page/like_views.dart';
@@ -188,7 +189,9 @@ class Artist_Views extends GetView<Artist_Controller>{
             SongListViews(
               songs: song_only,
               onTap: (selectedSong) {
-                song.get_current_user_pick_song(selectedSong.id);
+                final index = song_only.indexOf(selectedSong);
+                song.setQueue(song_only, index);
+                Get.toNamed(App_route.full_screen_media_player_page);
               },
             ),
             Container(

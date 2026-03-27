@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/animation.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:just_audio/just_audio.dart';
@@ -16,7 +17,6 @@ class full_screen_media_player_controller extends base_controller with GetSingle
   final Rx<Duration> position = Duration.zero.obs;
   final Rx<Duration> buffer_position = Duration.zero.obs;
   final Rx<Duration> duration = Duration.zero.obs;
-  final isshuffleenabled = false.obs;
   late StreamSubscription positionSub;
   late StreamSubscription BufferSub;
   late StreamSubscription durationSub;
@@ -29,13 +29,11 @@ class full_screen_media_player_controller extends base_controller with GetSingle
   late ConcatenatingAudioSource playlist;
   final current_index = 0.obs;
 
-
-
-
-
   @override
   void onInit()  {
     steam_position();
+
+    pauseForDevelopment();
 
     animationController =
         AnimationController(vsync: this, duration: Duration(milliseconds: 300));
@@ -49,10 +47,6 @@ class full_screen_media_player_controller extends base_controller with GetSingle
       if (dur != null) {
         duration.value = dur;
       }
-    });
-
-    audioPlayer.shuffleModeEnabledStream.listen((enable) {
-      isshuffleenabled.value = enable;
     });
 
     audioPlayer.playerStateStream.listen((playing) async {
@@ -79,6 +73,15 @@ class full_screen_media_player_controller extends base_controller with GetSingle
     durationSub.cancel();
     audioPlayer.dispose();
     super.onClose();
+  }
+
+  Future<void> pauseForDevelopment() async {
+    if (kDebugMode) {
+      await audioPlayer.pause();        // or _player.stop();
+      // Optional: release resources if using just_audio
+      // await _player.dispose();   // but then recreate player after reload
+      debugPrint('🔇 Audio paused for faster hot reload');
+    }
   }
 
   void reset_postion(){
@@ -163,5 +166,6 @@ class full_screen_media_player_controller extends base_controller with GetSingle
       await audioPlayer.play();
     }
   }
+
 
 }

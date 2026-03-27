@@ -242,7 +242,7 @@ class _home_pageState extends State<home_page> {
                           child: GestureDetector(
                             onTap: () {
                               pick_current_song
-                                  .get_current_user_pick_song(song.id);
+                                  .setQueue([], song.id);
                               Get.toNamed(App_route.full_screen_media_player_page);
                             },
                             onLongPress: () {

@@ -6,7 +6,6 @@ import '../../../../data/data_module/song_module.dart';
 
 class get_all_song_controller extends base_controller {
   final Song_Repository song_repository = Song_Repository();
-
   final RxList<Song> songs = <Song>[].obs;
 
   @override
@@ -34,10 +33,17 @@ class get_current_song extends base_controller {
   final current_song = Rxn<Song>();
   final RxList<Song> queue = <Song>[].obs;
   final currentIndex = 0.obs;
+  final isshuffleenabled = false.obs;
 
   Future<void> setQueue(List<Song> song, int startIndex) async {
-    queue.value = song;
-    currentIndex.value = startIndex;
+    if (song.toList().isEmpty) {
+      await get_current_user_pick_song(startIndex);
+      return;
+    }
+    queue.value = List.from(song);
+
+      currentIndex.value = startIndex;
+
     await get_current_user_pick_song(song[currentIndex.value].id);
   }
 
@@ -49,7 +55,7 @@ class get_current_song extends base_controller {
   }
 
   Future<void> play_Previous() async {
-    if (currentIndex.value >0) {
+    if (currentIndex.value > 0) {
       currentIndex.value--;
       await get_current_user_pick_song(queue[currentIndex.value].id);
     }
@@ -69,6 +75,13 @@ class get_current_song extends base_controller {
       get_error(e.toString());
     } finally {
       get_isloading(false);
+    }
+  }
+
+  void shuffle_on_off() {
+    isshuffleenabled.value = !isshuffleenabled.value;
+    if (isshuffleenabled.value) {
+      queue.shuffle();
     }
   }
 
