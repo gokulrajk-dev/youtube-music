@@ -5,7 +5,6 @@ class Token_service {
   static final _storage = const FlutterSecureStorage(
     aOptions: const AndroidOptions(
       encryptedSharedPreferences: true,
-
     ),
   );
 

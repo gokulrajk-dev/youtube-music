@@ -42,7 +42,7 @@ class get_current_song extends base_controller {
     }
     queue.value = List.from(song);
 
-      currentIndex.value = startIndex;
+    currentIndex.value = startIndex;
 
     await get_current_user_pick_song(song[currentIndex.value].id);
   }

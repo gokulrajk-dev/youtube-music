@@ -25,7 +25,7 @@ class _full_screen_media_playerState extends State<full_screen_media_player>
   final get_current_song song = Get.find<get_current_song>();
   final Like_Controller like = Get.find<Like_Controller>();
   final full_screen_media_player_controller music_player =
-  Get.find<full_screen_media_player_controller>();
+      Get.find<full_screen_media_player_controller>();
 
   @override
   void initState() {
@@ -45,8 +45,7 @@ class _full_screen_media_playerState extends State<full_screen_media_player>
     );
   }
 
-  List<Feature> get feature =>
-      [
+  List<Feature> get feature => [
         Feature(
             icon: like.get_song_like_or_not(song.current_song.value!.id)
                 ? CupertinoIcons.hand_thumbsup_fill
@@ -85,7 +84,7 @@ class _full_screen_media_playerState extends State<full_screen_media_player>
       child: Scaffold(
         backgroundColor: Colors.black,
         body: Obx(
-              () {
+          () {
             // if (song.is_loading.value) {
             //   return Center(
             //     child:SizedBox.shrink()
@@ -131,11 +130,11 @@ class _full_screen_media_playerState extends State<full_screen_media_player>
                                 song_artist: song.current_song.value!.artist,
                                 song_title: song.current_song.value!.title,
                                 song_cover_img:
-                                song.current_song.value!.coverImage,
+                                    song.current_song.value!.coverImage,
                                 song_id: song.current_song.value!.id,
                                 album_id: song.current_song.value!.album!.id,
                                 artist_id:
-                                song.current_song.value!.artist!.first.id,
+                                    song.current_song.value!.artist!.first.id,
                               );
                             },
                           ),
@@ -154,19 +153,19 @@ class _full_screen_media_playerState extends State<full_screen_media_player>
                   clipBehavior: Clip.hardEdge,
                   child: CachedNetworkImage(
                     imageUrl: song.current_song.value!.coverImage ?? "",
-                    placeholder: (context, url) =>
-                        Center(
-                          child: Container(
-                            color: Colors.black,
-                          ),
-                        ),
-                    errorWidget: (context, url, error) => const Icon(Icons.error),
+                    placeholder: (context, url) => Center(
+                      child: Container(
+                        color: Colors.black,
+                      ),
+                    ),
+                    errorWidget: (context, url, error) =>
+                        const Icon(Icons.error),
                     fit: BoxFit.cover,
                   ),
                 ),
                 Padding(
                   padding:
-                  const EdgeInsets.only(top: 30.0, left: 20, right: 20),
+                      const EdgeInsets.only(top: 30.0, left: 20, right: 20),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -235,17 +234,17 @@ class _full_screen_media_playerState extends State<full_screen_media_player>
                                   width: 120,
                                   decoration: BoxDecoration(
                                     color: Colors.grey.shade800,
-                                    borderRadius:
-                                    const BorderRadius.all(Radius.circular(30)),
+                                    borderRadius: const BorderRadius.all(
+                                        Radius.circular(30)),
                                   ),
                                   child: Padding(
                                     padding: const EdgeInsets.only(
                                         right: 8.0, left: 8),
                                     child: Row(
                                       crossAxisAlignment:
-                                      CrossAxisAlignment.center,
+                                          CrossAxisAlignment.center,
                                       mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
+                                          MainAxisAlignment.spaceEvenly,
                                       children: [
                                         Icon(
                                           item.icon,
@@ -254,10 +253,10 @@ class _full_screen_media_playerState extends State<full_screen_media_player>
                                         value == ''
                                             ? const SizedBox()
                                             : Text(
-                                          value,
-                                          style: const TextStyle(
-                                              color: Colors.white),
-                                        ),
+                                                value,
+                                                style: const TextStyle(
+                                                    color: Colors.white),
+                                              ),
                                       ],
                                     ),
                                   ),
@@ -304,7 +303,7 @@ class _full_screen_media_playerState extends State<full_screen_media_player>
                                   .toDouble(),
                               onChanged: (value) {
                                 final seekTo =
-                                Duration(milliseconds: value.round());
+                                    Duration(milliseconds: value.round());
                                 music_player.control_seek(seekTo);
                               },
                               activeColor: Colors.white,
@@ -315,7 +314,7 @@ class _full_screen_media_playerState extends State<full_screen_media_player>
                                   top: 50, left: 20, right: 20),
                               child: Row(
                                 mainAxisAlignment:
-                                MainAxisAlignment.spaceBetween,
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
                                     formatDuration(position),
@@ -377,15 +376,15 @@ class _full_screen_media_playerState extends State<full_screen_media_player>
                           IconButton(
                               onPressed: () async {},
                               icon: const Icon(
-                                // download_controller
-                                // .Loopmode.value ==
-                                // LoopMode.off
-                                // ? Icons.repeat_rounded
-                                // : download_controller
-                                // .Loopmode.value ==
-                                // LoopMode.all
-                                // ? Icons.repeat_rounded
-                                // :
+                                  // download_controller
+                                  // .Loopmode.value ==
+                                  // LoopMode.off
+                                  // ? Icons.repeat_rounded
+                                  // : download_controller
+                                  // .Loopmode.value ==
+                                  // LoopMode.all
+                                  // ? Icons.repeat_rounded
+                                  // :
                                   Icons.repeat_one_outlined),
                               // color: download_controller
                               //     .Loopmode.value ==
@@ -403,39 +402,37 @@ class _full_screen_media_playerState extends State<full_screen_media_player>
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      song.queue
-                          .toList()
-                          .isEmpty
+                      song.queue.toList().isEmpty
                           ? const Text(
-                        "UP NEXT",
-                        style:
-                        TextStyle(color: Colors.grey, fontSize: 20),
-                      )
+                              "UP NEXT",
+                              style:
+                                  TextStyle(color: Colors.grey, fontSize: 20),
+                            )
                           : GestureDetector(
-                        onTap: () {
-                          showDialog(
-                            context: context,
-                            builder: (context) {
-                              return Dialog(
-                                child: Container(
-                                  height: 300,
-                                  clipBehavior: Clip.hardEdge,
-                                  decoration: BoxDecoration(
-                                      borderRadius:
-                                      BorderRadius.circular(20),
-                                      color: Colors.black,
-                                      border: Border.all(
-                                          width: 1, color: Colors.white)),
-                                  child: List_song(
-                                    songs: song.queue.toList(),
-                                  ),
-                                ),
-                              );
-                            },
-                          );
-                        },
-                        child: text("UP NEXT"),
-                      ),
+                              onTap: () {
+                                showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return Dialog(
+                                      child: Container(
+                                        height: 300,
+                                        clipBehavior: Clip.hardEdge,
+                                        decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(20),
+                                            color: Colors.black,
+                                            border: Border.all(
+                                                width: 1, color: Colors.white)),
+                                        child: List_song(
+                                          songs: song.queue.toList(),
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                );
+                              },
+                              child: text("UP NEXT"),
+                            ),
                       text("LYRICS"),
                       text("RELATED")
                     ],
@@ -461,6 +458,7 @@ class List_song extends StatefulWidget {
 
 class _List_songState extends State<List_song> {
   final current_song = Get.find<get_current_song>();
+
   void reOrder(int oldIndex, int newIndex) {
     setState(() {
       if (newIndex > oldIndex) newIndex--;
@@ -469,7 +467,6 @@ class _List_songState extends State<List_song> {
       widget.songs.insert(newIndex, item);
       current_song.queue.value = List.from(widget.songs);
     });
-
   }
 
   @override
@@ -481,43 +478,43 @@ class _List_songState extends State<List_song> {
       },
       itemBuilder: (context, index) {
         final songss = widget.songs[index];
-        return ListTile(
+        return Container(
           key: ValueKey(songss.id),
-          iconColor: Colors.red,
-
-          onTap: () async {
-            await current_song.setQueue(widget.songs, index); // ✅ correct index
-          },
-
-          leading: songss.coverImage != null
-              ? Image.network(songss.coverImage!)
-              : const Icon(Icons.music_note, color: Colors.white),
-
-          title: Text(
-            songss.title ?? "Unknown",
-            style: const TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-              fontSize: 20,
+          child: ListTile(
+            key: ValueKey(songss.id),
+            onTap: () async {
+              await current_song.setQueue(widget.songs, index);
+            },
+            leading: songss.coverImage != null
+                ? Image.network(songss.coverImage!)
+                : const Icon(Icons.music_note, color: Colors.white),
+            title: Obx(() {
+              final isCurrent = current_song.currentIndex.value ==index;
+              return Text(
+                songss.title ?? "Unknown",
+                style: TextStyle(
+                  color: !isCurrent
+                      ? Colors.white
+                      : Colors.red,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                ),
+              );
+            }),
+            subtitle: Text(
+              songss.artist?.map((artist) => artist.artistName).join(', ') ??
+                  "",
+              style: const TextStyle(
+                color: Colors.grey,
+                fontSize: 13,
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
             ),
-          ),
-
-          subtitle: Text(
-            songss.artist
-                ?.map((artist) => artist.artistName)
-                .join(', ') ??
-                "",
-            style: const TextStyle(
-              color: Colors.grey,
-              fontSize: 13,
+            trailing: IconButton(
+              onPressed: () {},
+              icon: const Icon(Icons.more_vert, color: Colors.white),
             ),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-
-          trailing: IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.more_vert, color: Colors.white),
           ),
         );
       },
@@ -530,4 +527,3 @@ String formatDuration(Duration d) {
   final seconds = d.inSeconds.remainder(60).toString().padLeft(2, '0');
   return "$minutes:$seconds";
 }
-
