@@ -83,12 +83,7 @@ class History_Views extends GetView<Histroy_Controller> {
                               builder: (context, scrollController) {
                                 return globle_bottom_sheet(
                                   controllers: scrollController,
-                                  song_artist: song.artist,
-                                  song_title: song.title,
-                                  song_cover_img: song.coverImage,
-                                  song_id: song.id,
-                                  album_id: song.album!.id,
-                                  artist_id: song.artist!.first.id,
+                                  song: song,
                                 );
                               },
                             ),
@@ -126,12 +121,7 @@ class History_Views extends GetView<Histroy_Controller> {
                                 builder: (context, scrollController) {
                                   return globle_bottom_sheet(
                                     controllers: scrollController,
-                                    song_cover_img: song.coverImage,
-                                    song_title: song.title,
-                                    song_artist: song.artist,
-                                    song_id: song.id,
-                                    album_id: song.album!.id,
-                                    artist_id: song.artist!.first.id,
+                                    song: song,
                                   );
                                 },
                               ),

@@ -1,5 +1,4 @@
 import 'package:get/get.dart';
-
 import 'full_screen_player_controller.dart';
 
 class full_player_binding extends Bindings{

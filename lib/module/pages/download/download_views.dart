@@ -17,11 +17,11 @@ class Download_Views extends GetView<download_Controller> {
               padding: const EdgeInsets.only(top: 8.0),
               child: ListView(
                 shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
+                physics: const NeverScrollableScrollPhysics(),
                 clipBehavior: Clip.hardEdge,
                 children: [
                   ListView.builder(
-                    physics: NeverScrollableScrollPhysics(),
+                    physics: const NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
                     itemCount: controller.songmodel.length,
                     itemBuilder: (context, index) {
@@ -42,11 +42,11 @@ class Download_Views extends GetView<download_Controller> {
                         ),
                         title: Text(
                           local_song.title,
-                          style: TextStyle(color: Colors.white),
+                          style: const TextStyle(color: Colors.white),
                         ),
                         subtitle: Text(
                           local_song.artist ?? "unknown Artist",
-                          style: TextStyle(color: Colors.grey),
+                          style: const TextStyle(color: Colors.grey),
                         ),
                         trailing: IconButton(
                             onPressed: () {
@@ -54,7 +54,7 @@ class Download_Views extends GetView<download_Controller> {
                                   builder: (context, scrollController) =>
                                       download_song_bottom()));
                             },
-                            icon: Icon(
+                            icon: const Icon(
                               Icons.more_vert,
                               color: Colors.white,
                             )),
@@ -73,7 +73,7 @@ class Download_Views extends GetView<download_Controller> {
                   mainAxisAlignment: MainAxisAlignment.center,
 
                   children: [
-                    Text(
+                    const Text(
                       'Allow to Access to the files',
                       style: TextStyle(color: Colors.white, fontSize: 20),
                     ),
@@ -84,7 +84,7 @@ class Download_Views extends GetView<download_Controller> {
                         onPressed: () async {
                           await controller.check_permission();
                         },
-                        child: Text(
+                        child: const Text(
                           'Allow',
                           style: TextStyle(color: Colors.black),
                         ))
@@ -138,7 +138,7 @@ class _download_song_bottomState extends State<download_song_bottom>
                   overflow: TextOverflow.ellipsis,
                   maxLines: 1,
                   softWrap: true,
-                  style: TextStyle(
+                  style: const TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
                       color: Colors.white),
@@ -154,7 +154,7 @@ class _download_song_bottomState extends State<download_song_bottom>
                       await download_controller.stop_song();
                       Get.back();
                     },
-                    icon: Icon(
+                    icon: const Icon(
                       Icons.close,
                       color: Colors.white,
                     )),
@@ -245,7 +245,7 @@ class _download_song_bottomState extends State<download_song_bottom>
                                         await download_controller
                                             .shuffle_mode();
                                       },
-                                      icon: Icon(CupertinoIcons.shuffle),
+                                      icon: const Icon(CupertinoIcons.shuffle),
                                       color: download_controller
                                               .isshuffleenabled.value
                                           ? Colors.white
@@ -257,7 +257,7 @@ class _download_song_bottomState extends State<download_song_bottom>
                                           await download_controller.pre_song();
 
                                         },
-                                        icon: Icon(Icons.skip_previous),
+                                        icon: const Icon(Icons.skip_previous),
                                         color: Colors.white,
                                         iconSize: 40),
                                     IconButton(
@@ -277,7 +277,7 @@ class _download_song_bottomState extends State<download_song_bottom>
                                         onPressed: () async {
                                           await download_controller.next_song();
                                         },
-                                        icon: Icon(Icons.skip_next),
+                                        icon: const Icon(Icons.skip_next),
                                         color: Colors.white,
                                         iconSize: 40),
                                     IconButton(

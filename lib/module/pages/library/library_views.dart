@@ -29,7 +29,7 @@ class _Library_ViewsState extends State<Library_Views> {
     'Artist',
   ];
 
-  final Library_Nest_Page = [library_body(), Download_Views()];
+  final Library_Nest_Page = [const library_body(), Download_Views()];
 
   @override
   void initState() {
@@ -59,7 +59,7 @@ class _Library_ViewsState extends State<Library_Views> {
                                 body: Column(
                                   children: [
                                     ListTile(
-                                      title: Text(
+                                      title: const Text(
                                         'Views by',
                                         style: TextStyle(color: Colors.white),
                                       ),
@@ -67,31 +67,33 @@ class _Library_ViewsState extends State<Library_Views> {
                                           onPressed: () {
                                             Get.back();
                                           },
-                                          icon: Icon(
+                                          icon: const Icon(
                                             Icons.close,
                                             color: Colors.white,
                                           )),
                                     ),
-                                    Divider(),
+                                    const Divider(),
                                     ListTile(
                                       onTap: () {
                                         library_controller.change_current_index(
                                             0, 'Library');
                                         Get.back();
                                       },
-                                      title: Text(
+                                      leading: library_controller
+                                          .current_page_title ==
+                                          'Library'
+                                          ? const Icon(
+                                        Icons.check,
+                                        color: Colors.white,
+                                      )
+                                          : const SizedBox(
+                                        width: 5,
+                                      ),
+                                      title: const Text(
                                         'Library',
                                         style: TextStyle(
-                                            color: library_controller
-                                                        .current_page_title ==
-                                                    'Library'
-                                                ? Colors.black
-                                                : Colors.white,
-                                            backgroundColor: library_controller
-                                                        .current_page_title ==
-                                                    'Library'
-                                                ? Colors.white
-                                                : Colors.transparent),
+                                          color: Colors.white,
+                                        ),
                                       ),
                                     ),
                                     ListTile(
@@ -100,7 +102,17 @@ class _Library_ViewsState extends State<Library_Views> {
                                             .get_current_lib_index();
                                         Get.back();
                                       },
-                                      title: Text(
+                                      leading: library_controller
+                                          .current_page_title ==
+                                          'Download'
+                                          ? const Icon(
+                                        Icons.check,
+                                        color: Colors.white,
+                                      )
+                                          : const SizedBox(
+                                        width: 5,
+                                      ),
+                                      title: const Text(
                                         'Download',
                                         style: TextStyle(color: Colors.white),
                                       ),
@@ -111,19 +123,21 @@ class _Library_ViewsState extends State<Library_Views> {
                                             1, 'Device Files');
                                         Get.back();
                                       },
-                                      title: Text(
+                                      leading: library_controller
+                                                  .current_page_title ==
+                                              'Device Files'
+                                          ? const Icon(
+                                              Icons.check,
+                                              color: Colors.white,
+                                            )
+                                          : const SizedBox(
+                                              width: 5,
+                                            ),
+                                      title: const Text(
                                         'Device Files',
                                         style: TextStyle(
-                                            color: library_controller
-                                                        .current_page_title ==
-                                                    'Device Files'
-                                                ? Colors.black
-                                                : Colors.white,
-                                            backgroundColor: library_controller
-                                                        .current_page_title ==
-                                                    'Device Files'
-                                                ? Colors.white
-                                                : Colors.transparent),
+                                          color: Colors.white,
+                                        ),
                                       ),
                                     ),
                                   ],
@@ -139,7 +153,7 @@ class _Library_ViewsState extends State<Library_Views> {
                           children: [
                             Text(
                               library_controller.current_page_title.value,
-                              style: TextStyle(
+                              style: const TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 18),
@@ -147,7 +161,7 @@ class _Library_ViewsState extends State<Library_Views> {
                             const SizedBox(
                               width: 5,
                             ),
-                            Icon(
+                            const Icon(
                               CupertinoIcons.chevron_down,
                               color: Colors.white,
                               size: 13,
@@ -159,9 +173,9 @@ class _Library_ViewsState extends State<Library_Views> {
                     actions: [
                       IconButton(
                         onPressed: () {
-                          Get.toNamed(App_route.history_page,id: 4);
+                          Get.toNamed(App_route.history_page, id: 4);
                         },
-                        icon: Icon(
+                        icon: const Icon(
                           Icons.history,
                           color: Colors.white,
                         ),
@@ -169,7 +183,7 @@ class _Library_ViewsState extends State<Library_Views> {
                       ),
                       IconButton(
                         onPressed: () {},
-                        icon: Icon(
+                        icon: const Icon(
                           Icons.notifications_none,
                           color: Colors.white,
                         ),
@@ -177,7 +191,7 @@ class _Library_ViewsState extends State<Library_Views> {
                       ),
                       IconButton(
                         onPressed: () {},
-                        icon: Icon(
+                        icon: const Icon(
                           Icons.search,
                           color: Colors.white,
                         ),
@@ -191,7 +205,7 @@ class _Library_ViewsState extends State<Library_Views> {
                           child: Obx(() {
                             final user = controller.user.value;
                             return user == null
-                                ? CircleAvatar(
+                                ? const CircleAvatar(
                                     backgroundImage:
                                         AssetImage('assets/_joker1.png'),
                                   )
@@ -212,7 +226,7 @@ class _Library_ViewsState extends State<Library_Views> {
                         child: ListView.builder(
                           itemCount: text.length,
                           shrinkWrap: true,
-                          physics: BouncingScrollPhysics(),
+                          physics: const BouncingScrollPhysics(),
                           scrollDirection: Axis.horizontal,
                           itemBuilder: (context, index) {
                             final texts = text[index];
@@ -242,15 +256,15 @@ class _Library_ViewsState extends State<Library_Views> {
                       right: 20,
                       child: FloatingActionButton(
                         backgroundColor: Colors.white,
-                        shape: CircleBorder(),
+                        shape: const CircleBorder(),
                         onPressed: () {},
-                        child: Icon(
+                        child: const Icon(
                           Icons.add,
                           color: Colors.black,
                         ),
                       ),
                     )
-                  : SizedBox(),
+                  : const SizedBox(),
             ),
           ],
         ),
@@ -283,7 +297,7 @@ class _library_bodyState extends State<library_body> {
       shrinkWrap: true,
       // physics: NeverScrollableScrollPhysics(),
       children: [
-        Padding(
+        const Padding(
           padding: EdgeInsets.only(top: 16, left: 16, right: 16, bottom: 20),
           child: Text(
             "Recently played",
@@ -297,18 +311,18 @@ class _library_bodyState extends State<library_body> {
           child: ListTile(
             style: ListTileStyle.drawer,
             leading: Image.asset('assets/liked_pic.png'),
-            title: Text(
+            title: const Text(
               'Liked Music',
               style: TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
                   fontSize: 20),
             ),
-            subtitle: Text(
+            subtitle: const Text(
               '📌 Auto playlist',
               style: TextStyle(color: Colors.grey),
             ),
-            trailing: Icon(
+            trailing: const Icon(
               Icons.more_vert,
               color: Colors.white,
             ),
@@ -321,7 +335,7 @@ class _library_bodyState extends State<library_body> {
         //     child: Text('playlist')),
         Obx(() {
           if (controller.is_loading.value) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           }
           if (controller.error.value.isNotEmpty) {
             return Center(
@@ -342,27 +356,28 @@ class _library_bodyState extends State<library_body> {
                     ? Image.network(playlist.playlistcoverimage ?? "")
                     : Container(
                         decoration: BoxDecoration(
-                            border: Border.all(color: Colors.white, width: 0.5)),
+                            border:
+                                Border.all(color: Colors.white, width: 0.5)),
                         width: 55,
                         height: 55,
-                        child: Icon(
+                        child: const Icon(
                           Icons.music_note_outlined,
                           color: Colors.white,
                         )),
                 title: Text(
                   playlist.playlistName ?? 'unknown',
-                  style: TextStyle(
+                  style: const TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
                       fontSize: 20),
                 ),
                 subtitle: Text(
                   'Playlist . ${user.user.value!.userName}',
-                  style: TextStyle(color: Colors.grey),
+                  style: const TextStyle(color: Colors.grey),
                 ),
                 trailing: IconButton(
                     onPressed: () {},
-                    icon: Icon(
+                    icon: const Icon(
                       Icons.more_vert,
                       color: Colors.white,
                     )),

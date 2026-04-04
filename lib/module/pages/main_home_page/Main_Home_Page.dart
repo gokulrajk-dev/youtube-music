@@ -158,7 +158,7 @@ class _MainHomePageState extends State<MainHomePage> {
                             ),
                             trailing: IconButton(
                               onPressed: () async {
-                                music_player.contorller_for_song();
+                                music_player.togglePlayPause();
                               },
                               icon: AnimatedIcon(
                                 icon: AnimatedIcons.play_pause,

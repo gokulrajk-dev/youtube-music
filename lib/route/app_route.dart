@@ -57,15 +57,15 @@ class App_route{
   static const artist_page ='/artist_page';
 
   static final route=[
-    GetPage(name: splash, page: ()=>splash_screen(),bindings:[ auth_binding()],middlewares: [auth_guard()]),
-    GetPage(name: login_pag, page: ()=>login_page(),binding: auth_binding(),middlewares: [auth_guard()]),
-    GetPage(name: main_home_pages, page: ()=>MainHomePage(),bindings: [Main_Home_Page_Binding(),Album_Binding(),Init_Binding(),Artist_Binding()],middlewares: [auth_guard()]),
-    GetPage(name: home_pages, page: ()=>home_page(),binding: home_binding(),middlewares: [auth_guard()]),
+    GetPage(name: splash, page: ()=>const splash_screen(),bindings:[ auth_binding()],middlewares: [auth_guard()]),
+    GetPage(name: login_pag, page: ()=>const login_page(),binding: auth_binding(),middlewares: [auth_guard()]),
+    GetPage(name: main_home_pages, page: ()=>const MainHomePage(),bindings: [Main_Home_Page_Binding(),Album_Binding(),Init_Binding(),Artist_Binding()],middlewares: [auth_guard()]),
+    GetPage(name: home_pages, page: ()=>const home_page(),binding: home_binding(),middlewares: [auth_guard()]),
     GetPage(name: short_page, page: ()=>Shorts_Views(),binding: Short_Binding(),),
     GetPage(name: explore_page, page: ()=>Explore_Views(),binding: Explore_Binding(),),
-    GetPage(name: library_page, page: ()=>Library_Views(),binding:Library_Binding()),
-    GetPage(name: profile_page, page: ()=>Profile_Views(),binding: Profile_binding(),transition: Transition.downToUp,),
-    GetPage(name: full_screen_media_player_page, page: ()=>full_screen_media_player(),binding: full_player_binding()),
+    GetPage(name: library_page, page: ()=>const Library_Views(),binding:Library_Binding()),
+    GetPage(name: profile_page, page: ()=>const Profile_Views(),binding: Profile_binding(),transition: Transition.downToUp,),
+    GetPage(name: full_screen_media_player_page, page: ()=>const full_screen_media_player(),binding: full_player_binding()),
     GetPage(name: like_page, page: ()=>Like_Views(),binding: Like_Binding()),
     GetPage(name: download_page, page: ()=>Download_Views(),binding: download_binding()),
     GetPage(name: playlist_page, page: ()=>Playlist_Views(),binding: Playlist_Binding()),

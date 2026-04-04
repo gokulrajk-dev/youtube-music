@@ -84,7 +84,7 @@ class Auth_Interceptor extends Interceptor {
         final retryResponse = await dio.fetch(err.requestOptions);
         return handler.resolve(retryResponse);
       } catch (_) {
-        await Token_service.clear_token();
+        // await Token_service.clear_token();
       }
     }
 

@@ -1,12 +1,16 @@
+import 'package:audio_service/audio_service.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:youtube_music/route/app_route.dart';
+import 'package:youtube_music/services/audio_helper/audio_helper.dart';
 import 'package:youtube_music/services/auth_service.dart';
 
 import 'firebase_options.dart';
+
+late final MyAudioController audioHandler;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -15,6 +19,18 @@ void main() async {
   );
   await dotenv.load(fileName: '.env');
   await Auth_service.hasTokenValid();
+  audioHandler = await AudioService.init(
+      builder: () => MyAudioController(),
+      config: AudioServiceConfig(
+        androidNotificationChannelId: 'com.example.youtube_music.audio',
+        androidNotificationChannelName: 'Music Playback',
+        androidNotificationOngoing: true,
+        androidShowNotificationBadge: true,
+        androidStopForegroundOnPause: true,
+        notificationColor: Colors.grey[900],
+      ));
+
+  Get.put(audioHandler);
   runApp(const demo());
 }
 

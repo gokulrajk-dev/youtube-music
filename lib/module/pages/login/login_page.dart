@@ -23,7 +23,7 @@ class _login_pageState extends State<login_page> {
             Container(
               width: double.infinity,
               height: double.infinity,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 image: DecorationImage(
                   image: AssetImage('assets/_joker1.png'),
                   fit: BoxFit.cover,
@@ -54,7 +54,7 @@ class _login_pageState extends State<login_page> {
                     ),
                   ),
                   const Spacer(),
-                  Center(
+                  const Center(
                     child: Column(mainAxisSize: MainAxisSize.min, children: [
                       Text(
                         'No Ads Only Music',
@@ -78,10 +78,10 @@ class _login_pageState extends State<login_page> {
                       children: [
                         ElevatedButton(onPressed: (){
                           controller.SignInWithGoogle();
-                        }, child: Text('Sign in',style: TextStyle(color: Colors.black),)),
+                        }, child: const Text('Sign in',style: TextStyle(color: Colors.black),)),
                         OutlinedButton(onPressed: (){
                           controller.signOut();
-                        }, child: Text('device fiels only',style: TextStyle(color: Colors.white),)),
+                        }, child: const Text('device fiels only',style: TextStyle(color: Colors.white),)),
                       ],
                     ),
                   ),

@@ -8,7 +8,7 @@ import 'package:youtube_music/route/app_route.dart';
 class Feature {
   final IconData icon;
   final dynamic text;
-  Feature({required this.icon, required this.text,  this.g,this.onTap});
+  Feature({required this.icon, required this.text,  this.g, this.onTap});
   final dynamic g;
   final dynamic onTap;
 
@@ -53,18 +53,18 @@ class _Profile_ViewsState extends State<Profile_Views> {
               onPressed: () {
                 Get.back();
               },
-              icon: Icon(
+              icon: const Icon(
                 Icons.close,
                 color: Colors.black,
                 size: 40,
               )),
-          title: Text(
+          title: const Text(
             'Account',
             style: TextStyle(
                 color: Colors.black, fontWeight: FontWeight.bold, fontSize: 30),
           ),
           bottom: PreferredSize(
-              preferredSize: Size.fromHeight(70),
+              preferredSize: const Size.fromHeight(70),
               child: Builder(
                   builder: (context) {
                     return GestureDetector(
@@ -74,13 +74,13 @@ class _Profile_ViewsState extends State<Profile_Views> {
                       child: Obx(
                               () {
                                 if(con.is_loading.value){
-                                  return Center(
+                                  return const Center(
                                     child: CircularProgressIndicator(),
                                   );
                                 }
                                 if(con.error.value.isNotEmpty){
                                   return Center(
-                                    child: Text('${con.error.value}'),
+                                    child: Text(con.error.value),
                                   );
                                 }
                             return ListTile(
@@ -95,19 +95,19 @@ class _Profile_ViewsState extends State<Profile_Views> {
                                 children: [
                                   Text(
                                     '${con.user.value!.userName}',
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                         color: Colors.black,
                                         fontWeight: FontWeight.bold),
                                   ),
                                   Text(
                                     '${con.user.value!.gmail}',
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                         color: Colors.black,
                                         fontWeight: FontWeight.bold),
                                   ),
                                 ],
                               ),
-                              trailing: Icon(CupertinoIcons.right_chevron),
+                              trailing: const Icon(CupertinoIcons.right_chevron),
                             );
                           }),
                     );

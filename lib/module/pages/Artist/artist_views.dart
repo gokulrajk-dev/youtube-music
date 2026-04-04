@@ -22,7 +22,7 @@ class Artist_Views extends GetView<Artist_Controller>{
             onPressed: () {
               help.helper();
             },
-            icon: Icon(
+            icon: const Icon(
               CupertinoIcons.back,
               color: Colors.white,
             )),
@@ -35,7 +35,7 @@ class Artist_Views extends GetView<Artist_Controller>{
         // final year = dateTime.year.toString();
 
         if(controller.is_loading.value){
-          return Center(
+          return const Center(
             child: CircularProgressIndicator(color: Colors.white,),
           );
         }
@@ -55,7 +55,7 @@ class Artist_Views extends GetView<Artist_Controller>{
                     borderRadius: BorderRadius.circular(10),
                     image: DecorationImage(
                         image:artist_song!.artistImage == null
-                            ? AssetImage('assets/_joker1.png')
+                            ? const AssetImage('assets/_joker1.png')
                             : NetworkImage(
                             artist_song.artistImage ?? ""),
                         scale: 1)),
@@ -69,7 +69,7 @@ class Artist_Views extends GetView<Artist_Controller>{
                 children: [
                   Text(
                     artist_song.artistName ?? 'unknown',
-                    style: TextStyle(
+                    style: const TextStyle(
                         color: Colors.white,
                         fontSize: 25,
                         fontWeight: FontWeight.bold),
@@ -84,7 +84,7 @@ class Artist_Views extends GetView<Artist_Controller>{
                     child:
                     Text(
                       artist_song.artistBio ?? 'unknown',
-                      style: TextStyle(color: Colors.grey, fontSize: 13),
+                      style: const TextStyle(color: Colors.grey, fontSize: 13),
                     ),
                   ),
                   Container(
@@ -93,21 +93,21 @@ class Artist_Views extends GetView<Artist_Controller>{
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         Like_Views.rowicon(
-                            Icon(
+                            const Icon(
                               CupertinoIcons.arrow_down_to_line,
                               color: Colors.white,
                             ),
                                 () {},
                             Colors.white.withOpacity(0.2)),
                         Like_Views.rowicon(
-                            Icon(
+                            const Icon(
                               Icons.add_to_photos_outlined,
                               color: Colors.white,
                             ),
                                 () {},
                             Colors.white.withOpacity(0.2)),
                         Like_Views.rowicon(
-                            Icon(
+                            const Icon(
                               Icons.play_arrow,
                               color: Colors.black,
                               size: 50,
@@ -115,14 +115,14 @@ class Artist_Views extends GetView<Artist_Controller>{
                                 () {},
                             Colors.white),
                         Like_Views.rowicon(
-                            Icon(
+                            const Icon(
                               CupertinoIcons.arrow_turn_up_right,
                               color: Colors.white,
                             ),
                                 () {},
                             Colors.white.withOpacity(0.2)),
                         Like_Views.rowicon(
-                            Icon(
+                            const Icon(
                               Icons.more_vert,
                               color: Colors.white,
                             ),

@@ -6,31 +6,51 @@ import '../../module/pages/main_home_page/main_page_navigation_key.dart';
 
 class helper_code {
   final controller = Get.find<Main_Home_Page_Controller>();
- void helper(){
-  int index = controller.current_index.value;
 
-  GlobalKey<NavigatorState>? currentNavigator;
+  void helper() {
+    int index = controller.current_index.value;
 
-  switch (index) {
-    case 0:
-      currentNavigator = navigator_key.homeNavKey;
-      break;
-    case 1:
-      currentNavigator = navigator_key.shortsNavKey;
-      break;
-    case 2:
-      currentNavigator = navigator_key.exploreNavKey;
-      break;
-    case 3:
-      currentNavigator = navigator_key.libraryNavKey;
-      break;
-  }
+    GlobalKey<NavigatorState>? currentNavigator;
 
-  if(currentNavigator !=null &&  currentNavigator.currentState !=null && currentNavigator.currentState!.canPop()){
-    currentNavigator.currentState!.pop();
-    return;
-  }else {
-    Get.back();
+    switch (index) {
+      case 0:
+        currentNavigator = navigator_key.homeNavKey;
+        break;
+      case 1:
+        currentNavigator = navigator_key.shortsNavKey;
+        break;
+      case 2:
+        currentNavigator = navigator_key.exploreNavKey;
+        break;
+      case 3:
+        currentNavigator = navigator_key.libraryNavKey;
+        break;
+    }
+
+    if (currentNavigator != null &&
+        currentNavigator.currentState != null &&
+        currentNavigator.currentState!.canPop()) {
+      currentNavigator.currentState!.pop();
+      return;
+    } else {
+      Get.back();
+    }
   }
 }
+
+class NavHelper {
+  static int getNavId(int index) {
+    switch (index) {
+      case 0:
+        return 1; // home
+      case 1:
+        return 2; // shorts
+      case 2:
+        return 3; // explore
+      case 3:
+        return 4; // library
+      default:
+        return 1;
+    }
+  }
 }

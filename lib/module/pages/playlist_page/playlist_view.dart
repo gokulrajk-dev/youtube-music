@@ -4,15 +4,16 @@ import 'package:get/get.dart';
 import 'package:youtube_music/module/pages/home/controllers/all_song_controller.dart';
 import 'package:youtube_music/module/pages/home/controllers/user_data_controller.dart';
 import 'package:youtube_music/module/pages/playlist_page/playlist_controller.dart';
-import 'package:youtube_music/route/app_route.dart';
 import 'package:youtube_music/services/helper_code/helper_code.dart';
 
 import '../../../../widgets/songListView.dart';
+import '../../../route/app_route.dart';
 import '../like_page/like_views.dart';
 
 class Playlist_Views extends GetView<Playlist_Controller> {
   final get_current_song song = Get.find<get_current_song>();
   final user_details_controller user = Get.find<user_details_controller>();
+   Playlist_Views({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +26,7 @@ class Playlist_Views extends GetView<Playlist_Controller> {
             onPressed: () {
               help.helper();
             },
-            icon: Icon(
+            icon: const Icon(
               CupertinoIcons.back,
               color: Colors.white,
             )),
@@ -35,7 +36,7 @@ class Playlist_Views extends GetView<Playlist_Controller> {
         final userdetails = user.user.value;
         final songs_only = playlist_song?.songs ?? [];
         if (controller.is_loading.value) {
-          return Center(
+          return const Center(
             child: CircularProgressIndicator(),
           );
         }
@@ -54,7 +55,7 @@ class Playlist_Views extends GetView<Playlist_Controller> {
                     borderRadius: BorderRadius.circular(10),
                     image: DecorationImage(
                         image: playlist_song!.playlistcoverimage == null
-                            ? AssetImage('assets/_joker1.png')
+                            ? const AssetImage('assets/_joker1.png')
                             : NetworkImage(
                                 playlist_song.playlistcoverimage ?? ""),
                         scale: 1)),
@@ -68,7 +69,7 @@ class Playlist_Views extends GetView<Playlist_Controller> {
                 children: [
                   Text(
                     playlist_song.playlistName ?? 'unknown',
-                    style: TextStyle(
+                    style: const TextStyle(
                         color: Colors.white,
                         fontSize: 25,
                         fontWeight: FontWeight.bold),
@@ -81,7 +82,7 @@ class Playlist_Views extends GetView<Playlist_Controller> {
                     children: [
                       CircleAvatar(
                         backgroundImage: userdetails!.photoUrl == null
-                            ? AssetImage('assets/img.png')
+                            ? const AssetImage('assets/img.png')
                             : NetworkImage(
                                 userdetails.photoUrl,
                                 scale: 1,
@@ -92,7 +93,7 @@ class Playlist_Views extends GetView<Playlist_Controller> {
                       ),
                       Text(
                         userdetails.userName,
-                        style: TextStyle(color: Colors.white),
+                        style: const TextStyle(color: Colors.white),
                       )
                     ],
                   ),
@@ -100,58 +101,55 @@ class Playlist_Views extends GetView<Playlist_Controller> {
                   Padding(
                     padding: const EdgeInsets.only(top: 10, bottom: 10),
                     child: playlist_song.isPublic == false
-                        ? Text(
+                        ? const Text(
                             'Private',
                             style: TextStyle(color: Colors.grey, fontSize: 13),
                           )
-                        : Text(
+                        : const Text(
                             'Public',
                             style: TextStyle(color: Colors.grey, fontSize: 13),
                           ),
                   ),
-                  Container(
-                    // width: 230,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Like_Views.rowicon(
-                            Icon(
-                              CupertinoIcons.arrow_down_to_line,
-                              color: Colors.white,
-                            ),
-                            () {},
-                            Colors.white.withOpacity(0.2)),
-                        Like_Views.rowicon(
-                            Icon(
-                              Icons.edit_outlined,
-                              color: Colors.white,
-                            ),
-                            () {},
-                            Colors.white.withOpacity(0.2)),
-                        Like_Views.rowicon(
-                            Icon(
-                              Icons.play_arrow,
-                              color: Colors.black,
-                              size: 50,
-                            ),
-                            () {},
-                            Colors.white),
-                        Like_Views.rowicon(
-                            Icon(
-                              CupertinoIcons.arrow_turn_up_right,
-                              color: Colors.white,
-                            ),
-                            () {},
-                            Colors.white.withOpacity(0.2)),
-                        Like_Views.rowicon(
-                            Icon(
-                              Icons.more_vert,
-                              color: Colors.white,
-                            ),
-                            () {},
-                            Colors.white.withOpacity(0.2)),
-                      ],
-                    ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Like_Views.rowicon(
+                          const Icon(
+                            CupertinoIcons.arrow_down_to_line,
+                            color: Colors.white,
+                          ),
+                          () {},
+                          Colors.white.withOpacity(0.2)),
+                      Like_Views.rowicon(
+                          const Icon(
+                            Icons.edit_outlined,
+                            color: Colors.white,
+                          ),
+                          () {},
+                          Colors.white.withOpacity(0.2)),
+                      Like_Views.rowicon(
+                          const Icon(
+                            Icons.play_arrow,
+                            color: Colors.black,
+                            size: 50,
+                          ),
+                          () {},
+                          Colors.white),
+                      Like_Views.rowicon(
+                          const Icon(
+                            CupertinoIcons.arrow_turn_up_right,
+                            color: Colors.white,
+                          ),
+                          () {},
+                          Colors.white.withOpacity(0.2)),
+                      Like_Views.rowicon(
+                          const Icon(
+                            Icons.more_vert,
+                            color: Colors.white,
+                          ),
+                          () {},
+                          Colors.white.withOpacity(0.2)),
+                    ],
                   ),
                 ],
               ),
@@ -165,12 +163,12 @@ class Playlist_Views extends GetView<Playlist_Controller> {
                   width: 65,
                   height: 100,
                   color: Colors.white.withOpacity(0.2),
-                  child: Icon(
+                  child: const Icon(
                     CupertinoIcons.add,
                     color: Colors.white,
                   ),
                 ),
-                title: Text(
+                title: const Text(
                   'Add a Song',
                   style: TextStyle(color: Colors.white),
                 ),
@@ -238,7 +236,7 @@ class Playlist_Views extends GetView<Playlist_Controller> {
             ),
             Container(
               height: 100,
-            )
+            ),
           ],
         );
       }),

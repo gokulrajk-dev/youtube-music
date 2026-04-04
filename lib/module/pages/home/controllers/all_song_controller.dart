@@ -32,12 +32,15 @@ class get_current_song extends base_controller {
   final Song_Repository song_repository = Song_Repository();
   final current_song = Rxn<Song>();
   final RxList<Song> queue = <Song>[].obs;
+  final RxList<Song> copyqueue = <Song>[].obs;
   final currentIndex = 0.obs;
   final isshuffleenabled = false.obs;
 
   Future<void> setQueue(List<Song> song, int startIndex) async {
     if (song.toList().isEmpty) {
       await get_current_user_pick_song(startIndex);
+      queue.assign(current_song.value!);
+      currentIndex.value = 0;
       return;
     }
     queue.value = List.from(song);
@@ -61,6 +64,39 @@ class get_current_song extends base_controller {
     }
   }
 
+  Future<void> playNext(Song song) async {
+    if (queue.isEmpty) {
+      return;
+    }
+    final songIndex = queue.indexWhere((e) => e.id == song.id);
+    if (songIndex == currentIndex.value) {
+    } else if (songIndex != -1) {
+      queue.removeAt(songIndex);
+      if (songIndex < currentIndex.value) {
+        currentIndex.value--;
+      }
+    }
+    queue.insert(currentIndex.value + 1, song);
+    queue.refresh();
+  }
+
+  void dismissQueue(int index) {
+    if (index == currentIndex.value) {}
+
+    if (index != -1) {
+      queue.removeAt(index);
+    }
+
+    if (index < currentIndex.value) {
+      currentIndex.value--;
+    }
+    queue.refresh();
+  }
+
+  void AddToQueue(Song song) {
+    queue.add(song);
+  }
+
   Future<void> clear_user() async {
     current_song.value = null;
   }
@@ -81,8 +117,16 @@ class get_current_song extends base_controller {
   void shuffle_on_off() {
     isshuffleenabled.value = !isshuffleenabled.value;
     if (isshuffleenabled.value) {
+      copyqueue.assignAll(queue);
       queue.shuffle();
+      queue.refresh();
+    } else {
+      queue.assignAll(copyqueue);
+      queue.refresh();
     }
+    int currentSong =
+        queue.indexWhere((song) => song.id == current_song.value!.id);
+    currentIndex.value = currentSong;
   }
 
 // todo after the project almost done

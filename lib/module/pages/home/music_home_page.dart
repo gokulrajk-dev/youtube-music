@@ -60,12 +60,12 @@ class _home_pageState extends State<home_page> {
               // ),
               leading: TextButton.icon(
                 onPressed: () {},
-                label: Text(
+                label: const Text(
                   'MUSIC',
                   style: TextStyle(
                       color: Colors.black, fontWeight: FontWeight.bold),
                 ),
-                icon: Icon(
+                icon: const Icon(
                   Icons.play_circle_outline,
                   color: Colors.red,
                 ),
@@ -77,17 +77,17 @@ class _home_pageState extends State<home_page> {
                   onPressed: () {
                     Get.toNamed(App_route.history_page, id: 1);
                   },
-                  icon: Icon(Icons.history),
+                  icon: const Icon(Icons.history),
                   color: Colors.black,
                 ),
                 IconButton(
                   onPressed: () {},
-                  icon: Icon(Icons.notifications_none),
+                  icon: const Icon(Icons.notifications_none),
                   color: Colors.black,
                 ),
                 IconButton(
                   onPressed: () {},
-                  icon: Icon(Icons.search),
+                  icon: const Icon(Icons.search),
                   color: Colors.black,
                 ),
                 Builder(builder: (context) {
@@ -98,7 +98,7 @@ class _home_pageState extends State<home_page> {
                     child: Obx(() {
                       final user = controller.user.value;
                       return user == null
-                          ? CircleAvatar(
+                          ? const CircleAvatar(
                               backgroundImage: AssetImage('assets/_joker1.png'),
                             )
                           : CircleAvatar(
@@ -117,7 +117,7 @@ class _home_pageState extends State<home_page> {
                   height: 100,
                   child: ListView(
                     shrinkWrap: true,
-                    physics: BouncingScrollPhysics(),
+                    physics: const BouncingScrollPhysics(),
                     scrollDirection: Axis.horizontal,
                     children: const [
                       SizedBox(width: 10),
@@ -225,11 +225,11 @@ class _home_pageState extends State<home_page> {
                   height: 100,
                   child: Obx(() {
                     if (controller_song.is_loading.value) {
-                      return Center(child: CircularProgressIndicator());
+                      return const Center(child: CircularProgressIndicator());
                     }
 
                     if (controller_song.songs.isEmpty) {
-                      return Center(child: Text('No songs available'));
+                      return const Center(child: Text('No songs available'));
                     }
 
                     return PageView.builder(
@@ -253,12 +253,8 @@ class _home_pageState extends State<home_page> {
                                   builder: (context, scrollController) {
                                     return globle_bottom_sheet(
                                       controllers: scrollController,
-                                      song_artist: song.artist,
-                                      song_title: song.title,
-                                      song_cover_img: song.coverImage,
-                                      song_id: song.id,
-                                      album_id: song.album!.id,
-                                      artist_id: song.artist!.first.id,
+                                      song: song,
+                                      songIndex: -1,
                                     );
                                   },
                                 ),
@@ -279,7 +275,7 @@ class _home_pageState extends State<home_page> {
                                       ),
                                     ),
                                     errorWidget: (context, url, error) =>
-                                        Icon(Icons.error),
+                                        const Icon(Icons.error),
                                     fit: BoxFit.cover,
                                   ),
                                   const Spacer(),
@@ -290,7 +286,7 @@ class _home_pageState extends State<home_page> {
                                     children: [
                                       Text(
                                         song.title ?? "unknown",
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                             fontSize: 20,
                                             fontWeight: FontWeight.bold),
                                       ),
@@ -301,7 +297,7 @@ class _home_pageState extends State<home_page> {
                                         overflow: TextOverflow.ellipsis,
                                         maxLines: 1,
                                         softWrap: true,
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                             color: Colors.grey, fontSize: 13),
                                       ),
                                     ],
@@ -317,20 +313,15 @@ class _home_pageState extends State<home_page> {
                                                 (context, scrollController) {
                                               return globle_bottom_sheet(
                                                 controllers: scrollController,
-                                                song_artist: song.artist,
-                                                song_title: song.title,
-                                                song_cover_img: song.coverImage,
-                                                song_id: song.id,
-                                                album_id: song.album!.id,
-                                                artist_id:
-                                                    song.artist!.first.id,
+                                                song: song,
+                                                songIndex: -1,
                                               );
                                             },
                                           ),
                                           isScrollControlled: true,
                                         );
                                       },
-                                      icon: Icon(
+                                      icon: const Icon(
                                         Icons.more_vert,
                                         color: Colors.black,
                                       ))
@@ -365,7 +356,7 @@ class _home_pageState extends State<home_page> {
                       child: Row(
                         children: album_song.album_song.map((album) {
                           return album.songAlbum!.isEmpty
-                              ? SizedBox()
+                              ? const SizedBox()
                               : GestureDetector(
                                   onTap: () {
                                     album_song.retrive_album_song_con(album.id);
@@ -393,7 +384,7 @@ class _home_pageState extends State<home_page> {
                                                   fit: BoxFit.cover,
                                                   image: album.coverImage ==
                                                           null
-                                                      ? AssetImage(
+                                                      ? const AssetImage(
                                                           'assets/_joker1.png')
                                                       : CachedNetworkImageProvider(
                                                           album.coverImage!),
@@ -404,7 +395,7 @@ class _home_pageState extends State<home_page> {
                                           ),
                                           Text(
                                             album.title ?? "unknown",
-                                            style: TextStyle(
+                                            style: const TextStyle(
                                                 fontWeight: FontWeight.bold,
                                                 fontSize: 18),
                                           ),
@@ -416,7 +407,7 @@ class _home_pageState extends State<home_page> {
                                             maxLines: 2,
                                             overflow: TextOverflow.ellipsis,
                                             style:
-                                                TextStyle(color: Colors.grey),
+                                                const TextStyle(color: Colors.grey),
                                           )
                                         ],
                                       ),
@@ -452,7 +443,7 @@ class _home_pageState extends State<home_page> {
                       child: Row(
                         children: artist_song.get_artist.map((artist) {
                           return artist.artistName!.isEmpty
-                              ? SizedBox()
+                              ? const SizedBox()
                               : GestureDetector(
                                   onTap: () {
                                     artist_song
@@ -473,7 +464,7 @@ class _home_pageState extends State<home_page> {
                                           Card(
                                             semanticContainer: true,
                                             borderOnForeground: true,
-                                            shape: CircleBorder(),
+                                            shape: const CircleBorder(),
                                             clipBehavior: Clip.hardEdge,
                                             child: artist.artistImage != null
                                                 ? CachedNetworkImage(
@@ -489,7 +480,7 @@ class _home_pageState extends State<home_page> {
                                                     ),
                                                     errorWidget:
                                                         (context, url, error) =>
-                                                            Icon(Icons.error),
+                                                            const Icon(Icons.error),
                                                     fit: BoxFit.cover,
                                                   )
                                                 : Image.asset(
@@ -500,7 +491,7 @@ class _home_pageState extends State<home_page> {
                                           ),
                                           Text(
                                             artist.artistName ?? "unknown",
-                                            style: TextStyle(
+                                            style: const TextStyle(
                                                 fontWeight: FontWeight.bold,
                                                 fontSize: 18),
                                           ),
@@ -547,7 +538,7 @@ class _home_pageState extends State<home_page> {
                         .toString()))),
               ),
             ),
-            SliverToBoxAdapter(
+            const SliverToBoxAdapter(
               child: SizedBox(
                 height: 1100,
               ),

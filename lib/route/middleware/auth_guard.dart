@@ -7,11 +7,11 @@ class auth_guard extends GetMiddleware {
   @override
   RouteSettings? redirect(String? route) {
     if (Auth_service.isAuthenticate && route == App_route.login_pag ) {
-      return RouteSettings(name: App_route.main_home_pages);
+      return const RouteSettings(name: App_route.main_home_pages);
     }
 
     if (!Auth_service.isAuthenticate && route != App_route.login_pag) {
-      return RouteSettings(name: App_route.login_pag);
+      return const RouteSettings(name: App_route.login_pag);
     }
     return null;
   }

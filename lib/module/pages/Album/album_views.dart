@@ -10,7 +10,7 @@ import '../../../widgets/songListView.dart';
 import '../Artist/artist_controller.dart';
 import '../like_page/like_views.dart';
 
-class Album_Views extends GetView<Album_Controller>{
+class Album_Views extends GetView<Album_Controller> {
   final get_current_song song = Get.find<get_current_song>();
   final Artist_Controller artist_song = Get.find<Artist_Controller>();
 
@@ -25,24 +25,26 @@ class Album_Views extends GetView<Album_Controller>{
             onPressed: () {
               help.helper();
             },
-            icon: Icon(
+            icon: const Icon(
               CupertinoIcons.back,
               color: Colors.white,
             )),
       ),
       body: Obx(() {
-        final album_song = controller.retrive_album_song.value;
-        final song_only = album_song?.songAlbum ?? [];
-        final song_date = album_song!.releaseDate;
-        DateTime dateTime = DateTime.parse(song_date!);
+        final albumSong = controller.retrive_album_song.value;
+        final songOnly = albumSong?.songAlbum ?? [];
+        final songDate = albumSong!.releaseDate;
+        DateTime dateTime = DateTime.parse(songDate!);
         final year = dateTime.year.toString();
-        
-        if(controller.is_loading.value){
-          return Center(
-            child: CircularProgressIndicator(color: Colors.white,),
+
+        if (controller.is_loading.value) {
+          return const Center(
+            child: CircularProgressIndicator(
+              color: Colors.white,
+            ),
           );
         }
-        if(controller.error.value.isNotEmpty){
+        if (controller.error.value.isNotEmpty) {
           return Center(
             child: Text(controller.error.value),
           );
@@ -52,33 +54,39 @@ class Album_Views extends GetView<Album_Controller>{
           children: [
             GestureDetector(
               onTap: () async {
-                await artist_song.retrive_artist_with_song(album_song.artists!.first.id);
+                await artist_song
+                    .retrive_artist_with_song(albumSong.artists!.first.id);
                 Get.toNamed(App_route.artist_page, id: 1);
               },
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   CircleAvatar(
-                    backgroundImage: album_song.artists!.first.artistImage == null
-                        ? AssetImage('assets/img.png')
-                        : NetworkImage(
-                      album_song.artists!.first.artistImage ?? "",
-                      scale: 1,
-                    ),
+                    backgroundImage:
+                        albumSong.artists!.first.artistImage == null
+                            ? const AssetImage('assets/img.png')
+                            : NetworkImage(
+                                albumSong.artists!.first.artistImage ?? "",
+                                scale: 1,
+                              ),
                   ),
                   const SizedBox(
                     width: 10,
                   ),
                   Text(
-                    album_song.artists!.first.artistName ?? 'unknown',
-                    style: TextStyle(color: Colors.white),
+                    albumSong.artists!.first.artistName ?? 'unknown',
+                    style: const TextStyle(color: Colors.white),
                   )
                 ],
               ),
             ),
             Padding(
               padding: const EdgeInsets.only(top: 8.0),
-              child: Center(child: Text('Album.${year}',style: TextStyle(color: Colors.grey),)),
+              child: Center(
+                  child: Text(
+                'Album.$year',
+                style: const TextStyle(color: Colors.grey),
+              )),
             ),
             Center(
               child: Container(
@@ -87,10 +95,9 @@ class Album_Views extends GetView<Album_Controller>{
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
                     image: DecorationImage(
-                        image:album_song.coverImage == null
-                            ? AssetImage('assets/_joker1.png')
-                            : NetworkImage(
-                            album_song.coverImage ?? ""),
+                        image: albumSong.coverImage == null
+                            ? const AssetImage('assets/_joker1.png')
+                            : NetworkImage(albumSong.coverImage ?? ""),
                         scale: 1)),
               ),
             ),
@@ -101,8 +108,8 @@ class Album_Views extends GetView<Album_Controller>{
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    album_song.title ?? 'unknown',
-                    style: TextStyle(
+                    albumSong.title ?? 'unknown',
+                    style: const TextStyle(
                         color: Colors.white,
                         fontSize: 25,
                         fontWeight: FontWeight.bold),
@@ -110,13 +117,11 @@ class Album_Views extends GetView<Album_Controller>{
                   const SizedBox(
                     height: 7,
                   ),
-
                   Padding(
                     padding: const EdgeInsets.only(top: 10, bottom: 10),
-                    child:
-                        Text(
-                      album_song.description ?? 'unknown',
-                      style: TextStyle(color: Colors.grey, fontSize: 13),
+                    child: Text(
+                      albumSong.description ?? 'unknown',
+                      style: const TextStyle(color: Colors.grey, fontSize: 13),
                     ),
                   ),
                   Container(
@@ -125,40 +130,40 @@ class Album_Views extends GetView<Album_Controller>{
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         Like_Views.rowicon(
-                            Icon(
+                            const Icon(
                               CupertinoIcons.arrow_down_to_line,
                               color: Colors.white,
                             ),
-                                () {},
+                            () {},
                             Colors.white.withOpacity(0.2)),
                         Like_Views.rowicon(
-                            Icon(
+                            const Icon(
                               Icons.add_to_photos_outlined,
                               color: Colors.white,
                             ),
-                                () {},
+                            () {},
                             Colors.white.withOpacity(0.2)),
                         Like_Views.rowicon(
-                            Icon(
+                            const Icon(
                               Icons.play_arrow,
                               color: Colors.black,
                               size: 50,
                             ),
-                                () {},
+                            () {},
                             Colors.white),
                         Like_Views.rowicon(
-                            Icon(
+                            const Icon(
                               CupertinoIcons.arrow_turn_up_right,
                               color: Colors.white,
                             ),
-                                () {},
+                            () {},
                             Colors.white.withOpacity(0.2)),
                         Like_Views.rowicon(
-                            Icon(
+                            const Icon(
                               Icons.more_vert,
                               color: Colors.white,
                             ),
-                                () {},
+                            () {},
                             Colors.white.withOpacity(0.2)),
                       ],
                     ),
@@ -219,10 +224,10 @@ class Album_Views extends GetView<Album_Controller>{
             //           )));
             // }).toList()),
             SongListViews(
-              songs: song_only,
+              songs: songOnly,
               onTap: (selectedSong) async {
-                final index = song_only.indexOf(selectedSong);
-                await song.setQueue(song_only, index);
+                final index = songOnly.indexOf(selectedSong);
+                await song.setQueue(songOnly, index);
                 Get.toNamed(App_route.full_screen_media_player_page);
               },
             ),

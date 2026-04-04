@@ -3,10 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:youtube_music/module/pages/home/controllers/all_song_controller.dart';
 import 'package:youtube_music/module/pages/home/controllers/user_data_controller.dart';
-
 import 'package:youtube_music/services/helper_code/helper_code.dart';
 
-
+import '../../../route/app_route.dart';
 import '../globle_bottom_sheet/globle_bottom_sheet_views.dart';
 import 'like_controller.dart';
 
@@ -18,7 +17,7 @@ class Like_Views extends GetView<Like_Controller> {
   static Widget rowicon(Icon icon, VoidCallback onTop, Color color) {
     return Container(
         decoration: ShapeDecoration(
-          shape: CircleBorder(),
+          shape: const CircleBorder(),
           color: color,
         ),
         child: Center(
@@ -39,14 +38,14 @@ class Like_Views extends GetView<Like_Controller> {
             onPressed: () {
               help.helper();
             },
-            icon: Icon(
+            icon: const Icon(
               CupertinoIcons.back,
               color: Colors.white,
             )),
         actions: [
           IconButton(
             onPressed: () {},
-            icon: Icon(Icons.search),
+            icon: const Icon(Icons.search),
             color: Colors.white,
           )
         ],
@@ -60,7 +59,7 @@ class Like_Views extends GetView<Like_Controller> {
               width: 200,
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
-                  image: DecorationImage(
+                  image: const DecorationImage(
                       image: AssetImage('assets/liked_pic.png'), scale: 1)),
             ),
           ),
@@ -70,7 +69,7 @@ class Like_Views extends GetView<Like_Controller> {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(
+                const Text(
                   'Liked Music',
                   style: TextStyle(
                       color: Colors.white,
@@ -80,7 +79,7 @@ class Like_Views extends GetView<Like_Controller> {
                 Obx(() {
                   final userdetails = user.user.value;
                   if (user.is_loading.value) {
-                    return Center(
+                    return const Center(
                       child: CircularProgressIndicator(),
                     );
                   }
@@ -90,7 +89,7 @@ class Like_Views extends GetView<Like_Controller> {
                     children: [
                       CircleAvatar(
                         backgroundImage: userdetails!.photoUrl == null
-                            ? AssetImage('assets/img.png')
+                            ? const AssetImage('assets/img.png')
                             : NetworkImage(userdetails.photoUrl, scale: 5),
                       ),
                       const SizedBox(
@@ -98,14 +97,13 @@ class Like_Views extends GetView<Like_Controller> {
                       ),
                       Text(
                         userdetails.userName,
-                        style: TextStyle(color: Colors.white),
+                        style: const TextStyle(color: Colors.white),
                       )
                     ],
                   );
                 }),
-                Padding(
-                  padding:
-                      const EdgeInsets.only(left: 18.0, top: 10, bottom: 10),
+                const Padding(
+                  padding: EdgeInsets.only(left: 18.0, top: 10, bottom: 10),
                   child: Text(
                     'Music that you like in any Youtube app will be shown.\n                here you can change this in Settings.',
                     style: TextStyle(color: Colors.grey, fontSize: 13),
@@ -120,14 +118,14 @@ class Like_Views extends GetView<Like_Controller> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       rowicon(
-                          Icon(
+                          const Icon(
                             CupertinoIcons.arrow_down_to_line,
                             color: Colors.white,
                           ),
                           () {},
                           Colors.white.withOpacity(0.2)),
                       rowicon(
-                          Icon(
+                          const Icon(
                             Icons.play_arrow,
                             color: Colors.black,
                             size: 50,
@@ -135,7 +133,7 @@ class Like_Views extends GetView<Like_Controller> {
                           () {},
                           Colors.white),
                       rowicon(
-                          Icon(
+                          const Icon(
                             Icons.more_vert,
                             color: Colors.white,
                           ),
@@ -149,7 +147,7 @@ class Like_Views extends GetView<Like_Controller> {
           ),
           Obx(() {
             if (controller.is_loading.value) {
-              return Center(
+              return const Center(
                 child: CircularProgressIndicator(),
               );
             }
@@ -162,20 +160,23 @@ class Like_Views extends GetView<Like_Controller> {
 
             return ListView.builder(
                 shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
+                physics: const NeverScrollableScrollPhysics(),
                 itemCount: controller.like_song.length,
                 itemBuilder: (context, index) {
                   final like = controller.like_song[index];
+                  final listSong =
+                      controller.like_song.map((item) => item.song!).toList();
                   return ListTile(
                       onTap: () {
-                        con.get_current_user_pick_song(like.song!.id);
+                        con.setQueue(listSong, index);
+                        Get.toNamed(App_route.full_screen_media_player_page);
                       },
                       style: ListTileStyle.drawer,
                       leading: Image.network(like.song!.coverImage ?? ""),
                       titleAlignment: ListTileTitleAlignment.center,
                       title: Text(
                         like.song!.title ?? "Unknown",
-                        style: TextStyle(
+                        style: const TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
                             fontSize: 20),
@@ -184,7 +185,7 @@ class Like_Views extends GetView<Like_Controller> {
                         like.song!.artist!
                             .map((artist) => artist.artistName)
                             .join(','),
-                        style: TextStyle(
+                        style: const TextStyle(
                           color: Colors.grey,
                           fontSize: 13,
                         ),
@@ -201,19 +202,14 @@ class Like_Views extends GetView<Like_Controller> {
                                 builder: (context, scrollController) {
                                   return globle_bottom_sheet(
                                     controllers: scrollController,
-                                    song_cover_img: like.song!.coverImage,
-                                    song_title: like.song!.title,
-                                    song_artist: like.song!.artist,
-                                    song_id: like.song!.id,
-                                    album_id: like.song!.album!.id,
-                                    artist_id: like.song!.artist!.first.id,
+                                    song: like.song!,
                                   );
                                 },
                               ),
                               isScrollControlled: true,
                             );
                           },
-                          icon: Icon(
+                          icon: const Icon(
                             Icons.more_vert,
                             color: Colors.white,
                           )));

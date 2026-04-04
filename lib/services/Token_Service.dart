@@ -3,7 +3,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class Token_service {
   static final _storage = const FlutterSecureStorage(
-    aOptions: const AndroidOptions(
+    aOptions: AndroidOptions(
       encryptedSharedPreferences: true,
     ),
   );

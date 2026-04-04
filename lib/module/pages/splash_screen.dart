@@ -15,8 +15,8 @@ class splash_screen extends StatefulWidget {
 class _splash_screenState extends State<splash_screen> {
   @override
   Widget build(BuildContext context) {
-    Future.delayed(Duration(milliseconds: 500),() { Get.offAllNamed(App_route.login_pag);});
-    return Scaffold(
+    Future.delayed(const Duration(milliseconds: 500),() { Get.offAllNamed(App_route.login_pag);});
+    return const Scaffold(
       body: Center(
         child: CircularProgressIndicator(),
       ),

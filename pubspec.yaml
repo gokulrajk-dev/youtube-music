@@ -50,6 +50,7 @@ dependencies:
   permission_handler: ^11.3.0
   shared_preferences: ^2.5.3
   cached_network_image: any
+  audio_service: any
 
 dev_dependencies:
   flutter_test:

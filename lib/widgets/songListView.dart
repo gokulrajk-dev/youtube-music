@@ -63,12 +63,7 @@ class SongListViews extends StatelessWidget {
                   builder: (context, scrollController) {
                     return globle_bottom_sheet(
                       controllers: scrollController,
-                      song_cover_img: playlist_songs.coverImage,
-                      song_title: playlist_songs.title,
-                      song_artist: playlist_songs.artist,
-                      song_id: playlist_songs.id,
-                      album_id: playlist_songs.album!.id,
-                      artist_id: playlist_songs.artist!.first.id,
+                      song: playlist_songs,
                     );
                   },
                 ),
