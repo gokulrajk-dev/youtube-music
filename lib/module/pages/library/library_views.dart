@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:youtube_music/module/pages/home/music_home_page.dart';
 import 'package:youtube_music/module/pages/library/library_controller.dart';
+import 'package:youtube_music/module/pages/playlist_page/new_playlist_create_ui.dart';
 
 import '../../../route/app_route.dart';
 import '../download/download_views.dart';
@@ -34,6 +35,20 @@ class _Library_ViewsState extends State<Library_Views> {
   @override
   void initState() {
     super.initState();
+  }
+
+  Widget newPlaylist(IconData icon, String text, VoidCallback onTap) {
+    return ListTile(
+      onTap: onTap,
+      leading: Icon(
+        icon,
+        color: Colors.white,
+      ),
+      title: Text(
+        text,
+        style: TextStyle(color: Colors.white),
+      ),
+    );
   }
 
   @override
@@ -72,7 +87,9 @@ class _Library_ViewsState extends State<Library_Views> {
                                             color: Colors.white,
                                           )),
                                     ),
-                                    const Divider(),
+                                    const Divider(
+                                      color: Colors.white12,
+                                    ),
                                     ListTile(
                                       onTap: () {
                                         library_controller.change_current_index(
@@ -80,15 +97,15 @@ class _Library_ViewsState extends State<Library_Views> {
                                         Get.back();
                                       },
                                       leading: library_controller
-                                          .current_page_title ==
-                                          'Library'
+                                                  .current_page_title ==
+                                              'Library'
                                           ? const Icon(
-                                        Icons.check,
-                                        color: Colors.white,
-                                      )
+                                              Icons.check,
+                                              color: Colors.white,
+                                            )
                                           : const SizedBox(
-                                        width: 5,
-                                      ),
+                                              width: 5,
+                                            ),
                                       title: const Text(
                                         'Library',
                                         style: TextStyle(
@@ -103,15 +120,15 @@ class _Library_ViewsState extends State<Library_Views> {
                                         Get.back();
                                       },
                                       leading: library_controller
-                                          .current_page_title ==
-                                          'Download'
+                                                  .current_page_title ==
+                                              'Download'
                                           ? const Icon(
-                                        Icons.check,
-                                        color: Colors.white,
-                                      )
+                                              Icons.check,
+                                              color: Colors.white,
+                                            )
                                           : const SizedBox(
-                                        width: 5,
-                                      ),
+                                              width: 5,
+                                            ),
                                       title: const Text(
                                         'Download',
                                         style: TextStyle(color: Colors.white),
@@ -257,7 +274,70 @@ class _Library_ViewsState extends State<Library_Views> {
                       child: FloatingActionButton(
                         backgroundColor: Colors.white,
                         shape: const CircleBorder(),
-                        onPressed: () {},
+                        onPressed: () {
+                          Get.bottomSheet(
+                            isDismissible: false,
+                            DraggableScrollableSheet(
+                              builder: (context, scrollController) {
+                                return Scaffold(
+                                  backgroundColor: Colors.black,
+                                  body: Column(
+                                    children: [
+                                      ListTile(
+                                        title: const Text(
+                                          'New',
+                                          style: TextStyle(color: Colors.white),
+                                        ),
+                                        trailing: IconButton(
+                                            onPressed: () {
+                                              Get.back();
+                                            },
+                                            icon: const Icon(
+                                              Icons.close,
+                                              color: Colors.white,
+                                            )),
+                                      ),
+                                      const Divider(
+                                        color: Colors.white12,
+                                      ),
+                                      newPlaylist(
+                                        Icons.playlist_add,
+                                        'Playlist',
+                                        () {
+                                          Get.back();
+                                          showDialog(
+                                            context: context,
+                                            builder: (context) {
+                                              return Dialog(
+                                                  child: newPlaylistCreate());
+                                            },
+                                          );
+
+
+                                        },
+                                      ),
+                                      newPlaylist(
+                                        CupertinoIcons
+                                            .dot_radiowaves_left_right,
+                                        'Mix',
+                                        () {
+                                          Get.back();
+                                        },
+                                      ),
+                                      newPlaylist(
+                                        CupertinoIcons.person_2_fill,
+                                        'Taste match',
+                                        () {
+                                          Get.back();
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                            ),
+                          );
+                        },
                         child: const Icon(
                           Icons.add,
                           color: Colors.black,

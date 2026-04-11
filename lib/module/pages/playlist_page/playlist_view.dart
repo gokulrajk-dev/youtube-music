@@ -100,15 +100,10 @@ class Playlist_Views extends GetView<Playlist_Controller> {
                   // todo binding to add the playlist view
                   Padding(
                     padding: const EdgeInsets.only(top: 10, bottom: 10),
-                    child: playlist_song.isPublic == false
-                        ? const Text(
-                            'Private',
-                            style: TextStyle(color: Colors.grey, fontSize: 13),
+                    child:  Text(
+                      playlist_song.isPublic == false ?'Private':'Public',
+                            style: const TextStyle(color: Colors.grey, fontSize: 13),
                           )
-                        : const Text(
-                            'Public',
-                            style: TextStyle(color: Colors.grey, fontSize: 13),
-                          ),
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,

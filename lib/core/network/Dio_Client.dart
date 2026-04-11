@@ -13,9 +13,6 @@ class Dio_Private_Client {
     dio = Dio(BaseOptions(
         baseUrl: dotenv.env['API_BASE_URL']!,
         headers: {'Content-Type': 'application/json'},
-        connectTimeout: Duration(seconds: 10),
-        receiveTimeout: Duration(seconds: 10),
-
     ));
     dio.interceptors.add(Auth_Interceptor(dio));
   }

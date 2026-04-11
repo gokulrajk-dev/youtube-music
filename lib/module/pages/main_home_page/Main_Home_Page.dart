@@ -45,7 +45,9 @@ class _MainHomePageState extends State<MainHomePage> {
   final controller = Get.find<Main_Home_Page_Controller>();
   final current_use_song = Get.find<get_current_song>();
   final helper_code help = helper_code();
-  full_screen_media_player_controller get music_player  => Get.find<full_screen_media_player_controller>();
+
+  full_screen_media_player_controller get music_player =>
+      Get.find<full_screen_media_player_controller>();
 
   Route? Get_Page_Navigator(RouteSettings setting, List<GetPage> routes) {
     for (var route in routes) {
@@ -128,50 +130,87 @@ class _MainHomePageState extends State<MainHomePage> {
                           ),
                         )
                       : Center(
-                          child: ListTile(
-                            onTap: () {
-                              Get.toNamed(
-                                  App_route.full_screen_media_player_page);
-                            },
-                            style: ListTileStyle.drawer,
-                            leading: Image.network(current_use_song
-                                .current_song.value!.coverImage ?? ""),
-                            titleAlignment: ListTileTitleAlignment.center,
-                            title: Text(
-                              current_use_song.current_song.value!.title ?? 'unknown',
-                              style: const TextStyle(
+                          child: Column(
+                            children: [
+                              ListTile(
+                                onTap: () {
+                                  Get.toNamed(
+                                      App_route.full_screen_media_player_page);
+                                },
+                                style: ListTileStyle.drawer,
+                                leading: Image.network(current_use_song
+                                        .current_song.value!.coverImage ??
+                                    ""),
+                                titleAlignment: ListTileTitleAlignment.center,
+                                title: Text(
+                                  current_use_song.current_song.value!.title ??
+                                      'unknown',
+                                  style: const TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 20),
+                                ),
+                                subtitle: Text(
+                                  current_use_song.current_song.value!.artist!
+                                      .map((artist) => artist.artistName)
+                                      .join(','),
+                                  style: const TextStyle(
+                                    color: Colors.grey,
+                                    fontSize: 13,
+                                  ),
+                                  softWrap: true,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                trailing: IconButton(
+                                  onPressed: () async {
+                                    music_player.togglePlayPause();
+                                  },
+                                  icon: AnimatedIcon(
+                                    icon: AnimatedIcons.play_pause,
+                                    progress: music_player.animationController,
+                                  ),
                                   color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 20),
-                            ),
-                            subtitle: Text(
-                              current_use_song.current_song.value!.artist
-                                  !.map((artist) => artist.artistName)
-                                  .join(','),
-                              style: const TextStyle(
-                                color: Colors.grey,
-                                fontSize: 13,
+                                  iconSize: 35,
+                                ),
                               ),
-                              softWrap: true,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                            trailing: IconButton(
-                              onPressed: () async {
-                                music_player.togglePlayPause();
-                              },
-                              icon: AnimatedIcon(
-                                icon: AnimatedIcons.play_pause,
-                                progress: music_player
-                                    .animationController,
-                              ),
-                              color: Colors.white,
-                              iconSize: 35,
-                            ),
+                              current_use_song.current_song.value == null
+                                  ? SizedBox()
+                                  : SliderTheme(
+                                      data: SliderTheme.of(context).copyWith(
+                                        trackHeight:
+                                            0.5, // thin line like music apps
+                                        thumbShape:
+                                            SliderComponentShape.noThumb,
+                                        overlayShape: RoundSliderOverlayShape(
+                                            overlayRadius: 0),
+                                      ),
+                                      child: Slider(
+                                        min: 0,
+                                        max: music_player.duration.value
+                                                    .inMilliseconds
+                                                    .toDouble() ==
+                                                0
+                                            ? 1
+                                            : music_player
+                                                .duration.value.inMilliseconds
+                                                .toDouble(),
+                                        value: music_player
+                                            .position.value.inMilliseconds
+                                            .clamp(
+                                                0,
+                                                music_player.duration.value
+                                                    .inMilliseconds)
+                                            .toDouble(),
+                                        onChanged: (_) {},
+                                        activeColor: Colors.grey,
+                                        inactiveColor: Colors.black,
+                                      )),
+                            ],
                           ),
                         ),
                 )),
-          )
+          ),
         ]),
         bottomNavigationBar: Obx(
           () => BottomNavigationBar(

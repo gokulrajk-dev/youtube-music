@@ -24,10 +24,9 @@ void main() async {
       config: AudioServiceConfig(
         androidNotificationChannelId: 'com.example.youtube_music.audio',
         androidNotificationChannelName: 'Music Playback',
-        androidNotificationOngoing: true,
         androidShowNotificationBadge: true,
         androidStopForegroundOnPause: true,
-        notificationColor: Colors.grey[900],
+        notificationColor: Colors.red,
       ));
 
   Get.put(audioHandler);

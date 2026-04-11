@@ -174,6 +174,7 @@ import 'package:get/get.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:youtube_music/core/base/base_controller.dart';
 import 'package:youtube_music/data/user_respository/user_history_respository.dart';
+import 'package:youtube_music/main.dart';
 import 'package:youtube_music/module/pages/home/controllers/all_song_controller.dart';
 import 'package:youtube_music/services/audio_helper/audio_helper.dart';
 
@@ -261,7 +262,7 @@ class full_screen_media_player_controller extends base_controller
       play_pause_animation();
 
       if (state.processingState == ProcessingState.completed) {
-        await song.play_Next();
+        await audioPlayer.skipToNext();
       }
     });
 

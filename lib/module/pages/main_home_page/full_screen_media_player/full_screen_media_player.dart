@@ -145,7 +145,7 @@ class _full_screen_media_playerState extends State<full_screen_media_player>
                     borderOnForeground: true,
                     shape: const CircleBorder(),
                     clipBehavior: Clip.hardEdge,
-                    child: song.current_song.value!.coverImage == null
+                    child: song.current_song.value!.coverImage != null
                         ? CachedNetworkImage(
                             imageUrl: song.current_song.value!.coverImage ?? "",
                             placeholder: (context, url) => Center(
@@ -282,6 +282,7 @@ class _full_screen_media_playerState extends State<full_screen_media_player>
                             children: [
                               SliderTheme(
                                   data: SliderTheme.of(context).copyWith(
+                                    trackHeight: 2,
                                     thumbShape: SliderComponentShape.noThumb,
                                   ),
                                   child: Slider(
