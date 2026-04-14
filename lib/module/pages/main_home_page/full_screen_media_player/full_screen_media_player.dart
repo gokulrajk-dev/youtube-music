@@ -62,6 +62,20 @@ class _full_screen_media_playerState extends State<full_screen_media_player>
         Feature(
           icon: Icons.playlist_add,
           text: type_name.save,
+          onTap: (){
+            Get.bottomSheet(
+              DraggableScrollableSheet(
+                expand: false,
+                builder: (context, scrollController) {
+                  return showPlaylistBottomSheet(
+                    controller: scrollController,
+                    songId: [song.current_song.value!.id],
+                  );
+                },
+              ),
+              isScrollControlled: true,
+            );
+          }
         ),
         Feature(
           icon: CupertinoIcons.arrow_turn_up_right,
@@ -461,7 +475,7 @@ class _List_songState extends State<List_song> {
   Widget build(BuildContext context) {
     return Obx(() {
       if (current_song.queue.isEmpty) {
-        return Center(
+        return const Center(
           child: Text(
             "No Song in Queue",
             style: TextStyle(color: Colors.white),

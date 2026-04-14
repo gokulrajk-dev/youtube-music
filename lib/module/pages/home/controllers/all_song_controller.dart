@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:youtube_music/data/user_respository/song_respository.dart';
+import 'package:youtube_music/services/helper_code/helper_code.dart';
 
 import '../../../../core/base/base_controller.dart';
 import '../../../../data/data_module/song_module.dart';
@@ -44,9 +45,7 @@ class get_current_song extends base_controller {
       return;
     }
     queue.value = List.from(song);
-
     currentIndex.value = startIndex;
-
     await get_current_user_pick_song(song[currentIndex.value].id);
   }
 
@@ -78,6 +77,7 @@ class get_current_song extends base_controller {
     }
     queue.insert(currentIndex.value + 1, song);
     queue.refresh();
+    showGlobalMessage("Song will play next");
   }
 
   void dismissQueue(int index) {

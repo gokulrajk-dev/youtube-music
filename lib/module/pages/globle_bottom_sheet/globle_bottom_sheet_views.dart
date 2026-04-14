@@ -4,12 +4,14 @@ import 'package:get/get.dart';
 import 'package:youtube_music/module/pages/Album/album_controller.dart';
 import 'package:youtube_music/module/pages/Artist/artist_controller.dart';
 import 'package:youtube_music/module/pages/home/controllers/all_song_controller.dart';
+import 'package:youtube_music/module/pages/playlist_page/playlist_controller.dart';
 import 'package:youtube_music/route/app_route.dart';
 import 'package:youtube_music/services/helper_code/helper_code.dart';
 
 import '../../../data/data_module/song_module.dart';
 import '../like_page/like_controller.dart';
 import '../main_home_page/main_home_page_controller.dart';
+import '../playlist_page/new_playlist_create_ui.dart';
 import '../profile/profile_views.dart';
 
 class globle_bottom_sheet extends StatefulWidget {
@@ -18,7 +20,10 @@ class globle_bottom_sheet extends StatefulWidget {
   final int? songIndex;
 
   const globle_bottom_sheet(
-      {super.key, required this.controllers, required this.song,this.songIndex});
+      {super.key,
+      required this.controllers,
+      required this.song,
+      this.songIndex});
 
   @override
   State<globle_bottom_sheet> createState() => _globle_bottom_sheetState();
@@ -40,26 +45,47 @@ class _globle_bottom_sheetState extends State<globle_bottom_sheet> {
                 await controller.playNext(widget.song);
                 Get.back();
               }),
-        Feature(icon: Icons.playlist_add, text: 'Save to playlist'),
+        Feature(
+            icon: Icons.playlist_add,
+            text: 'Save to playlist',
+            onTap: () async {
+              Get.back();
+              Get.bottomSheet(
+                DraggableScrollableSheet(
+                  expand: false,
+                  builder: (context, scrollController) {
+                    return showPlaylistBottomSheet(
+                      controller: scrollController,
+                      songId: [widget.song.id],
+                    );
+                  },
+                ),
+                isScrollControlled: true,
+              );
+            }),
         Feature(icon: CupertinoIcons.share, text: 'Share'),
       ];
 
   List<Feature> get featrue_all => [
         Feature(
             icon: CupertinoIcons.dot_radiowaves_left_right, text: 'Start mix'),
-        Feature(icon: Icons.queue_music, text: 'Add to Queue',onTap: (){
-          controller.AddToQueue(widget.song);
-          Get.back();
-        }),
-        Feature(icon: Icons.playlist_add, text: 'Add to Library'),
-        Feature(icon: CupertinoIcons.arrow_down_to_line_alt, text: 'Download'),
-        if(widget.songIndex !=-1)Feature(
-            icon: CupertinoIcons.delete,
-            text: 'Remove from queue',
+        Feature(
+            icon: Icons.queue_music,
+            text: 'Add to Queue',
             onTap: () {
-              controller.dismissQueue(widget.songIndex ?? -1);
+              controller.AddToQueue(widget.song);
               Get.back();
             }),
+        Feature(icon: Icons.playlist_add, text: 'Add to Library'),
+        Feature(icon: CupertinoIcons.arrow_down_to_line_alt, text: 'Download'),
+        if (widget.songIndex != -1)
+          Feature(
+              icon: CupertinoIcons.delete,
+              text: 'Remove from queue',
+              onTap: () {
+                controller.dismissQueue(widget.songIndex ?? -1);
+                Get.back();
+              }),
         Feature(
             icon: Icons.album_outlined,
             text: 'Go to Album',
@@ -203,5 +229,246 @@ class _globle_bottom_sheetState extends State<globle_bottom_sheet> {
             )),
       ),
     );
+  }
+}
+
+class showPlaylistBottomSheet extends StatefulWidget {
+  final dynamic controller;
+  final List<int> songId;
+
+  showPlaylistBottomSheet({super.key, required this.controller,required this.songId});
+
+  @override
+  State<showPlaylistBottomSheet> createState() =>
+      _showPlaylistBottomSheetState();
+}
+
+class _showPlaylistBottomSheetState extends State<showPlaylistBottomSheet> {
+  final Playlist_Controller playlist_song = Get.find<Playlist_Controller>();
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+        child: Scaffold(
+      backgroundColor: Colors.black,
+      body: ListView(
+        shrinkWrap: true,
+        controller: widget.controller,
+        children: [
+          ListTile(
+            title: const Text(
+              'Save 1 song to playlist',
+              style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20),
+            ),
+            trailing: IconButton(
+                onPressed: () {
+                  Get.back();
+                },
+                icon: const Icon(
+                  Icons.close,
+                  color: Colors.white,
+                )),
+          ),
+          const Divider(
+            color: Colors.white12,
+          ),
+          GestureDetector(
+            onTap: () {},
+            child: ListTile(
+              style: ListTileStyle.drawer,
+              leading: Image.asset('assets/liked_pic.png'),
+              title: const Text(
+                'Liked Music',
+                style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20),
+              ),
+              subtitle: const Text(
+                '📌',
+                style: TextStyle(color: Colors.grey),
+              ),
+              trailing: const Icon(
+                Icons.more_vert,
+                color: Colors.white,
+              ),
+            ),
+          ),
+          // ElevatedButton(
+          //     onPressed: () {
+          //       playlist_song.show_user_playlist();
+          //     },
+          //     child: Text('playlist')),
+          Obx(() {
+            if (playlist_song.is_loading.value) {
+              return const Center(child: CircularProgressIndicator());
+            }
+            if (playlist_song.error.value.isNotEmpty) {
+              return Center(
+                child: Text(playlist_song.error.value),
+              );
+            }
+            return ListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: playlist_song.user_playlist.length,
+              itemBuilder: (context, index) {
+                final playlist = playlist_song.user_playlist[index];
+                return ListTile(
+                  onTap: () async {
+                    Get.back();
+                    await playlist_song.addedSongToPlaylist(playlist.id, widget.songId);
+                  },
+                  onLongPress: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        return Dialog(
+                          child: Container(
+                            decoration: BoxDecoration(
+                                color: Colors.black,
+                                borderRadius: BorderRadius.circular(20)),
+                            height: 130,
+                            child: Padding(
+                              padding: const EdgeInsets.all(20.0),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Text(
+                                    'Delete this Playlist?',
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Expanded(
+                                        child: OutlinedButton(
+                                            onPressed: () {
+                                              Get.back();
+                                            },
+                                            style: OutlinedButton.styleFrom(
+                                              shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          20)),
+                                            ),
+                                            child: const Center(
+                                              child: Text(
+                                                '\tCancel\t',
+                                                style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
+                                            )),
+                                      ),
+                                      const SizedBox(
+                                        width: 10,
+                                      ),
+                                      Expanded(
+                                        child: ElevatedButton(
+                                            onPressed: () {
+                                              playlist_song.deleteExistPlaylist(
+                                                  playlist.id, index);
+                                              Get.back();
+                                            },
+                                            style: const ButtonStyle(
+                                                backgroundColor:
+                                                    WidgetStatePropertyAll(
+                                                        Colors.white)),
+                                            child: const Text(
+                                              '\tDelete\t',
+                                              style: TextStyle(
+                                                  color: Colors.black),
+                                            )),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    );
+                  },
+                  leading: playlist.playlistcoverimage == ''
+                      ? Image.network(playlist.playlistcoverimage ?? "")
+                      : Container(
+                          decoration: BoxDecoration(
+                              border:
+                                  Border.all(color: Colors.white, width: 0.5)),
+                          width: 55,
+                          height: 55,
+                          child: const Icon(
+                            Icons.music_note_outlined,
+                            color: Colors.white,
+                          )),
+                  title: Text(
+                    playlist.playlistName ?? 'unknown',
+                    style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20),
+                  ),
+                  subtitle: Text(
+                    '${playlist.songs!.length} Tracks',
+                    style: const TextStyle(color: Colors.grey),
+                  ),
+                  trailing: IconButton(
+                      onPressed: () {},
+                      icon: const Icon(
+                        Icons.more_vert,
+                        color: Colors.white,
+                      )),
+                );
+              },
+            );
+          }),
+          Padding(
+            padding: const EdgeInsets.only(right:10.0,top: 10),
+            child: Align(
+              alignment: Alignment.bottomRight,
+              child: ElevatedButton(
+                  onPressed: () {
+                    Get.back();
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        return  Dialog(
+                            child: newPlaylistCreate(
+                              songId: widget.songId,
+                            ));
+                      },
+                    );
+                  },
+                  style: const ButtonStyle(
+                      backgroundColor: WidgetStatePropertyAll(Colors.white)),
+                  child: const Padding(
+                    padding: EdgeInsets.all(10.0),
+                    child: Text(
+                      '+ New playlist',
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  )),
+            ),
+          )
+        ],
+      ),
+    ));
   }
 }

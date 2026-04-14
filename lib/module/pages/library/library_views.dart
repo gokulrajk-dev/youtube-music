@@ -46,7 +46,7 @@ class _Library_ViewsState extends State<Library_Views> {
       ),
       title: Text(
         text,
-        style: TextStyle(color: Colors.white),
+        style: const TextStyle(color: Colors.white),
       ),
     );
   }
@@ -59,6 +59,7 @@ class _Library_ViewsState extends State<Library_Views> {
         child: Stack(
           children: [
             CustomScrollView(
+              physics: const NeverScrollableScrollPhysics(),
               slivers: [
                 SliverAppBar(
                     floating: true,
@@ -257,10 +258,14 @@ class _Library_ViewsState extends State<Library_Views> {
                       height: 50),
                 ),
                 SliverToBoxAdapter(
-                  child: Obx(
-                    () => IndexedStack(
-                      index: library_controller.current_library_index.value,
-                      children: Library_Nest_Page,
+                  child: Container(
+                    height: 1000,
+                    child: Obx(
+                      () => IndexedStack(
+                        sizing: StackFit.loose,
+                        index: library_controller.current_library_index.value,
+                        children: Library_Nest_Page,
+                      ),
                     ),
                   ),
                 ),
@@ -309,11 +314,11 @@ class _Library_ViewsState extends State<Library_Views> {
                                             context: context,
                                             builder: (context) {
                                               return Dialog(
-                                                  child: newPlaylistCreate());
+                                                  child: newPlaylistCreate(
+                                                    songId: [],
+                                                  ));
                                             },
                                           );
-
-
                                         },
                                       ),
                                       newPlaylist(
@@ -375,7 +380,6 @@ class _library_bodyState extends State<library_body> {
   Widget build(BuildContext context) {
     return ListView(
       shrinkWrap: true,
-      // physics: NeverScrollableScrollPhysics(),
       children: [
         const Padding(
           padding: EdgeInsets.only(top: 16, left: 16, right: 16, bottom: 20),
@@ -424,13 +428,91 @@ class _library_bodyState extends State<library_body> {
           }
           return ListView.builder(
             shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
             itemCount: playlist_song.user_playlist.length,
             itemBuilder: (context, index) {
               final playlist = playlist_song.user_playlist[index];
               return ListTile(
-                onTap: () {
+                onTap: (){
                   playlist_song.get_user_pick_song_playlist(playlist.id);
                   Get.toNamed(App_route.playlist_page, id: 4);
+                },
+                onLongPress: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) {
+                      return Dialog(
+                        child: Container(
+                          decoration: BoxDecoration(
+                              color: Colors.black,
+                              borderRadius: BorderRadius.circular(20)),
+                          height: 130,
+                          child: Padding(
+                            padding: const EdgeInsets.all(20.0),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  'Delete this Playlist?',
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Expanded(
+                                      child: OutlinedButton(
+                                          onPressed: () {
+                                            Get.back();
+                                          },
+                                          style: OutlinedButton.styleFrom(
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(20)),
+                                          ),
+                                          child: const Center(
+                                            child: Text(
+                                              '\tCancel\t',
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                          )),
+                                    ),
+                                    const SizedBox(
+                                      width: 10,
+                                    ),
+                                    Expanded(
+                                      child: ElevatedButton(
+                                          onPressed: () {
+                                            playlist_song.deleteExistPlaylist(playlist.id, index);
+                                            Get.back();
+                                          },
+                                          style: const ButtonStyle(
+                                              backgroundColor:
+                                                  WidgetStatePropertyAll(
+                                                      Colors.white)),
+                                          child: const Text(
+                                            '\tDelete\t',
+                                            style: TextStyle(color: Colors.black),
+                                          )),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  );
                 },
                 leading: playlist.playlistcoverimage == ''
                     ? Image.network(playlist.playlistcoverimage ?? "")
@@ -452,7 +534,7 @@ class _library_bodyState extends State<library_body> {
                       fontSize: 20),
                 ),
                 subtitle: Text(
-                  'Playlist . ${user.user.value!.userName}',
+                  'Playlist . ${user.user.value!.userName} . ${playlist.songs!.length} Tracks',
                   style: const TextStyle(color: Colors.grey),
                 ),
                 trailing: IconButton(
@@ -464,7 +546,7 @@ class _library_bodyState extends State<library_body> {
               );
             },
           );
-        })
+        }),
       ],
     );
   }

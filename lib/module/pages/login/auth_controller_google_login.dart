@@ -9,6 +9,7 @@ import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:youtube_music/data/user_respository/user_respository.dart';
 
 import 'package:youtube_music/module/pages/home/controllers/user_data_controller.dart';
+import 'package:youtube_music/module/pages/playlist_page/playlist_controller.dart';
 
 import 'package:youtube_music/route/app_route.dart';
 import 'package:youtube_music/services/Token_Service.dart';
@@ -135,14 +136,11 @@ class auth_google_login extends GetxController {
     await Token_service.set_access_refresh_token(new_access, new_refresh);
     final user_details_controller user = Get.find<user_details_controller>();
     final Like_Controller like = Get.find<Like_Controller>();
-    user.clear_user();
-    like.clear_like();
-    user.fetch_user();
-    like.get_current_user_like_songs();
-    Get.back();
-    // Get.delete<user_details_controller>(force: true);
-    // Get.delete<Like_Controller>();
-    // Get.offAllNamed(App_route.main_home_pages);
+    final Playlist_Controller playlist_controller = Get.find<Playlist_Controller>();
+    await user.fetch_user();
+    await like.get_current_user_like_songs();
+    await playlist_controller.show_user_playlist();
+    Get.offAllNamed(App_route.main_home_pages);
   }
 
   Future<void> signOut() async {

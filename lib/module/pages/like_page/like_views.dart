@@ -14,6 +14,8 @@ class Like_Views extends GetView<Like_Controller> {
   final user_details_controller user = Get.find<user_details_controller>();
   final helper_code help = helper_code();
 
+  Like_Views({super.key});
+
   static Widget rowicon(Icon icon, VoidCallback onTop, Color color) {
     return Container(
         decoration: ShapeDecoration(

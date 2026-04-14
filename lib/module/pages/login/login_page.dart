@@ -81,7 +81,7 @@ class _login_pageState extends State<login_page> {
                         }, child: const Text('Sign in',style: TextStyle(color: Colors.black),)),
                         OutlinedButton(onPressed: (){
                           controller.signOut();
-                        }, child: const Text('device fiels only',style: TextStyle(color: Colors.white),)),
+                        }, child: const Text('device fields only',style: TextStyle(color: Colors.white),)),
                       ],
                     ),
                   ),

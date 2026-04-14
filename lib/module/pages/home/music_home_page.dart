@@ -240,8 +240,8 @@ class _home_pageState extends State<home_page> {
                         return Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: GestureDetector(
-                            onTap: () {
-                              pick_current_song
+                            onTap: () async {
+                              await pick_current_song
                                   .setQueue([], song.id);
                               Get.toNamed(App_route.full_screen_media_player_page);
                             },
@@ -556,8 +556,10 @@ class pinnedHeaderDelegate extends SliverPersistentHeaderDelegate {
 
   pinnedHeaderDelegate({required this.child, required this.height});
 
+  @override
   double get minExtent => height;
 
+  @override
   double get maxExtent => height;
 
   @override

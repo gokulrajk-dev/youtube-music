@@ -12,6 +12,8 @@ import 'firebase_options.dart';
 
 late final MyAudioController audioHandler;
 
+final GlobalKey<ScaffoldMessengerState> messageKey = GlobalKey<ScaffoldMessengerState>();
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
@@ -27,7 +29,8 @@ void main() async {
         androidShowNotificationBadge: true,
         androidStopForegroundOnPause: true,
         notificationColor: Colors.red,
-      ));
+      )
+  );
 
   Get.put(audioHandler);
   runApp(const demo());
@@ -44,6 +47,7 @@ class _demoState extends State<demo> {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
+      scaffoldMessengerKey:messageKey,
       debugShowCheckedModeBanner: false,
       initialRoute: App_route.splash,
       getPages: App_route.route,

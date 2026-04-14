@@ -149,7 +149,10 @@ class Album_Views extends GetView<Album_Controller> {
                               color: Colors.black,
                               size: 50,
                             ),
-                            () {},
+                            () {
+                              song.setQueue(songOnly, 0);
+                              Get.toNamed(App_route.full_screen_media_player_page);
+                            },
                             Colors.white),
                         Like_Views.rowicon(
                             const Icon(

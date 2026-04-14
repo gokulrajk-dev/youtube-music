@@ -29,6 +29,20 @@ class SongListViews extends StatelessWidget {
       children: songs.map((playlist_songs) {
         return ListTile(
           onTap: () => onTap(playlist_songs),
+          onLongPress: () {
+            Get.bottomSheet(
+              DraggableScrollableSheet(
+                expand: false,
+                builder: (context, scrollController) {
+                  return globle_bottom_sheet(
+                    controllers: scrollController,
+                    song: playlist_songs,
+                  );
+                },
+              ),
+              isScrollControlled: true,
+            );
+          },
           style: ListTileStyle.drawer,
           leading: playlist_songs.coverImage != null
               ? Image.network(playlist_songs.coverImage!)

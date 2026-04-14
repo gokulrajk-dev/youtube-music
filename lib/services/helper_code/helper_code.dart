@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:youtube_music/main.dart';
 
 import '../../module/pages/main_home_page/main_home_page_controller.dart';
 import '../../module/pages/main_home_page/main_page_navigation_key.dart';
@@ -53,4 +55,22 @@ class NavHelper {
         return 1;
     }
   }
+}
+
+void showGlobalMessage(String message){
+  messageKey.currentState!.showSnackBar(
+    SnackBar(content: Text(message),
+      duration: const Duration(seconds: 3),
+      behavior: SnackBarBehavior.floating,
+      margin: const EdgeInsets.only(
+        left: 12,
+        right: 12,
+        bottom: 80, // 👈 THIS pushes it above obstacles
+      ),
+
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10),
+      ),
+    )
+  );
 }

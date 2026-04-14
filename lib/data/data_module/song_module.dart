@@ -111,8 +111,8 @@ class Song  {
   final String? releaseDate;
   final String? lyrics;
   final String? language;
-  final int views;
-  final int likesCount;
+  final int? views;
+  final int? likesCount;
   final SongStream? stream;
 
   Song({
@@ -127,9 +127,9 @@ class Song  {
     this.releaseDate,
     this.lyrics,
     this.language,
-    required this.views,
-    required this.likesCount,
-    required this.stream,
+    this.views,
+    this.likesCount,
+    this.stream,
   });
 
   factory Song.fromJson(Map<String, dynamic> json) {
