@@ -18,11 +18,13 @@ class globle_bottom_sheet extends StatefulWidget {
   final controllers;
   final Song song;
   final int? songIndex;
+  final String type;
 
   const globle_bottom_sheet(
       {super.key,
       required this.controllers,
       required this.song,
+      required this.type,
       this.songIndex});
 
   @override
@@ -35,6 +37,7 @@ class _globle_bottom_sheetState extends State<globle_bottom_sheet> {
   final Album_Controller album = Get.find<Album_Controller>();
   final Artist_Controller artist = Get.find<Artist_Controller>();
   final main_page = Get.find<Main_Home_Page_Controller>();
+  final playlist = Get.find<Playlist_Controller>();
 
   List<Feature> get featrue => [
         if (controller.queue.isNotEmpty)
@@ -78,13 +81,28 @@ class _globle_bottom_sheetState extends State<globle_bottom_sheet> {
             }),
         Feature(icon: Icons.playlist_add, text: 'Add to Library'),
         Feature(icon: CupertinoIcons.arrow_down_to_line_alt, text: 'Download'),
-        if (widget.songIndex != -1)
+        if (widget.type == "queue")
           Feature(
-              icon: CupertinoIcons.delete,
-              text: 'Remove from queue',
+              icon: Icons.remove_road,
+              text: 'Dismiss queue',
               onTap: () {
                 controller.dismissQueue(widget.songIndex ?? -1);
                 Get.back();
+              }),
+        if (widget.type == "playlist")
+          Feature(
+              icon: Icons.delete,
+              text: 'Remove from playlist',
+              onTap: () async {
+                Get.back();
+                await playlist.removeSongFromPlaylist(
+                    playlist.user_playlist_song.value!.id,
+                    [
+                      widget.song.id
+                    ],
+                    "delete",
+                    widget.songIndex ?? -1);
+
               }),
         Feature(
             icon: Icons.album_outlined,
@@ -236,7 +254,8 @@ class showPlaylistBottomSheet extends StatefulWidget {
   final dynamic controller;
   final List<int> songId;
 
-  showPlaylistBottomSheet({super.key, required this.controller,required this.songId});
+  showPlaylistBottomSheet(
+      {super.key, required this.controller, required this.songId});
 
   @override
   State<showPlaylistBottomSheet> createState() =>
@@ -320,7 +339,8 @@ class _showPlaylistBottomSheetState extends State<showPlaylistBottomSheet> {
                 return ListTile(
                   onTap: () async {
                     Get.back();
-                    await playlist_song.addedSongToPlaylist(playlist.id, widget.songId);
+                    await playlist_song.addedSongToPlaylist(
+                        playlist.id, widget.songId, "post");
                   },
                   onLongPress: () {
                     showDialog(
@@ -437,7 +457,7 @@ class _showPlaylistBottomSheetState extends State<showPlaylistBottomSheet> {
             );
           }),
           Padding(
-            padding: const EdgeInsets.only(right:10.0,top: 10),
+            padding: const EdgeInsets.only(right: 10.0, top: 10),
             child: Align(
               alignment: Alignment.bottomRight,
               child: ElevatedButton(
@@ -446,10 +466,10 @@ class _showPlaylistBottomSheetState extends State<showPlaylistBottomSheet> {
                     showDialog(
                       context: context,
                       builder: (context) {
-                        return  Dialog(
+                        return Dialog(
                             child: newPlaylistCreate(
-                              songId: widget.songId,
-                            ));
+                          songId: widget.songId,
+                        ));
                       },
                     );
                   },

@@ -128,8 +128,8 @@ class Playlist_Views extends GetView<Playlist_Controller> {
                             color: Colors.black,
                             size: 50,
                           ),
-                          () async {
-                            await song.setQueue(songs_only, 0);
+                          () {
+                            song.setQueue(songs_only, 0);
                             Get.toNamed(App_route.full_screen_media_player_page);
                           },
                           Colors.white),
@@ -226,9 +226,9 @@ class Playlist_Views extends GetView<Playlist_Controller> {
             // }).toList()),
             SongListViews(
               songs: songs_only,
-              onTap: (selectedSong) async {
+              onTap: (selectedSong){
                 final index = songs_only.indexOf(selectedSong);
-                await song.setQueue(songs_only, index);
+                song.setQueue(songs_only, index);
                 Get.toNamed(App_route.full_screen_media_player_page);
               },
             ),

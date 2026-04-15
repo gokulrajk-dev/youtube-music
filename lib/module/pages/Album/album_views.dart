@@ -148,12 +148,10 @@ class Album_Views extends GetView<Album_Controller> {
                               Icons.play_arrow,
                               color: Colors.black,
                               size: 50,
-                            ),
-                            () {
-                              song.setQueue(songOnly, 0);
-                              Get.toNamed(App_route.full_screen_media_player_page);
-                            },
-                            Colors.white),
+                            ), () {
+                          song.setQueue(songOnly, 0);
+                          Get.toNamed(App_route.full_screen_media_player_page);
+                        }, Colors.white),
                         Like_Views.rowicon(
                             const Icon(
                               CupertinoIcons.arrow_turn_up_right,
@@ -228,9 +226,9 @@ class Album_Views extends GetView<Album_Controller> {
             // }).toList()),
             SongListViews(
               songs: songOnly,
-              onTap: (selectedSong) async {
+              onTap: (selectedSong) {
                 final index = songOnly.indexOf(selectedSong);
-                await song.setQueue(songOnly, index);
+                song.setQueue(songOnly, index);
                 Get.toNamed(App_route.full_screen_media_player_page);
               },
             ),

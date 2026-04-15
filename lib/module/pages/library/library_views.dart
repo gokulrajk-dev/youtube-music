@@ -29,6 +29,11 @@ class _Library_ViewsState extends State<Library_Views> {
     'Album',
     'Artist',
   ];
+  List<String> textDownload = [
+    "Playlist",
+    'Album',
+    'Artist',
+  ];
 
   final Library_Nest_Page = [const library_body(), Download_Views()];
 
@@ -202,14 +207,6 @@ class _Library_ViewsState extends State<Library_Views> {
                       IconButton(
                         onPressed: () {},
                         icon: const Icon(
-                          Icons.notifications_none,
-                          color: Colors.white,
-                        ),
-                        color: Colors.black,
-                      ),
-                      IconButton(
-                        onPressed: () {},
-                        icon: const Icon(
                           Icons.search,
                           color: Colors.white,
                         ),
@@ -238,27 +235,46 @@ class _Library_ViewsState extends State<Library_Views> {
                 SliverPersistentHeader(
                   pinned: true,
                   delegate: pinnedHeaderDelegate(
-                      child: Container(
+                      child: AnimatedContainer(
+                        duration: const Duration(seconds: 2),
                         color: Colors.black,
                         height: 100,
-                        child: ListView.builder(
-                          itemCount: text.length,
-                          shrinkWrap: true,
-                          physics: const BouncingScrollPhysics(),
-                          scrollDirection: Axis.horizontal,
-                          itemBuilder: (context, index) {
-                            final texts = text[index];
-                            return Padding(
-                              padding: const EdgeInsets.only(right: 8.0),
-                              child: Chip(label: Text(texts)),
-                            );
-                          },
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 10.0),
+                          child: Obx(
+                            () => ListView.builder(
+                              itemCount: library_controller.current_page_title ==
+                                      'Library'
+                                  ? text.length
+                                  : textDownload.length,
+                              shrinkWrap: true,
+                              physics: const BouncingScrollPhysics(),
+                              scrollDirection: Axis.horizontal,
+                              itemBuilder: (context, index) {
+                                final isLibrary =
+                                    library_controller.current_page_title ==
+                                        'Library';
+                                final page = isLibrary ? text : textDownload;
+                                return Padding(
+                                  padding:
+                                      const EdgeInsets.only(right: 8.0),
+                                  child: Chip(
+                                    label: Text(
+                                      page[index],
+                                      style: const TextStyle(color: Colors.white),
+                                    ),
+                                    backgroundColor: Colors.black,
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
                         ),
                       ),
                       height: 50),
                 ),
                 SliverToBoxAdapter(
-                  child: Container(
+                  child: SizedBox(
                     height: 1000,
                     child: Obx(
                       () => IndexedStack(
@@ -315,8 +331,8 @@ class _Library_ViewsState extends State<Library_Views> {
                                             builder: (context) {
                                               return Dialog(
                                                   child: newPlaylistCreate(
-                                                    songId: [],
-                                                  ));
+                                                songId: const [],
+                                              ));
                                             },
                                           );
                                         },
@@ -433,7 +449,7 @@ class _library_bodyState extends State<library_body> {
             itemBuilder: (context, index) {
               final playlist = playlist_song.user_playlist[index];
               return ListTile(
-                onTap: (){
+                onTap: () {
                   playlist_song.get_user_pick_song_playlist(playlist.id);
                   Get.toNamed(App_route.playlist_page, id: 4);
                 },
@@ -492,7 +508,8 @@ class _library_bodyState extends State<library_body> {
                                     Expanded(
                                       child: ElevatedButton(
                                           onPressed: () {
-                                            playlist_song.deleteExistPlaylist(playlist.id, index);
+                                            playlist_song.deleteExistPlaylist(
+                                                playlist.id, index);
                                             Get.back();
                                           },
                                           style: const ButtonStyle(
@@ -501,7 +518,8 @@ class _library_bodyState extends State<library_body> {
                                                       Colors.white)),
                                           child: const Text(
                                             '\tDelete\t',
-                                            style: TextStyle(color: Colors.black),
+                                            style:
+                                                TextStyle(color: Colors.black),
                                           )),
                                     ),
                                   ],

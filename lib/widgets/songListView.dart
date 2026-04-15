@@ -25,8 +25,12 @@ class SongListViews extends StatelessWidget {
       );
     }
 
-    return Column(
-      children: songs.map((playlist_songs) {
+    return ListView.builder(
+      shrinkWrap: true,
+        physics: NeverScrollableScrollPhysics(),
+        itemCount: songs.length,
+        itemBuilder: (context, index) {
+          final playlist_songs = songs[index];
         return ListTile(
           onTap: () => onTap(playlist_songs),
           onLongPress: () {
@@ -37,6 +41,7 @@ class SongListViews extends StatelessWidget {
                   return globle_bottom_sheet(
                     controllers: scrollController,
                     song: playlist_songs,
+                    type:"playlist"
                   );
                 },
               ),
@@ -78,6 +83,8 @@ class SongListViews extends StatelessWidget {
                     return globle_bottom_sheet(
                       controllers: scrollController,
                       song: playlist_songs,
+                      type: "playlist",
+                      songIndex: index,
                     );
                   },
                 ),
@@ -90,7 +97,6 @@ class SongListViews extends StatelessWidget {
             ),
           ),
         );
-      }).toList(),
-    );
+      });
   }
 }

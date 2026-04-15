@@ -84,6 +84,7 @@ class History_Views extends GetView<Histroy_Controller> {
                                 return globle_bottom_sheet(
                                   controllers: scrollController,
                                   song: song,
+                                  type: "history",
                                 );
                               },
                             ),
@@ -122,6 +123,7 @@ class History_Views extends GetView<Histroy_Controller> {
                                   return globle_bottom_sheet(
                                     controllers: scrollController,
                                     song: song,
+                                    type: "history",
                                   );
                                 },
                               ),

@@ -47,11 +47,12 @@ class UserPlaylistCrud {
     return null;
   }
 
-  Future<int?> songsAddedPlaylist(int playlistId,List<int> songId) async{
+  Future<int?> songsAddedPlaylist(int playlistId,List<int> songId,String action) async{
     try{
       final status = await dio.post(Api_Endpoint.get_current_user_pic_playlist(playlistId),
         data: {
-          "songs_id":songId
+          "songs_id":songId,
+          "action": action
         }
       );
       return status.statusCode;

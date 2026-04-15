@@ -60,23 +60,22 @@ class _full_screen_media_playerState extends State<full_screen_media_player>
           text: type_name.commant,
         ),
         Feature(
-          icon: Icons.playlist_add,
-          text: type_name.save,
-          onTap: (){
-            Get.bottomSheet(
-              DraggableScrollableSheet(
-                expand: false,
-                builder: (context, scrollController) {
-                  return showPlaylistBottomSheet(
-                    controller: scrollController,
-                    songId: [song.current_song.value!.id],
-                  );
-                },
-              ),
-              isScrollControlled: true,
-            );
-          }
-        ),
+            icon: Icons.playlist_add,
+            text: type_name.save,
+            onTap: () {
+              Get.bottomSheet(
+                DraggableScrollableSheet(
+                  expand: false,
+                  builder: (context, scrollController) {
+                    return showPlaylistBottomSheet(
+                      controller: scrollController,
+                      songId: [song.current_song.value!.id],
+                    );
+                  },
+                ),
+                isScrollControlled: true,
+              );
+            }),
         Feature(
           icon: CupertinoIcons.arrow_turn_up_right,
           text: type_name.share,
@@ -98,7 +97,7 @@ class _full_screen_media_playerState extends State<full_screen_media_player>
         backgroundColor: Colors.black,
         body: Obx(
           () {
-            if (song.current_song.value!.title == null) {
+            if (song.current_song.value == null) {
               return Center(
                 child: SizedBox.fromSize(),
               );
@@ -142,6 +141,7 @@ class _full_screen_media_playerState extends State<full_screen_media_player>
                                 return globle_bottom_sheet(
                                   controllers: scrollController,
                                   song: song.current_song.value!,
+                                  type: "queue",
                                 );
                               },
                             ),
@@ -448,8 +448,6 @@ class _full_screen_media_playerState extends State<full_screen_media_player>
 }
 
 class List_song extends StatefulWidget {
-  // final List<Song> songs;
-
   const List_song({super.key});
 
   @override
@@ -533,6 +531,7 @@ class _List_songState extends State<List_song> {
                           controllers: scrollController,
                           song: songss,
                           songIndex: index,
+                          type: "queue",
                         );
                       },
                     ),

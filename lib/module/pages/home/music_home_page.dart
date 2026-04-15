@@ -240,10 +240,10 @@ class _home_pageState extends State<home_page> {
                         return Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: GestureDetector(
-                            onTap: () async {
-                              await pick_current_song
-                                  .setQueue([], song.id);
-                              Get.toNamed(App_route.full_screen_media_player_page);
+                            onTap: () {
+                              pick_current_song.setQueue([], song.id);
+                              Get.toNamed(
+                                  App_route.full_screen_media_player_page);
                             },
                             onLongPress: () {
                               Get.bottomSheet(
@@ -254,7 +254,7 @@ class _home_pageState extends State<home_page> {
                                     return globle_bottom_sheet(
                                       controllers: scrollController,
                                       song: song,
-                                      songIndex: -1,
+                                      type: "mainpage",
                                     );
                                   },
                                 ),
@@ -314,7 +314,7 @@ class _home_pageState extends State<home_page> {
                                               return globle_bottom_sheet(
                                                 controllers: scrollController,
                                                 song: song,
-                                                songIndex: -1,
+                                                type: "mainpage",
                                               );
                                             },
                                           ),
@@ -406,8 +406,8 @@ class _home_pageState extends State<home_page> {
                                                 .join(','),
                                             maxLines: 2,
                                             overflow: TextOverflow.ellipsis,
-                                            style:
-                                                const TextStyle(color: Colors.grey),
+                                            style: const TextStyle(
+                                                color: Colors.grey),
                                           )
                                         ],
                                       ),
@@ -478,9 +478,9 @@ class _home_pageState extends State<home_page> {
                                                         color: Colors.black,
                                                       ),
                                                     ),
-                                                    errorWidget:
-                                                        (context, url, error) =>
-                                                            const Icon(Icons.error),
+                                                    errorWidget: (context, url,
+                                                            error) =>
+                                                        const Icon(Icons.error),
                                                     fit: BoxFit.cover,
                                                   )
                                                 : Image.asset(

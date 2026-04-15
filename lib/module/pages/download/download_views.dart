@@ -17,7 +17,7 @@ class Download_Views extends GetView<download_Controller> {
               padding: const EdgeInsets.only(top: 8.0),
               child: ListView(
                 shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
+                // physics: const NeverScrollableScrollPhysics(),
                 clipBehavior: Clip.hardEdge,
                 children: [
                   ListView.builder(
@@ -26,7 +26,6 @@ class Download_Views extends GetView<download_Controller> {
                     itemCount: controller.songmodel.length,
                     itemBuilder: (context, index) {
                       final local_song = controller.songmodel[index];
-
                       return ListTile(
                         onTap: () {
                           Get.bottomSheet(download_song_bottom());
@@ -62,7 +61,7 @@ class Download_Views extends GetView<download_Controller> {
                     },
                   ),
                   Container(
-                    height: 50,
+                    height: 400,
                   )
                 ],
               ),

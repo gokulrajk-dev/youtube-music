@@ -132,7 +132,11 @@ class Like_Views extends GetView<Like_Controller> {
                             color: Colors.black,
                             size: 50,
                           ),
-                          () {},
+                          () {
+                            final likeSongList = controller.like_song.map((song)=>song.song!).toList();
+                            con.setQueue(likeSongList, 0);
+                            Get.toNamed(App_route.full_screen_media_player_page);
+                          },
                           Colors.white),
                       rowicon(
                           const Icon(
@@ -205,6 +209,7 @@ class Like_Views extends GetView<Like_Controller> {
                                   return globle_bottom_sheet(
                                     controllers: scrollController,
                                     song: like.song!,
+                                    type: "like",
                                   );
                                 },
                               ),
