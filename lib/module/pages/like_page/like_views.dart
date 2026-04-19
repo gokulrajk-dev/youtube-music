@@ -134,7 +134,7 @@ class Like_Views extends GetView<Like_Controller> {
                           ),
                           () {
                             final likeSongList = controller.like_song.map((song)=>song.song!).toList();
-                            con.setQueue(likeSongList, 0);
+                            con.autoSongType(likeSongList, 0);
                             Get.toNamed(App_route.full_screen_media_player_page);
                           },
                           Colors.white),
@@ -174,7 +174,7 @@ class Like_Views extends GetView<Like_Controller> {
                       controller.like_song.map((item) => item.song!).toList();
                   return ListTile(
                       onTap: () {
-                        con.setQueue(listSong, index);
+                        con.autoSongType(listSong, index);
                         Get.toNamed(App_route.full_screen_media_player_page);
                       },
                       style: ListTileStyle.drawer,

@@ -241,7 +241,7 @@ class _home_pageState extends State<home_page> {
                           padding: const EdgeInsets.all(8.0),
                           child: GestureDetector(
                             onTap: () {
-                              pick_current_song.setQueue([], song.id);
+                              pick_current_song.autoSongType(song,0);
                               Get.toNamed(
                                   App_route.full_screen_media_player_page);
                             },

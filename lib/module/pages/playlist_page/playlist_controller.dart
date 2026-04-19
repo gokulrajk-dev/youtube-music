@@ -33,7 +33,7 @@ class Playlist_Controller extends base_controller {
       get_isloading(true);
       noerror();
       user_playlist_song.value =
-          await userPlaylistCrud.retrieveUserPlaylist(pickPlaylistId);
+      await userPlaylistCrud.retrieveUserPlaylist(pickPlaylistId);
     } catch (e) {
       get_error(e.toString());
     } finally {
@@ -68,26 +68,38 @@ class Playlist_Controller extends base_controller {
     }
   }
 
-  Future<void> addedSongToPlaylist(
-      int playlistId, List<int> songId, String action) async {
+  Future<void> addedSongToPlaylist(int playlistId, List<int> songId,
+      String action) async {
     final status =
-        await playlistCrud.songsAddedPlaylist(playlistId, songId, action);
+    await playlistCrud.songsAddedPlaylist(playlistId, songId, action);
     if (status == 201) {
-      showGlobalMessage("Saved to playlist ${user_playlist_song.value!.playlistName}");
+      showGlobalMessage(
+          "Saved to playlist ${user_playlist_song.value!.playlistName}");
     } else {
       showGlobalMessage("this track is already added to the playlist");
     }
   }
 
-  Future<void> removeSongFromPlaylist(
-      int playlistId, List<int> songId, String action, int index) async {
+  Future<void> autoAddedSongToPlaylist(int playlistId, dynamic songId,
+      String action) async {
+    if (songId is int) {
+      await addedSongToPlaylist(playlistId, [songId], action);
+    }
+    else if (songId is List<int>) {
+      await addedSongToPlaylist(playlistId, songId, action);
+    }
+  }
+
+  Future<void> removeSongFromPlaylist(int playlistId, List<int> songId,
+      String action, int index) async {
     final status =
-        await playlistCrud.songsAddedPlaylist(playlistId, songId, action);
+    await playlistCrud.songsAddedPlaylist(playlistId, songId, action);
     if (status == 204) {
       user_playlist_song.value!.songs!.removeAt(index);
       user_playlist_song.refresh();
-      showGlobalMessage("Remove from playlist ${user_playlist_song.value!.playlistName}");
-    }else{
+      showGlobalMessage(
+          "Remove from playlist ${user_playlist_song.value!.playlistName}");
+    } else {
       showGlobalMessage("no song found in the playlist");
     }
   }

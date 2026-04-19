@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:youtube_music/data/user_respository/song_respository.dart';
+import 'package:youtube_music/route/app_route.dart';
 import 'package:youtube_music/services/helper_code/helper_code.dart';
 
 import '../../../../core/base/base_controller.dart';
@@ -38,54 +39,136 @@ class get_current_song extends base_controller {
   final isshuffleenabled = false.obs;
 
   Future<void> setQueue(List<Song> song, int startIndex) async {
-    if (song.toList().isEmpty) {
-      await get_current_user_pick_song(startIndex);
-      queue.assign(current_song.value!);
-      currentIndex.value = 0;
-      return;
-    }
-    queue.value = List.from(song);
+    queue.assignAll(song);
     currentIndex.value = startIndex;
     await get_current_user_pick_song(song[currentIndex.value].id);
+  }
+
+  void autoSongType(dynamic song, int Index) async {
+    if (song is Song) {
+      setQueue([song], Index);
+    } else if (song is List<Song>) {
+      setQueue(song, Index);
+    }
   }
 
   Future<void> play_Next() async {
     if (currentIndex.value < queue.length - 1) {
       currentIndex.value++;
-      await get_current_user_pick_song(queue[currentIndex.value].id);
+      get_current_user_pick_song(queue[currentIndex.value].id);
     }
   }
 
   Future<void> play_Previous() async {
     if (currentIndex.value > 0) {
       currentIndex.value--;
-      await get_current_user_pick_song(queue[currentIndex.value].id);
+      get_current_user_pick_song(queue[currentIndex.value].id);
     }
   }
 
-  Future<void> playNext(Song song) async {
+  // Future<void> playNext(List<Song> song, int index) async {
+  //   if (queue.isEmpty) {
+  //     return;
+  //   };
+  //
+  //   // 🔵 CASE 1: From queue
+  //   if (index != -1) {
+  //     // remove that exact item
+  //     if (index == currentIndex.value) {
+  //       // queue.insert(currentIndex.value + 1, song);
+  //     } else {
+  //       final item = queue.removeAt(index);
+  //
+  //       if (index < currentIndex.value) {
+  //         currentIndex.value--;
+  //       }
+  //       // insert next
+  //       queue.insert(currentIndex.value + 1, item);
+  //       queue.refresh();
+  //       return;
+  //     }
+  //   }
+  //
+  //   queue.insertAll(currentIndex.value + 1, song);
+  //   queue.refresh();
+  //
+  //   showGlobalMessage("${song.first.title} will play next");
+  // }
+  //
+  // void autoplayNextDataType(dynamic songId, int index) {
+  //   if (songId is Song) {
+  //     playNext([songId], index);
+  //   } else if (songId is List<Song>) {
+  //     playNext(songId, index);
+  //   }
+  // }
+  //
+  // void dismissQueue(int index)  {
+  //   if (index == currentIndex.value && index != -1) {
+  //      play_Next();
+  //   }
+  //
+  //   queue.removeAt(index);
+  //
+  //   if (index < currentIndex.value) {
+  //     currentIndex.value--;
+  //   }
+  //   queue.refresh();
+  // }
+
+  Future<void> playNext(List<Song> song, int index) async {
     if (queue.isEmpty) {
+      autoSongType(song, 0);
+      Future.delayed(const Duration(milliseconds: 500), () {
+        Get.toNamed(App_route.full_screen_media_player_page);
+      });
       return;
     }
-    final songIndex = queue.indexWhere((e) => e.id == song.id);
-    if (songIndex == currentIndex.value) {
-    } else if (songIndex != -1) {
-      queue.removeAt(songIndex);
-      if (songIndex < currentIndex.value) {
-        currentIndex.value--;
+    ;
+
+    // 🔵 CASE 1: From queue
+    if (index != -1) {
+      // remove that exact item
+      if (index != currentIndex.value) {
+        final item = queue.removeAt(index);
+
+        if (index < currentIndex.value) {
+          currentIndex.value--;
+        }
+        // insert next
+        queue.insert(currentIndex.value + 1, item);
+        queue.refresh();
+        return;
       }
     }
-    queue.insert(currentIndex.value + 1, song);
+
+    queue.insertAll(currentIndex.value + 1, song);
     queue.refresh();
-    showGlobalMessage("Song will play next");
+
+    showGlobalMessage("${song.first.title} will play next");
+  }
+
+  void autoplayNextDataType(dynamic songId, int index) {
+    if (songId is Song) {
+      playNext([songId], index);
+    } else if (songId is List<Song>) {
+      playNext(songId, index);
+    }
   }
 
   void dismissQueue(int index) {
-    if (index == currentIndex.value) {}
-
-    if (index != -1) {
-      queue.removeAt(index);
+    if (queue.length == 1) {
+      Get.back();
+      clear_user();
+      Get.back();
+      queue.value = [];
+      return;
     }
+    if (index == currentIndex.value && index != -1) {
+      play_Next();
+    }
+
+    queue.removeAt(index);
 
     if (index < currentIndex.value) {
       currentIndex.value--;
@@ -93,8 +176,14 @@ class get_current_song extends base_controller {
     queue.refresh();
   }
 
-  void AddToQueue(Song song) {
-    queue.add(song);
+  void AddToQueue(dynamic song) {
+    if (song is Song) {
+      queue.add(song);
+      showGlobalMessage("${song.title} Added to Queue");
+    } else if (song is List<Song>) {
+      queue.addAll(song);
+      showGlobalMessage("Songs Added to Queue");
+    }
   }
 
   Future<void> clear_user() async {

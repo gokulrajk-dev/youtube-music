@@ -28,6 +28,9 @@ class _full_screen_media_playerState extends State<full_screen_media_player>
 
   @override
   void initState() {
+    // if(song.current_song.value == null){
+
+    // }
     super.initState();
   }
 
@@ -447,6 +450,122 @@ class _full_screen_media_playerState extends State<full_screen_media_player>
   }
 }
 
+// class List_song extends StatefulWidget {
+//   const List_song({super.key});
+//
+//   @override
+//   State<List_song> createState() => _List_songState();
+// }
+//
+// class _List_songState extends State<List_song> {
+//   final current_song = Get.find<get_current_song>();
+//
+//   // void reOrder(int oldIndex, int newIndex) {
+//   //   setState(() {
+//   //     if (newIndex > oldIndex) newIndex--;
+//   //     final item = current_song.queue.removeAt(oldIndex);
+//   //     final currentSongId = current_song.current_song.value!.id;
+//   //     current_song.queue.insert(newIndex, item);
+//   //     int findCurrentSongIndex =
+//   //     current_song.queue.indexWhere((index) => index.id == currentSongId);
+//   //     current_song.currentIndex.value = findCurrentSongIndex;
+//   //   });
+//   // }
+//
+//   void reOrder(int oldIndex, int newIndex) {
+//     if (newIndex > oldIndex) {
+//       newIndex -= 1;
+//     }
+//
+//     final movedSong = current_song.queue.removeAt(oldIndex);
+//     current_song.queue.insert(newIndex, movedSong);
+//
+//     // Update currentIndex safely after reorder
+//     final currentId = current_song.current_song.value!.id;        // assuming current_song is Rx<Song?>
+//     current_song.currentIndex.value = current_song.queue.indexWhere((s) => s.id == currentId);
+//
+//     current_song.queue.refresh();
+//   }
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Obx(() {
+//       if (current_song.queue.isEmpty) {
+//         return const Center(
+//           child: Text(
+//             "No Song in Queue",
+//             style: TextStyle(color: Colors.white),
+//           ),
+//         );
+//       }
+//       return ReorderableListView.builder(
+//         shrinkWrap: true,
+//         scrollDirection: Axis.vertical,
+//         itemCount: current_song.queue.length,
+//         onReorder: (oldIndex, newIndex) {
+//           reOrder(oldIndex, newIndex);
+//         },
+//         itemBuilder: (context, index) {
+//           final songss = current_song.queue[index];
+//           final isCurrent = current_song.currentIndex.value == index;
+//           return Container(
+//             key: ValueKey(index),
+//             clipBehavior: Clip.hardEdge,
+//             decoration: BoxDecoration(
+//               color: isCurrent ? Colors.brown.shade500 : Colors.transparent,
+//             ),
+//             child: ListTile(
+//               onTap: () async {
+//                 await current_song.setQueue(current_song.queue, index);
+//               },
+//               leading: songss.coverImage != null
+//                   ? Image.network(songss.coverImage!)
+//                   : const Icon(Icons.music_note, color: Colors.white),
+//               title: Text(
+//                 songss.title ?? "Unknown",
+//                 style: const TextStyle(
+//                   color: Colors.white,
+//                   fontWeight: FontWeight.bold,
+//                   fontSize: 20,
+//                 ),
+//               ),
+//               subtitle: Text(
+//                 songss.artist?.map((artist) => artist.artistName).join(', ') ??
+//                     "",
+//                 style: const TextStyle(
+//                   color: Colors.grey,
+//                   fontSize: 13,
+//                 ),
+//                 maxLines: 1,
+//                 overflow: TextOverflow.ellipsis,
+//               ),
+//               trailing: IconButton(
+//                 onPressed: () {
+//                   Get.bottomSheet(
+//                     DraggableScrollableSheet(
+//                       expand: false,
+//                       builder: (context, scrollController) {
+//                         return globle_bottom_sheet(
+//                           controllers: scrollController,
+//                           song: songss,
+//                           songIndex: index,
+//                           type: "queue",
+//                         );
+//                       },
+//                     ),
+//                     isScrollControlled: true,
+//                   );
+//                 },
+//                 icon: const Icon(Icons.more_vert, color: Colors.white),
+//               ),
+//             ),
+//           );
+//         },
+//       );
+//     });
+//   }
+// }
+
 class List_song extends StatefulWidget {
   const List_song({super.key});
 
@@ -457,16 +576,26 @@ class List_song extends StatefulWidget {
 class _List_songState extends State<List_song> {
   final current_song = Get.find<get_current_song>();
 
+  /// Pure index-based reordering (works even with duplicate songs)
   void reOrder(int oldIndex, int newIndex) {
-    setState(() {
-      if (newIndex > oldIndex) newIndex--;
-      final item = current_song.queue.removeAt(oldIndex);
-      final currentSongId = current_song.current_song.value!.id;
-      current_song.queue.insert(newIndex, item);
-      int findCurrentSongIndex =
-          current_song.queue.indexWhere((index) => index.id == currentSongId);
-      current_song.currentIndex.value = findCurrentSongIndex;
-    });
+    if (newIndex > oldIndex) newIndex--;
+
+    final queue = current_song.queue;
+
+    final movedSong = queue.removeAt(oldIndex);
+    queue.insert(newIndex, movedSong);
+
+    int current = current_song.currentIndex.value;
+
+    if (oldIndex == current) {
+      current_song.currentIndex.value = newIndex;
+    } else if (oldIndex < current && newIndex >= current) {
+      current_song.currentIndex.value--;
+    } else if (oldIndex > current && newIndex <= current) {
+      current_song.currentIndex.value++;
+    }
+
+    queue.refresh();
   }
 
   @override
@@ -474,71 +603,86 @@ class _List_songState extends State<List_song> {
     return Obx(() {
       if (current_song.queue.isEmpty) {
         return const Center(
-          child: Text(
-            "No Song in Queue",
-            style: TextStyle(color: Colors.white),
-          ),
+          child:
+              Text("No Song in Queue", style: TextStyle(color: Colors.white)),
         );
       }
+
       return ReorderableListView.builder(
         shrinkWrap: true,
         scrollDirection: Axis.vertical,
         itemCount: current_song.queue.length,
-        onReorder: (oldIndex, newIndex) {
-          reOrder(oldIndex, newIndex);
-        },
+        onReorder: reOrder,
         itemBuilder: (context, index) {
           final songss = current_song.queue[index];
           final isCurrent = current_song.currentIndex.value == index;
-          return Container(
-            key: ValueKey("${songss.id}_$index"),
-            clipBehavior: Clip.hardEdge,
-            decoration: BoxDecoration(
-              color: isCurrent ? Colors.brown.shade500 : Colors.transparent,
+          return Dismissible(
+            direction: DismissDirection.horizontal,
+            background: Container(
+              color: Colors.red,
+              alignment: Alignment.centerLeft,
+              padding: EdgeInsets.only(left: 20),
+              child: Icon(Icons.delete, color: Colors.white),
             ),
-            child: ListTile(
-              onTap: () async {
-                await current_song.setQueue(current_song.queue, index);
-              },
-              leading: songss.coverImage != null
-                  ? Image.network(songss.coverImage!)
-                  : const Icon(Icons.music_note, color: Colors.white),
-              title: Text(
-                songss.title ?? "Unknown",
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20,
-                ),
+            secondaryBackground: Container(
+              color: Colors.red,
+              alignment: Alignment.centerRight,
+              padding: EdgeInsets.only(right: 20),
+              child: Icon(Icons.delete, color: Colors.white),
+            ),
+            onDismissed: (_) {
+              current_song.dismissQueue(index);
+            },
+            key: ValueKey('${songss.hashCode}_${index}_${songss.id}'),
+            // key: UniqueKey(),
+            child: Container(
+              clipBehavior: Clip.hardEdge,
+              decoration: BoxDecoration(
+                color: isCurrent ? Colors.brown.shade500 : Colors.transparent,
               ),
-              subtitle: Text(
-                songss.artist?.map((artist) => artist.artistName).join(', ') ??
-                    "",
-                style: const TextStyle(
-                  color: Colors.grey,
-                  fontSize: 13,
-                ),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-              trailing: IconButton(
-                onPressed: () {
-                  Get.bottomSheet(
-                    DraggableScrollableSheet(
-                      expand: false,
-                      builder: (context, scrollController) {
-                        return globle_bottom_sheet(
-                          controllers: scrollController,
-                          song: songss,
-                          songIndex: index,
-                          type: "queue",
-                        );
-                      },
-                    ),
-                    isScrollControlled: true,
-                  );
+              child: ListTile(
+                onTap: () {
+                  current_song.autoSongType(current_song.queue.toList(), index);
                 },
-                icon: const Icon(Icons.more_vert, color: Colors.white),
+                leading: songss.coverImage != null
+                    ? Image.network(songss.coverImage!)
+                    : const Icon(Icons.music_note, color: Colors.white),
+                title: Text(
+                  songss.title ?? "Unknown",
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                  ),
+                ),
+                subtitle: Text(
+                  songss.artist
+                          ?.map((artist) => artist.artistName)
+                          .join(', ') ??
+                      "",
+                  style: const TextStyle(color: Colors.grey, fontSize: 13),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                trailing: IconButton(
+                  onPressed: () {
+                    Get.bottomSheet(
+                      DraggableScrollableSheet(
+                        expand: false,
+                        builder: (context, scrollController) {
+                          return globle_bottom_sheet(
+                            controllers: scrollController,
+                            song: songss,
+                            songIndex: index,
+                            type: "queue",
+                          );
+                        },
+                      ),
+                      isScrollControlled: true,
+                    );
+                  },
+                  icon: const Icon(Icons.more_vert, color: Colors.white),
+                ),
               ),
             ),
           );

@@ -8,6 +8,7 @@ import '../../../route/app_route.dart';
 import '../../../services/helper_code/helper_code.dart';
 import '../../../widgets/songListView.dart';
 import '../Artist/artist_controller.dart';
+import '../globle_bottom_sheet/globle_bottom_sheet_views.dart';
 import '../like_page/like_views.dart';
 
 class Album_Views extends GetView<Album_Controller> {
@@ -149,7 +150,7 @@ class Album_Views extends GetView<Album_Controller> {
                               color: Colors.black,
                               size: 50,
                             ), () {
-                          song.setQueue(songOnly, 0);
+                          song.autoSongType(songOnly, 0);
                           Get.toNamed(App_route.full_screen_media_player_page);
                         }, Colors.white),
                         Like_Views.rowicon(
@@ -164,7 +165,57 @@ class Album_Views extends GetView<Album_Controller> {
                               Icons.more_vert,
                               color: Colors.white,
                             ),
-                            () {},
+                            () {
+                              Get.bottomSheet(
+                                DraggableScrollableSheet(
+                                  expand: false,
+                                  builder: (context, scrollController) {
+                                    return Container(
+                                      color: Colors.black,
+                                      child: Column(
+                                        children: [
+                                          ListTile(
+                                            onTap: () {
+                                              Get.back();
+                                              song.autoplayNextDataType(songOnly,0);
+                                            },
+                                            leading: Icon(Icons.playlist_play,color: Colors.white,),
+                                            title: Text('play next',style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 20),),
+                                          ),ListTile(
+                                            onTap: () {
+                                              Get.back();
+                                              song.AddToQueue(songOnly);
+                                            },
+                                            leading: Icon(Icons.playlist_play,color: Colors.white,),
+                                            title: Text('Add to Queue',style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 20),),
+                                          ),
+                                          ListTile(
+                                            onTap: () {
+                                              Get.back();
+                                              Get.bottomSheet(
+                                                DraggableScrollableSheet(
+                                                  expand: false,
+                                                  builder: (context, scrollController) {
+                                                    return showPlaylistBottomSheet(
+                                                      controller: scrollController,
+                                                      songId: songOnly.map((song)=>song.id).toList(),
+                                                    );
+                                                  },
+                                                ),
+                                                isScrollControlled: true,
+                                              );
+                                            },
+                                            leading: Icon(Icons.playlist_play,color: Colors.white,),
+                                            title: Text('Save to playlist',style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 20),),
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  },
+                                ),
+                                isScrollControlled: true,
+                              );
+                            },
                             Colors.white.withOpacity(0.2)),
                       ],
                     ),
@@ -228,7 +279,7 @@ class Album_Views extends GetView<Album_Controller> {
               songs: songOnly,
               onTap: (selectedSong) {
                 final index = songOnly.indexOf(selectedSong);
-                song.setQueue(songOnly, index);
+                song.autoSongType(songOnly, index);
                 Get.toNamed(App_route.full_screen_media_player_page);
               },
             ),

@@ -40,14 +40,15 @@ class _globle_bottom_sheetState extends State<globle_bottom_sheet> {
   final playlist = Get.find<Playlist_Controller>();
 
   List<Feature> get featrue => [
-        if (controller.queue.isNotEmpty)
-          Feature(
-              icon: Icons.playlist_play,
-              text: 'Play Next',
-              onTap: () async {
-                await controller.playNext(widget.song);
-                Get.back();
-              }),
+        Feature(
+            icon: Icons.playlist_play,
+            text: 'Play Next',
+            onTap: () {
+              widget.type != "queue"
+                  ? controller.autoplayNextDataType(widget.song, -1)
+                  : controller.autoplayNextDataType(widget.song, widget.songIndex ?? -1);
+              Get.back();
+            }),
         Feature(
             icon: Icons.playlist_add,
             text: 'Save to playlist',
@@ -97,12 +98,9 @@ class _globle_bottom_sheetState extends State<globle_bottom_sheet> {
                 Get.back();
                 await playlist.removeSongFromPlaylist(
                     playlist.user_playlist_song.value!.id,
-                    [
-                      widget.song.id
-                    ],
+                    [widget.song.id],
                     "delete",
                     widget.songIndex ?? -1);
-
               }),
         Feature(
             icon: Icons.album_outlined,
@@ -275,9 +273,9 @@ class _showPlaylistBottomSheetState extends State<showPlaylistBottomSheet> {
         controller: widget.controller,
         children: [
           ListTile(
-            title: const Text(
-              'Save 1 song to playlist',
-              style: TextStyle(
+            title:  Text(
+              'Save ${widget.songId.length} song to playlist',
+              style:const TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
                   fontSize: 20),
@@ -339,89 +337,8 @@ class _showPlaylistBottomSheetState extends State<showPlaylistBottomSheet> {
                 return ListTile(
                   onTap: () async {
                     Get.back();
-                    await playlist_song.addedSongToPlaylist(
+                    await playlist_song.autoAddedSongToPlaylist(
                         playlist.id, widget.songId, "post");
-                  },
-                  onLongPress: () {
-                    showDialog(
-                      context: context,
-                      builder: (context) {
-                        return Dialog(
-                          child: Container(
-                            decoration: BoxDecoration(
-                                color: Colors.black,
-                                borderRadius: BorderRadius.circular(20)),
-                            height: 130,
-                            child: Padding(
-                              padding: const EdgeInsets.all(20.0),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const Text(
-                                    'Delete this Playlist?',
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Expanded(
-                                        child: OutlinedButton(
-                                            onPressed: () {
-                                              Get.back();
-                                            },
-                                            style: OutlinedButton.styleFrom(
-                                              shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          20)),
-                                            ),
-                                            child: const Center(
-                                              child: Text(
-                                                '\tCancel\t',
-                                                style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                              ),
-                                            )),
-                                      ),
-                                      const SizedBox(
-                                        width: 10,
-                                      ),
-                                      Expanded(
-                                        child: ElevatedButton(
-                                            onPressed: () {
-                                              playlist_song.deleteExistPlaylist(
-                                                  playlist.id, index);
-                                              Get.back();
-                                            },
-                                            style: const ButtonStyle(
-                                                backgroundColor:
-                                                    WidgetStatePropertyAll(
-                                                        Colors.white)),
-                                            child: const Text(
-                                              '\tDelete\t',
-                                              style: TextStyle(
-                                                  color: Colors.black),
-                                            )),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        );
-                      },
-                    );
                   },
                   leading: playlist.playlistcoverimage == ''
                       ? Image.network(playlist.playlistcoverimage ?? "")
