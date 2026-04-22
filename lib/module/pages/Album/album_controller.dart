@@ -9,8 +9,8 @@ class Album_Controller extends base_controller {
   final retrive_album_song = Rxn<Album>();
 
   @override
-  void onInit() {
-    get_song_album();
+  void onInit()async {
+    await get_song_album();
     super.onInit();
   }
 

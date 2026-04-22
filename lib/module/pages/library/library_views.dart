@@ -153,10 +153,11 @@ class _Library_ViewsState extends State<Library_Views> {
                           padding: const EdgeInsets.only(left: 10.0),
                           child: Obx(
                             () => ListView.builder(
-                              itemCount: library_controller.current_page_title ==
-                                      'Library'
-                                  ? text.length
-                                  : textDownload.length,
+                              itemCount:
+                                  library_controller.current_page_title ==
+                                          'Library'
+                                      ? text.length
+                                      : textDownload.length,
                               shrinkWrap: true,
                               physics: const BouncingScrollPhysics(),
                               scrollDirection: Axis.horizontal,
@@ -166,12 +167,12 @@ class _Library_ViewsState extends State<Library_Views> {
                                         'Library';
                                 final page = isLibrary ? text : textDownload;
                                 return Padding(
-                                  padding:
-                                      const EdgeInsets.only(right: 8.0),
+                                  padding: const EdgeInsets.only(right: 8.0),
                                   child: Chip(
                                     label: Text(
                                       page[index],
-                                      style: const TextStyle(color: Colors.white),
+                                      style:
+                                          const TextStyle(color: Colors.white),
                                     ),
                                     backgroundColor: Colors.black,
                                   ),
@@ -489,6 +490,7 @@ class showPlaylistBottom extends StatefulWidget {
 
 class _showPlaylistBottomState extends State<showPlaylistBottom> {
   final Library_Controller library_controller = Get.find<Library_Controller>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -514,20 +516,17 @@ class _showPlaylistBottomState extends State<showPlaylistBottom> {
           ),
           ListTile(
             onTap: () {
-              library_controller.change_current_index(
-                  0, 'Library');
+              library_controller.change_current_index(0, 'Library');
               Get.back();
             },
-            leading: library_controller
-                .current_page_title ==
-                'Library'
+            leading: library_controller.current_page_title == 'Library'
                 ? const Icon(
-              Icons.check,
-              color: Colors.white,
-            )
+                    Icons.check,
+                    color: Colors.white,
+                  )
                 : const SizedBox(
-              width: 5,
-            ),
+                    width: 5,
+                  ),
             title: const Text(
               'Library',
               style: TextStyle(
@@ -537,20 +536,17 @@ class _showPlaylistBottomState extends State<showPlaylistBottom> {
           ),
           ListTile(
             onTap: () {
-              library_controller
-                  .get_current_lib_index();
+              library_controller.get_current_lib_index();
               Get.back();
             },
-            leading: library_controller
-                .current_page_title ==
-                'Download'
+            leading: library_controller.current_page_title == 'Download'
                 ? const Icon(
-              Icons.check,
-              color: Colors.white,
-            )
+                    Icons.check,
+                    color: Colors.white,
+                  )
                 : const SizedBox(
-              width: 5,
-            ),
+                    width: 5,
+                  ),
             title: const Text(
               'Download',
               style: TextStyle(color: Colors.white),
@@ -558,20 +554,17 @@ class _showPlaylistBottomState extends State<showPlaylistBottom> {
           ),
           ListTile(
             onTap: () {
-              library_controller.change_current_index(
-                  1, 'Device Files');
+              library_controller.change_current_index(1, 'Device Files');
               Get.back();
             },
-            leading: library_controller
-                .current_page_title ==
-                'Device Files'
+            leading: library_controller.current_page_title == 'Device Files'
                 ? const Icon(
-              Icons.check,
-              color: Colors.white,
-            )
+                    Icons.check,
+                    color: Colors.white,
+                  )
                 : const SizedBox(
-              width: 5,
-            ),
+                    width: 5,
+                  ),
             title: const Text(
               'Device Files',
               style: TextStyle(

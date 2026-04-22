@@ -33,13 +33,6 @@ class _home_pageState extends State<home_page> {
   @override
   Widget build(BuildContext context) {
     return
-        //   Scaffold(
-        //   body: Center(child: Obx((){
-        //     final user = controller.user.value;
-        //     if(user==null) return CircularProgressIndicator();
-        //     return Text('${user.gmail}');
-        //   })),
-        // );
         SafeArea(
       child: Scaffold(
         body: CustomScrollView(
@@ -243,7 +236,9 @@ class _home_pageState extends State<home_page> {
                             onTap: () {
                               pick_current_song.autoSongType(song,0);
                               Get.toNamed(
-                                  App_route.full_screen_media_player_page);
+                                App_route.full_screen_media_player_page,
+
+                              );
                             },
                             onLongPress: () {
                               Get.bottomSheet(
@@ -268,11 +263,9 @@ class _home_pageState extends State<home_page> {
                                   CachedNetworkImage(
                                     imageUrl: song.coverImage ?? '',
                                     height: 70,
-                                    placeholder: (context, url) => Center(
-                                      child: Container(
-                                        height: 70,
-                                        color: Colors.black,
-                                      ),
+                                    placeholder: (context, url) => Container(
+                                      height: 70,
+                                      color: Colors.black,
                                     ),
                                     errorWidget: (context, url, error) =>
                                         const Icon(Icons.error),

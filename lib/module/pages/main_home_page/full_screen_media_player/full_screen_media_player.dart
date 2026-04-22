@@ -25,12 +25,11 @@ class _full_screen_media_playerState extends State<full_screen_media_player>
   final Like_Controller like = Get.find<Like_Controller>();
   final full_screen_media_player_controller music_player =
       Get.find<full_screen_media_player_controller>();
+  late PageController pageController;
 
   @override
   void initState() {
-    // if(song.current_song.value == null){
-
-    // }
+    pageController = music_player.pageController;
     super.initState();
   }
 
@@ -157,27 +156,52 @@ class _full_screen_media_playerState extends State<full_screen_media_player>
                         )),
                   ),
                   // todo after complete the project optimize the image appearence
-                  Card(
-                    semanticContainer: true,
-                    borderOnForeground: true,
-                    shape: const CircleBorder(),
-                    clipBehavior: Clip.hardEdge,
-                    child: song.current_song.value!.coverImage != null
-                        ? CachedNetworkImage(
-                            imageUrl: song.current_song.value!.coverImage ?? "",
-                            placeholder: (context, url) => Center(
-                              child: Container(
-                                decoration: const BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: Colors.black,
-                                ),
+                  // Card(
+                  //   semanticContainer: true,
+                  //   borderOnForeground: true,
+                  //   shape: const CircleBorder(),
+                  //   clipBehavior: Clip.hardEdge,
+                  //   child: (song.current_song.value!.coverImage?.isNotEmpty ?? false)
+                  //       ? CachedNetworkImage(
+                  //           imageUrl: song.current_song.value!.coverImage ?? "",
+                  //           errorWidget: (context, url, error) =>
+                  //               const Icon(Icons.error),
+                  //           fit: BoxFit.cover,
+                  //         )
+                  //       : Image.asset("assets/img.png"),
+                  // ),
+                  SizedBox(
+                    height: 330,
+                    child: PageView.builder(
+                      controller: pageController,
+                      onPageChanged: (value) {
+                        if (value != song.currentIndex.value) {
+                          song.currentIndex.value = value;
+                        }
+                      },
+                      itemCount: song.queue.length,
+                      itemBuilder: (context, index) {
+                        final item = song.queue[index];
+                        return ClipRRect(
+                          borderRadius: BorderRadius.circular(20),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 35),
+                            child: Container(
+                              clipBehavior: Clip.hardEdge,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(20),
                               ),
+                              child: (item.coverImage?.isNotEmpty ?? false)
+                                  ? CachedNetworkImage(
+                                      imageUrl: item.coverImage!,
+                                      fit: BoxFit.cover,
+                                    )
+                                  : Image.asset("assets/img.png"),
                             ),
-                            errorWidget: (context, url, error) =>
-                                const Icon(Icons.error),
-                            fit: BoxFit.cover,
-                          )
-                        : Image.asset("assets/_joker1.png"),
+                          ),
+                        );
+                      },
+                    ),
                   ),
                   Padding(
                     padding:
@@ -417,7 +441,7 @@ class _full_screen_media_playerState extends State<full_screen_media_player>
                     ],
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(top: 58.0),
+                    padding: const EdgeInsets.only(top: 48.0),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
@@ -450,122 +474,6 @@ class _full_screen_media_playerState extends State<full_screen_media_player>
   }
 }
 
-// class List_song extends StatefulWidget {
-//   const List_song({super.key});
-//
-//   @override
-//   State<List_song> createState() => _List_songState();
-// }
-//
-// class _List_songState extends State<List_song> {
-//   final current_song = Get.find<get_current_song>();
-//
-//   // void reOrder(int oldIndex, int newIndex) {
-//   //   setState(() {
-//   //     if (newIndex > oldIndex) newIndex--;
-//   //     final item = current_song.queue.removeAt(oldIndex);
-//   //     final currentSongId = current_song.current_song.value!.id;
-//   //     current_song.queue.insert(newIndex, item);
-//   //     int findCurrentSongIndex =
-//   //     current_song.queue.indexWhere((index) => index.id == currentSongId);
-//   //     current_song.currentIndex.value = findCurrentSongIndex;
-//   //   });
-//   // }
-//
-//   void reOrder(int oldIndex, int newIndex) {
-//     if (newIndex > oldIndex) {
-//       newIndex -= 1;
-//     }
-//
-//     final movedSong = current_song.queue.removeAt(oldIndex);
-//     current_song.queue.insert(newIndex, movedSong);
-//
-//     // Update currentIndex safely after reorder
-//     final currentId = current_song.current_song.value!.id;        // assuming current_song is Rx<Song?>
-//     current_song.currentIndex.value = current_song.queue.indexWhere((s) => s.id == currentId);
-//
-//     current_song.queue.refresh();
-//   }
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Obx(() {
-//       if (current_song.queue.isEmpty) {
-//         return const Center(
-//           child: Text(
-//             "No Song in Queue",
-//             style: TextStyle(color: Colors.white),
-//           ),
-//         );
-//       }
-//       return ReorderableListView.builder(
-//         shrinkWrap: true,
-//         scrollDirection: Axis.vertical,
-//         itemCount: current_song.queue.length,
-//         onReorder: (oldIndex, newIndex) {
-//           reOrder(oldIndex, newIndex);
-//         },
-//         itemBuilder: (context, index) {
-//           final songss = current_song.queue[index];
-//           final isCurrent = current_song.currentIndex.value == index;
-//           return Container(
-//             key: ValueKey(index),
-//             clipBehavior: Clip.hardEdge,
-//             decoration: BoxDecoration(
-//               color: isCurrent ? Colors.brown.shade500 : Colors.transparent,
-//             ),
-//             child: ListTile(
-//               onTap: () async {
-//                 await current_song.setQueue(current_song.queue, index);
-//               },
-//               leading: songss.coverImage != null
-//                   ? Image.network(songss.coverImage!)
-//                   : const Icon(Icons.music_note, color: Colors.white),
-//               title: Text(
-//                 songss.title ?? "Unknown",
-//                 style: const TextStyle(
-//                   color: Colors.white,
-//                   fontWeight: FontWeight.bold,
-//                   fontSize: 20,
-//                 ),
-//               ),
-//               subtitle: Text(
-//                 songss.artist?.map((artist) => artist.artistName).join(', ') ??
-//                     "",
-//                 style: const TextStyle(
-//                   color: Colors.grey,
-//                   fontSize: 13,
-//                 ),
-//                 maxLines: 1,
-//                 overflow: TextOverflow.ellipsis,
-//               ),
-//               trailing: IconButton(
-//                 onPressed: () {
-//                   Get.bottomSheet(
-//                     DraggableScrollableSheet(
-//                       expand: false,
-//                       builder: (context, scrollController) {
-//                         return globle_bottom_sheet(
-//                           controllers: scrollController,
-//                           song: songss,
-//                           songIndex: index,
-//                           type: "queue",
-//                         );
-//                       },
-//                     ),
-//                     isScrollControlled: true,
-//                   );
-//                 },
-//                 icon: const Icon(Icons.more_vert, color: Colors.white),
-//               ),
-//             ),
-//           );
-//         },
-//       );
-//     });
-//   }
-// }
-
 class List_song extends StatefulWidget {
   const List_song({super.key});
 
@@ -576,23 +484,35 @@ class List_song extends StatefulWidget {
 class _List_songState extends State<List_song> {
   final current_song = Get.find<get_current_song>();
 
-  /// Pure index-based reordering (works even with duplicate songs)
+  @override
+  void initState() {
+    current_song.isReordering.value = true;
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    current_song.isReordering.value = false;
+    super.dispose();
+  }
+
   void reOrder(int oldIndex, int newIndex) {
+    final controller = current_song;
     if (newIndex > oldIndex) newIndex--;
 
-    final queue = current_song.queue;
+    final queue = controller.queue;
 
     final movedSong = queue.removeAt(oldIndex);
     queue.insert(newIndex, movedSong);
 
-    int current = current_song.currentIndex.value;
+    int current = controller.currentIndex.value;
 
     if (oldIndex == current) {
-      current_song.currentIndex.value = newIndex;
+      controller.currentIndex.value = newIndex;
     } else if (oldIndex < current && newIndex >= current) {
-      current_song.currentIndex.value--;
+      controller.currentIndex.value--;
     } else if (oldIndex > current && newIndex <= current) {
-      current_song.currentIndex.value++;
+      controller.currentIndex.value++;
     }
 
     queue.refresh();
@@ -621,19 +541,19 @@ class _List_songState extends State<List_song> {
             background: Container(
               color: Colors.red,
               alignment: Alignment.centerLeft,
-              padding: EdgeInsets.only(left: 20),
-              child: Icon(Icons.delete, color: Colors.white),
+              padding: const EdgeInsets.only(left: 20),
+              child: const Icon(Icons.delete, color: Colors.white),
             ),
             secondaryBackground: Container(
               color: Colors.red,
               alignment: Alignment.centerRight,
-              padding: EdgeInsets.only(right: 20),
-              child: Icon(Icons.delete, color: Colors.white),
+              padding: const EdgeInsets.only(right: 20),
+              child: const Icon(Icons.delete, color: Colors.white),
             ),
             onDismissed: (_) {
               current_song.dismissQueue(index);
             },
-            key: ValueKey('${songss.hashCode}_${index}_${songss.id}'),
+            key: ValueKey('dismiss_${songss.id}_${index}_${songss.hashCode}'),
             // key: UniqueKey(),
             child: Container(
               clipBehavior: Clip.hardEdge,
@@ -641,8 +561,8 @@ class _List_songState extends State<List_song> {
                 color: isCurrent ? Colors.brown.shade500 : Colors.transparent,
               ),
               child: ListTile(
-                onTap: () {
-                  current_song.autoSongType(current_song.queue.toList(), index);
+                onTap: () async {
+                 await current_song.selectFromQueue(index);
                 },
                 leading: songss.coverImage != null
                     ? Image.network(songss.coverImage!)

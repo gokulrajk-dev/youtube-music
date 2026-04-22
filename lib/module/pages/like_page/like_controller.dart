@@ -11,8 +11,8 @@ class Like_Controller extends base_controller {
   // final get_current_song current_song = Get.find<get_current_song>();
 
   @override
-  void onInit() {
-    get_current_user_like_songs();
+  void onInit() async{
+    await get_current_user_like_songs();
     super.onInit();
   }
 

@@ -11,8 +11,8 @@ class get_all_song_controller extends base_controller {
   final RxList<Song> songs = <Song>[].obs;
 
   @override
-  void onInit() {
-    get_all_songs();
+  void onInit() async {
+    await get_all_songs();
     super.onInit();
   }
 
@@ -37,6 +37,7 @@ class get_current_song extends base_controller {
   final RxList<Song> copyqueue = <Song>[].obs;
   final currentIndex = 0.obs;
   final isshuffleenabled = false.obs;
+  final isReordering = false.obs;
 
   Future<void> setQueue(List<Song> song, int startIndex) async {
     queue.assignAll(song);
@@ -66,56 +67,6 @@ class get_current_song extends base_controller {
     }
   }
 
-  // Future<void> playNext(List<Song> song, int index) async {
-  //   if (queue.isEmpty) {
-  //     return;
-  //   };
-  //
-  //   // 🔵 CASE 1: From queue
-  //   if (index != -1) {
-  //     // remove that exact item
-  //     if (index == currentIndex.value) {
-  //       // queue.insert(currentIndex.value + 1, song);
-  //     } else {
-  //       final item = queue.removeAt(index);
-  //
-  //       if (index < currentIndex.value) {
-  //         currentIndex.value--;
-  //       }
-  //       // insert next
-  //       queue.insert(currentIndex.value + 1, item);
-  //       queue.refresh();
-  //       return;
-  //     }
-  //   }
-  //
-  //   queue.insertAll(currentIndex.value + 1, song);
-  //   queue.refresh();
-  //
-  //   showGlobalMessage("${song.first.title} will play next");
-  // }
-  //
-  // void autoplayNextDataType(dynamic songId, int index) {
-  //   if (songId is Song) {
-  //     playNext([songId], index);
-  //   } else if (songId is List<Song>) {
-  //     playNext(songId, index);
-  //   }
-  // }
-  //
-  // void dismissQueue(int index)  {
-  //   if (index == currentIndex.value && index != -1) {
-  //      play_Next();
-  //   }
-  //
-  //   queue.removeAt(index);
-  //
-  //   if (index < currentIndex.value) {
-  //     currentIndex.value--;
-  //   }
-  //   queue.refresh();
-  // }
-
   Future<void> playNext(List<Song> song, int index) async {
     if (queue.isEmpty) {
       autoSongType(song, 0);
@@ -123,8 +74,7 @@ class get_current_song extends base_controller {
         Get.toNamed(App_route.full_screen_media_player_page);
       });
       return;
-    }
-    ;
+    };
 
     // 🔵 CASE 1: From queue
     if (index != -1) {
@@ -200,6 +150,17 @@ class get_current_song extends base_controller {
       get_error(e.toString());
     } finally {
       get_isloading(false);
+    }
+  }
+
+  Future<void> selectFromQueue(int index) async {
+    try {
+      isReordering.value = false;
+
+      await setQueue(queue.toList(), index);
+
+    } finally {
+      isReordering.value = true;
     }
   }
 
