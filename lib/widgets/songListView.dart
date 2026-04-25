@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:youtube_music/core/action/action_context.dart';
 import 'package:youtube_music/data/data_module/song_module.dart';
 
 import '../module/pages/globle_bottom_sheet/globle_bottom_sheet_views.dart';
@@ -35,15 +36,11 @@ class SongListViews extends StatelessWidget {
             onTap: () => onTap(playlist_songs),
             onLongPress: () {
               Get.bottomSheet(
-                DraggableScrollableSheet(
-                  expand: false,
-                  builder: (context, scrollController) {
-                    return globle_bottom_sheet(
-                        controllers: scrollController,
-                        song: playlist_songs,
-                        type: "playlist");
-                  },
-                ),
+                ContextBottomSheet(
+                    context: ActionContext(
+                        entityType: EntityType.song,
+                        entity: playlist_songs,
+                        page: PageContext.artist,isOwner: true,isSaved: false)),
                 isScrollControlled: true,
               );
             },

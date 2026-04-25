@@ -208,6 +208,13 @@ class Album_Views extends GetView<Album_Controller> {
                                             leading: Icon(Icons.playlist_play,color: Colors.white,),
                                             title: Text('Save to playlist',style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 20),),
                                           ),
+                                          ListTile(
+                                            onTap: () {
+                                              Get.back();
+                                            },
+                                            leading: Icon(CupertinoIcons.arrow_down_to_line_alt,color: Colors.white,),
+                                            title: Text('Download',style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 20),),
+                                          ),
                                         ],
                                       ),
                                     );

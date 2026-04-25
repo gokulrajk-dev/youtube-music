@@ -1,0 +1,16 @@
+enum ActionId{
+  playNext,
+  addToQueue,
+  saveToLibrary,
+  removeFromLibrary,
+  download,
+  removeDownload,
+  addToPlaylist,
+  removeFromPlaylist,
+  goToAlbum,
+  goToArtist,
+  share,
+  startMix,
+  viewCredits,
+  pin,
+}

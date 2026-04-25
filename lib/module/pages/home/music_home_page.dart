@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:youtube_music/core/action/action_context.dart';
 import 'package:youtube_music/module/pages/Album/album_controller.dart';
 import 'package:youtube_music/module/pages/Artist/artist_controller.dart';
 import 'package:youtube_music/module/pages/home/controllers/user_data_controller.dart';
@@ -237,22 +238,28 @@ class _home_pageState extends State<home_page> {
                               pick_current_song.autoSongType(song,0);
                               Get.toNamed(
                                 App_route.full_screen_media_player_page,
-
                               );
                             },
+                            // onLongPress: () {
+                            //   Get.bottomSheet(
+                            //     elevation: 5,
+                            //     DraggableScrollableSheet(
+                            //       expand: false,
+                            //       builder: (context, scrollController) {
+                            //         return globle_bottom_sheet(
+                            //           controllers: scrollController,
+                            //           song: song,
+                            //           type: "mainpage",
+                            //         );
+                            //       },
+                            //     ),
+                            //     isScrollControlled: true,
+                            //   );
+                            // },
                             onLongPress: () {
                               Get.bottomSheet(
                                 elevation: 5,
-                                DraggableScrollableSheet(
-                                  expand: false,
-                                  builder: (context, scrollController) {
-                                    return globle_bottom_sheet(
-                                      controllers: scrollController,
-                                      song: song,
-                                      type: "mainpage",
-                                    );
-                                  },
-                                ),
+                                ContextBottomSheet(context: ActionContext(entityType: EntityType.song, entity: song, page: PageContext.home,isOwner: true,isSaved: false)),
                                 isScrollControlled: true,
                               );
                             },

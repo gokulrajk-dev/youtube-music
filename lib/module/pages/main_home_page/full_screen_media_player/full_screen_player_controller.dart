@@ -166,6 +166,7 @@ class full_screen_media_player_controller extends base_controller
           curve: Curves.easeInOut,
         );
       }
+
     });
   }
 

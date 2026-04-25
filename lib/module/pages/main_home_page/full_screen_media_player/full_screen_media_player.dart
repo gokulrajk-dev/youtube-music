@@ -109,6 +109,7 @@ class _full_screen_media_playerState extends State<full_screen_media_player>
                 child: Text(song.error.value),
               );
             }
+            final songIndex = song.currentIndex.value;
             return SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -396,25 +397,33 @@ class _full_screen_media_playerState extends State<full_screen_media_player>
                                   await song.play_Previous();
                                 },
                                 icon: const Icon(Icons.skip_previous),
-                                color: Colors.white,
+                                color: songIndex >0 ?Colors.white : Colors.grey,
                                 iconSize: 40),
-                            IconButton(
-                              onPressed: () async {
-                                music_player.togglePlayPause();
-                              },
-                              icon: AnimatedIcon(
-                                icon: AnimatedIcons.play_pause,
-                                progress: music_player.animationController,
+                            Container(
+                              decoration: const BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.white
                               ),
-                              color: Colors.white,
-                              iconSize: 80,
+                              child: Center(
+                                child: IconButton(
+                                  onPressed: () async {
+                                    music_player.togglePlayPause();
+                                  },
+                                  icon: AnimatedIcon(
+                                    icon: AnimatedIcons.play_pause,
+                                    progress: music_player.animationController,
+                                  ),
+                                  color: Colors.black,
+                                  iconSize: 60,
+                                ),
+                              ),
                             ),
                             IconButton(
                                 onPressed: () async {
                                   await song.play_Next();
                                 },
                                 icon: const Icon(Icons.skip_next),
-                                color: Colors.white,
+                                color: songIndex < song.queue.length-1 ?Colors.white : Colors.grey,
                                 iconSize: 40),
                             IconButton(
                                 onPressed: () async {},
@@ -441,7 +450,7 @@ class _full_screen_media_playerState extends State<full_screen_media_player>
                     ],
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(top: 48.0),
+                    padding: const EdgeInsets.only(top: 65.0),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [

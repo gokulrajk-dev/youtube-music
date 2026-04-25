@@ -60,6 +60,7 @@ class get_current_song extends base_controller {
     }
   }
 
+
   Future<void> play_Previous() async {
     if (currentIndex.value > 0) {
       currentIndex.value--;
@@ -74,7 +75,8 @@ class get_current_song extends base_controller {
         Get.toNamed(App_route.full_screen_media_player_page);
       });
       return;
-    };
+    }
+    ;
 
     // 🔵 CASE 1: From queue
     if (index != -1) {
@@ -106,7 +108,7 @@ class get_current_song extends base_controller {
     }
   }
 
-  void dismissQueue(int index) {
+  void dismissQueue(int index) async {
     if (queue.length == 1) {
       Get.back();
       clear_user();
@@ -115,7 +117,12 @@ class get_current_song extends base_controller {
       return;
     }
     if (index == currentIndex.value && index != -1) {
-      play_Next();
+      try {
+        isReordering.value = false;
+        await play_Next();
+      } finally {
+        isReordering.value = true;
+      }
     }
 
     queue.removeAt(index);
@@ -156,9 +163,7 @@ class get_current_song extends base_controller {
   Future<void> selectFromQueue(int index) async {
     try {
       isReordering.value = false;
-
       await setQueue(queue.toList(), index);
-
     } finally {
       isReordering.value = true;
     }
