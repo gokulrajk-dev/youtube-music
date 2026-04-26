@@ -33,8 +33,7 @@ class _home_pageState extends State<home_page> {
 
   @override
   Widget build(BuildContext context) {
-    return
-        SafeArea(
+    return SafeArea(
       child: Scaffold(
         body: CustomScrollView(
           slivers: [
@@ -235,7 +234,7 @@ class _home_pageState extends State<home_page> {
                           padding: const EdgeInsets.all(8.0),
                           child: GestureDetector(
                             onTap: () {
-                              pick_current_song.autoSongType(song,0);
+                              pick_current_song.autoSongType(song, 0);
                               Get.toNamed(
                                 App_route.full_screen_media_player_page,
                               );
@@ -259,7 +258,13 @@ class _home_pageState extends State<home_page> {
                             onLongPress: () {
                               Get.bottomSheet(
                                 elevation: 5,
-                                ContextBottomSheet(context: ActionContext(entityType: EntityType.song, entity: song, page: PageContext.home,isOwner: true,isSaved: false)),
+                                ContextBottomSheet(
+                                    context: ActionContext(
+                                        entityType: EntityType.song,
+                                        entity: song,
+                                        page: PageContext.home,
+                                        isOwner: true,
+                                        isSaved: false)),
                                 isScrollControlled: true,
                               );
                             },

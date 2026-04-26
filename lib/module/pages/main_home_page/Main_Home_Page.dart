@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:youtube_music/module/pages/home/controllers/all_song_controller.dart';
@@ -49,6 +50,11 @@ class _MainHomePageState extends State<MainHomePage> {
   full_screen_media_player_controller get music_player =>
       Get.find<full_screen_media_player_controller>();
 
+  @override
+  void initState() {
+    super.initState();
+  }
+
   Route? Get_Page_Navigator(RouteSettings setting, List<GetPage> routes) {
     for (var route in routes) {
       if (route.name == setting.name) {
@@ -68,8 +74,8 @@ class _MainHomePageState extends State<MainHomePage> {
   Widget build(BuildContext context) {
     return PopScope(
       canPop: false,
-      onPopInvoked: (did_pop) {
-        if (did_pop) return;
+      onPopInvoked: (didPop) {
+        if (didPop) return;
         help.helper();
       },
       child: Scaffold(
@@ -112,78 +118,130 @@ class _MainHomePageState extends State<MainHomePage> {
                   duration: const Duration(seconds: 3),
                   color: Colors.black,
                   child: current_use_song.current_song.value == null
-                      ? Center(
-                          child: ListTile(
-                            style: ListTileStyle.drawer,
-                            leading: Image.asset('assets/_joker1.png'),
-                            title: const Text(
-                              'nothing to play',
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 20),
-                            ),
-                            trailing: const Icon(
-                              Icons.play_arrow,
-                              color: Colors.white,
-                            ),
+                      ? Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 5.0),
+                        child: ListTile(
+                          style: ListTileStyle.drawer,
+                          leading: Image.asset('assets/_joker1.png'),
+                          title: const Text(
+                            'nothing to play',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20),
                           ),
-                        )
+                          trailing: const Icon(
+                            Icons.play_arrow,
+                            color: Colors.white,
+                          ),
+                        ),
+                      )
                       : Center(
                           child: Column(
                             children: [
-                              ListTile(
-                                onTap: () {
-                                  Get.toNamed(
-                                      App_route.full_screen_media_player_page);
-                                },
-                                style: ListTileStyle.drawer,
-                                leading: Image.network(current_use_song
-                                        .current_song.value!.coverImage ??
-                                    ""),
-                                titleAlignment: ListTileTitleAlignment.center,
-                                title: Text(
-                                  current_use_song.current_song.value!.title ??
-                                      'unknown',
-                                  style: const TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 20),
-                                ),
-                                subtitle: Text(
-                                  current_use_song.current_song.value!.artist!
-                                      .map((artist) => artist.artistName)
-                                      .join(','),
-                                  style: const TextStyle(
-                                    color: Colors.grey,
-                                    fontSize: 13,
-                                  ),
-                                  softWrap: true,
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                                trailing: IconButton(
-                                  onPressed: () async {
-                                    music_player.togglePlayPause();
-                                  },
-                                  icon: AnimatedIcon(
-                                    icon: AnimatedIcons.play_pause,
-                                    progress: music_player.animationController,
-                                  ),
-                                  color: Colors.white,
-                                  iconSize: 35,
-                                ),
+                              SizedBox(
+                                height: 70,
+                                child: PageView.builder(
+                                      controller: music_player.pageControllerMini,
+                                      onPageChanged: (value) {
+                                        if (value != current_use_song.currentIndex.value) {
+                                          current_use_song.currentIndex.value = value;
+                                        }
+                                      },
+                                      itemCount: current_use_song.queue.length,
+                                      itemBuilder: (context, index) {
+                                        final song = current_use_song.queue[index];
+                                        return GestureDetector(
+                                          onTap: () {
+                                            Get.toNamed(App_route
+                                                .full_screen_media_player_page);
+                                          },
+                                          child: Container(
+                                            color: Colors.transparent,
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
+                                              children: [
+                                                CachedNetworkImage(
+                                                  imageUrl:
+                                                      song.coverImage ?? '',
+                                                  height: 70,
+                                                  placeholder: (context, url) =>
+                                                      Container(
+                                                    height: 70,
+                                                    color: Colors.black,
+                                                  ),
+                                                  errorWidget: (context, url,
+                                                          error) =>
+                                                      const Icon(Icons.error),
+                                                  fit: BoxFit.cover,
+                                                ),
+                                                const SizedBox(
+                                                  width: 10,
+                                                ),
+                                                Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    Text(
+                                                      song.title ?? "unknown",
+                                                      style: const TextStyle(
+                                                          fontSize: 20,
+                                                          color: Colors.white,
+                                                          fontWeight:
+                                                              FontWeight.bold),
+                                                    ),
+                                                    Text(
+                                                      song.artist!
+                                                          .map((artist) =>
+                                                              artist.artistName)
+                                                          .join(','),
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      maxLines: 1,
+                                                      softWrap: true,
+                                                      style: const TextStyle(
+                                                          color: Colors.grey,
+                                                          fontSize: 13),
+                                                    ),
+                                                  ],
+                                                ),
+                                                const Spacer(),
+                                                IconButton(
+                                                  onPressed: () async {
+                                                    await music_player
+                                                        .togglePlayPause();
+                                                  },
+                                                  icon: AnimatedIcon(
+                                                    icon: AnimatedIcons
+                                                        .play_pause,
+                                                    progress: music_player
+                                                        .animationController,
+                                                  ),
+                                                  color: Colors.white,
+                                                  iconSize: 40,
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    ),
+
                               ),
                               current_use_song.current_song.value == null
-                                  ? SizedBox()
+                                  ? const SizedBox()
                                   : SliderTheme(
                                       data: SliderTheme.of(context).copyWith(
                                         trackHeight:
                                             0.5, // thin line like music apps
                                         thumbShape:
                                             SliderComponentShape.noThumb,
-                                        overlayShape: RoundSliderOverlayShape(
-                                            overlayRadius: 0),
+                                        overlayShape:
+                                            const RoundSliderOverlayShape(
+                                                overlayRadius: 0),
                                       ),
                                       child: Slider(
                                         min: 0,

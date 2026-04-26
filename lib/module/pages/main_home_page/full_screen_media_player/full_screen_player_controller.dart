@@ -37,16 +37,31 @@ class full_screen_media_player_controller extends base_controller
   final UserHistoryCrud historyCrud = UserHistoryCrud();
 
   late AnimationController animationController;
-  late PageController pageController;
+  late PageController pageControllerMini;
+  late PageController pageControllerFull;
   int? lastsong;
+  bool _isSyncing = false;
 
   @override
   void onInit() {
     super.onInit();
-    pageController = PageController(
+    pageControllerMini = PageController(
       initialPage: song.currentIndex.value,
       viewportFraction: 1,
     );
+    pageControllerFull = PageController(
+      initialPage: song.currentIndex.value,
+      viewportFraction: 1,
+    );
+
+    pageControllerMini.addListener((){
+      _sync(pageControllerMini, pageControllerFull);
+    });
+
+
+    pageControllerFull.addListener((){
+      _sync(pageControllerFull, pageControllerMini);
+    });
 
     autoNextPage();
 
@@ -123,50 +138,80 @@ class full_screen_media_player_controller extends base_controller
     durationSub.cancel();
     playerStateSub.cancel();
     animationController.dispose();
-    pageController.dispose();
+    pageControllerFull.dispose();
+    pageControllerMini.dispose();
     super.onClose();
   }
 
+  // void autoNextPage() {
+  //   ever(song.currentIndex, (index) async {
+  //     if (!pageController.hasClients) return;
+  //
+  //     final currentPage = pageController.page?.round();
+  //
+  //     final newsong = song.queue[index];
+  //
+  //     // 🚫 SAME SONG → ignore (reorder case)
+  //     if (lastsong == newsong.id) {
+  //       // still sync UI if needed
+  //       if (currentPage != index) {
+  //         pageController.animateToPage(
+  //           index,
+  //           duration: const Duration(milliseconds: 300),
+  //           curve: Curves.easeInOut,
+  //         );
+  //       }
+  //       return;
+  //     }
+  //
+  //     // 🔥 Detect USER SWIPE vs SYSTEM CHANGE
+  //     // final isUserSwipe = currentPage == index;
+  //
+  //     lastsong = newsong.id;
+  //     if (song.isReordering.value) return;
+  //     // 🎯 ONLY CALL API on swipe / next / previous
+  //
+  //     await song.get_current_user_pick_song(newsong.id);
+  //
+  //     if (currentPage != index) {
+  //       pageController.animateToPage(
+  //         index,
+  //         duration: const Duration(milliseconds: 300),
+  //         curve: Curves.easeInOut,
+  //       );
+  //     }
+  //   });
+  // }
+
+  void _sync(PageController source,PageController target){
+    if(_isSyncing)return;
+    _isSyncing =true;
+    if(target.hasClients &&  source.hasClients){
+      target.position.jumpTo(source.offset);
+    }
+    _isSyncing=false;
+  }
   void autoNextPage() {
     ever(song.currentIndex, (index) async {
-      if (!pageController.hasClients) return;
-
-      final currentPage = pageController.page?.round();
-
       final newsong = song.queue[index];
-
-      // 🚫 SAME SONG → ignore (reorder case)
-      if (lastsong == newsong.id) {
-        // still sync UI if needed
-        if (currentPage != index) {
-          pageController.animateToPage(
-            index,
-            duration: const Duration(milliseconds: 300),
-            curve: Curves.easeInOut,
-          );
-        }
-        return;
-      }
-
-
-      // 🔥 Detect USER SWIPE vs SYSTEM CHANGE
-      final isUserSwipe = currentPage == index;
-
-      lastsong = newsong.id;
-      if(song.isReordering.value) return;
-      // 🎯 ONLY CALL API on swipe / next / previous
-      if (isUserSwipe) {
-        await song.get_current_user_pick_song(newsong.id);
-      }
-
-      if (currentPage != index) {
-        pageController.animateToPage(
+      if(pageControllerMini.hasClients){
+        pageControllerMini.animateToPage(
+          index,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+        );
+      }if(pageControllerFull.hasClients){
+        pageControllerFull.animateToPage(
           index,
           duration: const Duration(milliseconds: 300),
           curve: Curves.easeInOut,
         );
       }
 
+      if (song.isReordering.value) return;
+      // 🎯 ONLY CALL API on swipe / next / previous
+
+      await song.get_current_user_pick_song(newsong.id);
     });
   }
 

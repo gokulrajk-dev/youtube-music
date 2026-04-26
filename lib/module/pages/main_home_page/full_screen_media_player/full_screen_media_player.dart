@@ -25,11 +25,15 @@ class _full_screen_media_playerState extends State<full_screen_media_player>
   final Like_Controller like = Get.find<Like_Controller>();
   final full_screen_media_player_controller music_player =
       Get.find<full_screen_media_player_controller>();
-  late PageController pageController;
 
   @override
   void initState() {
-    pageController = music_player.pageController;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final controller = music_player.pageControllerFull;
+      if (controller.hasClients) {
+        controller.jumpToPage(song.currentIndex.value);
+      }
+    });
     super.initState();
   }
 
@@ -174,7 +178,7 @@ class _full_screen_media_playerState extends State<full_screen_media_player>
                   SizedBox(
                     height: 330,
                     child: PageView.builder(
-                      controller: pageController,
+                      controller: music_player.pageControllerFull,
                       onPageChanged: (value) {
                         if (value != song.currentIndex.value) {
                           song.currentIndex.value = value;
@@ -407,7 +411,7 @@ class _full_screen_media_playerState extends State<full_screen_media_player>
                               child: Center(
                                 child: IconButton(
                                   onPressed: () async {
-                                    music_player.togglePlayPause();
+                                    await music_player.togglePlayPause();
                                   },
                                   icon: AnimatedIcon(
                                     icon: AnimatedIcons.play_pause,

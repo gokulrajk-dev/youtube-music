@@ -251,6 +251,31 @@ class _globle_bottom_sheetState extends State<globle_bottom_sheet> {
   }
 }
 
+class ContextBottomSheet extends StatelessWidget {
+  final ActionContext context;
+  const ContextBottomSheet({super.key,required this.context});
+
+  @override
+  Widget build(BuildContext contextUI) {
+    final actions = ActionResolver.resolve(context);
+    return Container(
+      color: Colors.black,
+      child: ListView(
+        shrinkWrap: true,
+        children: actions.map((a){
+          return ListTile(
+            leading: Icon(a.icon,color: Colors.white,),
+            title: Text(a.title,style: const TextStyle(
+                color: Colors.white
+            ),),
+            onTap: () => a.onExecute(context),
+          );
+        }).toList(),
+      ),
+    );
+  }
+}
+
 class showPlaylistBottomSheet extends StatefulWidget {
   final dynamic controller;
   final List<int> songId;
@@ -414,27 +439,4 @@ class _showPlaylistBottomSheetState extends State<showPlaylistBottomSheet> {
 }
 
 
-class ContextBottomSheet extends StatelessWidget {
-  final ActionContext context;
-  const ContextBottomSheet({super.key,required this.context});
 
-  @override
-  Widget build(BuildContext contextUI) {
-    final actions = ActionResolver.resolve(context);
-    return Container(
-      color: Colors.black,
-      child: ListView(
-        shrinkWrap: true,
-        children: actions.map((a){
-          return ListTile(
-            leading: Icon(a.icon,color: Colors.white,),
-            title: Text(a.title,style: const TextStyle(
-              color: Colors.white
-            ),),
-            onTap: () => a.onExecute(context),
-          );
-        }).toList(),
-      ),
-    );
-  }
-}
