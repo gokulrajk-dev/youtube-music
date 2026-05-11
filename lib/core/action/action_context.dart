@@ -6,6 +6,7 @@ class ActionContext {
   final EntityType entityType;
   final dynamic entity;
   final PageContext page;
+  final dynamic songIndex;
 
   final bool isOwner;
   final bool isSaved;
@@ -17,5 +18,7 @@ class ActionContext {
       required this.page,
       this.isOwner = false,
       this.isSaved = false,
-      this.isDownloaded = false});
+      this.isDownloaded = false,
+        this.songIndex
+      });
 }

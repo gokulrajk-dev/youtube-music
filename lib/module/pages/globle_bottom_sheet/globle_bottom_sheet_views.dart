@@ -10,6 +10,7 @@ import 'package:youtube_music/module/pages/playlist_page/playlist_controller.dar
 import 'package:youtube_music/route/app_route.dart';
 import 'package:youtube_music/services/helper_code/helper_code.dart';
 
+import '../../../data/data_module/artist.dart';
 import '../../../data/data_module/song_module.dart';
 import '../like_page/like_controller.dart';
 import '../main_home_page/main_home_page_controller.dart';
@@ -48,7 +49,8 @@ class _globle_bottom_sheetState extends State<globle_bottom_sheet> {
             onTap: () {
               widget.type != "queue"
                   ? controller.autoplayNextDataType(widget.song, -1)
-                  : controller.autoplayNextDataType(widget.song, widget.songIndex ?? -1);
+                  : controller.autoplayNextDataType(
+                      widget.song, widget.songIndex ?? -1);
               Get.back();
             }),
         Feature(
@@ -141,9 +143,8 @@ class _globle_bottom_sheetState extends State<globle_bottom_sheet> {
                   focusColor: Colors.black,
                   leading: Container(
                     clipBehavior: Clip.hardEdge,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10)
-                    ),
+                    decoration:
+                        BoxDecoration(borderRadius: BorderRadius.circular(10)),
                     child: Image.network(
                       widget.song.coverImage ?? '',
                     ),
@@ -253,24 +254,189 @@ class _globle_bottom_sheetState extends State<globle_bottom_sheet> {
 
 class ContextBottomSheet extends StatelessWidget {
   final ActionContext context;
-  const ContextBottomSheet({super.key,required this.context});
+  final controllers;
+
+  ContextBottomSheet(
+      {super.key, required this.context, required this.controllers});
+
+  final Like_Controller like = Get.find<Like_Controller>();
 
   @override
   Widget build(BuildContext contextUI) {
     final actions = ActionResolver.resolve(context);
-    return Container(
-      color: Colors.black,
-      child: ListView(
-        shrinkWrap: true,
-        children: actions.map((a){
-          return ListTile(
-            leading: Icon(a.icon,color: Colors.white,),
-            title: Text(a.title,style: const TextStyle(
-                color: Colors.white
-            ),),
-            onTap: () => a.onExecute(context),
-          );
-        }).toList(),
+    final comAction = ActionResolver.resolveCom(context);
+    final song = context.entity;
+    return SafeArea(
+      child: Container(
+        color: Colors.transparent.withOpacity(0.85),
+        child: Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: ListView(
+            shrinkWrap: true,
+            controller: controllers,
+            children: [
+
+              song is Song
+                  ? ListTile(
+                      focusColor: Colors.black,
+                      leading: Container(
+                        clipBehavior: Clip.hardEdge,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10)),
+                        child: Image.network(
+                          song.coverImage ?? '',
+                        ),
+                      ),
+                      title: Text(
+                        song.title ?? '',
+                        maxLines: 1,
+                        softWrap: true,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20,
+                            color: Colors.white),
+                      ),
+                      subtitle: Text(
+                        song.artist!
+                            .map((artist) => artist.artistName)
+                            .join(','),
+                        maxLines: 1,
+                        softWrap: true,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(color: Colors.grey),
+                      ),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Obx(
+                            () => IconButton(
+                              onPressed: () async {
+                                await like.post_del_user_like(song.id);
+                              },
+                              icon: Icon(
+                                like.get_song_like_or_not(song.id)
+                                    ? CupertinoIcons.hand_thumbsup_fill
+                                    : CupertinoIcons.hand_thumbsup,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                          IconButton(
+                            onPressed: () {
+                              Get.back();
+                            },
+                            icon: const Icon(
+                              Icons.close,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
+                  : song is Artist
+              ?ListTile(
+                      focusColor: Colors.black,
+                      leading: Container(
+                        clipBehavior: Clip.hardEdge,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10)),
+                        child: Image.network(
+                          song.artistImage ?? '',
+                        ),
+                      ),
+                      title: Text(
+                        song.artistName ?? '',
+                        maxLines: 1,
+                        softWrap: true,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20,
+                            color: Colors.white),
+                      ),
+                      // subtitle: Text(
+                      //   "${song.SongArtist.length} songs",
+                      //   maxLines: 1,
+                      //   softWrap: true,
+                      //   overflow: TextOverflow.ellipsis,
+                      //   style: const TextStyle(color: Colors.grey),
+                      // ),
+                      trailing: IconButton(
+                        onPressed: () {
+                          Get.back();
+                        },
+                        icon: const Icon(
+                          Icons.close,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ):const SizedBox(),
+              const Divider(),
+              SizedBox(
+                height: 125,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: comAction.map((most) {
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Builder(builder: (context6) {
+                            return GestureDetector(
+                              // todo the playnext,save,share
+                              onTap: () async {
+                                await most.onExecute(context);
+                              },
+                              child: Container(
+                                height: 80,
+                                width: 100,
+                                decoration: BoxDecoration(
+                                    color: Colors.grey.withOpacity(0.5),
+                                    borderRadius: BorderRadius.circular(20)),
+                                child: Center(
+                                  child: Icon(
+                                    most.icon,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            );
+                          }),
+                          const Spacer(),
+                          Text(
+                            most.title,
+                            style: const TextStyle(color: Colors.white),
+                          )
+                        ],
+                      ),
+                    );
+                  }).toList(),
+                ),
+              ),
+              Column(
+                children: actions.map((a) {
+                  return ListTile(
+                    leading: Icon(
+                      a.icon,
+                      color: Colors.white,
+                    ),
+                    title: Text(
+                      a.title,
+                      style: const TextStyle(color: Colors.white),
+                    ),
+                    onTap: () async {
+                      await a.onExecute(context);
+                    },
+                  );
+                }).toList(),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -301,9 +467,9 @@ class _showPlaylistBottomSheetState extends State<showPlaylistBottomSheet> {
         controller: widget.controller,
         children: [
           ListTile(
-            title:  Text(
+            title: Text(
               'Save ${widget.songId.length} song to playlist',
-              style:const TextStyle(
+              style: const TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
                   fontSize: 20),
@@ -437,6 +603,3 @@ class _showPlaylistBottomSheetState extends State<showPlaylistBottomSheet> {
     ));
   }
 }
-
-
-

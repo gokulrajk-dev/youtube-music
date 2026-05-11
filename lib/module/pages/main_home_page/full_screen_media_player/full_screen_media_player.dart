@@ -401,13 +401,12 @@ class _full_screen_media_playerState extends State<full_screen_media_player>
                                   await song.play_Previous();
                                 },
                                 icon: const Icon(Icons.skip_previous),
-                                color: songIndex >0 ?Colors.white : Colors.grey,
+                                color:
+                                    songIndex > 0 ? Colors.white : Colors.grey,
                                 iconSize: 40),
                             Container(
                               decoration: const BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Colors.white
-                              ),
+                                  shape: BoxShape.circle, color: Colors.white),
                               child: Center(
                                 child: IconButton(
                                   onPressed: () async {
@@ -427,7 +426,9 @@ class _full_screen_media_playerState extends State<full_screen_media_player>
                                   await song.play_Next();
                                 },
                                 icon: const Icon(Icons.skip_next),
-                                color: songIndex < song.queue.length-1 ?Colors.white : Colors.grey,
+                                color: songIndex < song.queue.length - 1
+                                    ? Colors.white
+                                    : Colors.grey,
                                 iconSize: 40),
                             IconButton(
                                 onPressed: () async {},
@@ -575,7 +576,7 @@ class _List_songState extends State<List_song> {
               ),
               child: ListTile(
                 onTap: () async {
-                 await current_song.selectFromQueue(index);
+                  await current_song.selectFromQueue(index);
                 },
                 leading: songss.coverImage != null
                     ? Image.network(songss.coverImage!)

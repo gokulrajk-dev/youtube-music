@@ -195,17 +195,21 @@ class full_screen_media_player_controller extends base_controller
     ever(song.currentIndex, (index) async {
       final newsong = song.queue[index];
       if(pageControllerMini.hasClients){
-        pageControllerMini.animateToPage(
-          index,
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeInOut,
-        );
+        // this is to animated page is not works for here
+        // pageControllerMini.animateToPage(
+        //   index,
+        //   duration: const Duration(milliseconds: 300),
+        //   curve: Curves.easeInOut,
+        // );
+        //this is the correct code for here
+        pageControllerMini.jumpToPage(index);
       }if(pageControllerFull.hasClients){
-        pageControllerFull.animateToPage(
-          index,
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeInOut,
-        );
+        // pageControllerFull.animateToPage(
+        //   index,
+        //   duration: const Duration(milliseconds: 300),
+        //   curve: Curves.easeInOut,
+        // );
+        pageControllerFull.jumpToPage(index);
       }
 
       if (song.isReordering.value) return;

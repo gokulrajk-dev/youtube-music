@@ -258,13 +258,18 @@ class _home_pageState extends State<home_page> {
                             onLongPress: () {
                               Get.bottomSheet(
                                 elevation: 5,
-                                ContextBottomSheet(
-                                    context: ActionContext(
-                                        entityType: EntityType.song,
-                                        entity: song,
-                                        page: PageContext.home,
-                                        isOwner: true,
-                                        isSaved: false)),
+                                DraggableScrollableSheet(builder:
+                                    (BuildContext context,
+                                        ScrollController scrollController) {
+                                  return ContextBottomSheet(
+                                      controllers: scrollController,
+                                      context: ActionContext(
+                                          entityType: EntityType.song,
+                                          entity: song,
+                                          page: PageContext.home,
+                                          isOwner: true,
+                                          isSaved: false));
+                                }),
                                 isScrollControlled: true,
                               );
                             },
@@ -450,6 +455,25 @@ class _home_pageState extends State<home_page> {
                           return artist.artistName!.isEmpty
                               ? const SizedBox()
                               : GestureDetector(
+                                  onLongPress: () {
+                                    Get.bottomSheet(
+                                      elevation: 5,
+                                      DraggableScrollableSheet(builder:
+                                          (BuildContext context,
+                                              ScrollController
+                                                  scrollController) {
+                                        return ContextBottomSheet(
+                                            controllers: scrollController,
+                                            context: ActionContext(
+                                                entityType: EntityType.artist,
+                                                entity: artist,
+                                                page: PageContext.home,
+                                                isOwner: false,
+                                                isSaved: false));
+                                      }),
+                                      isScrollControlled: true,
+                                    );
+                                  },
                                   onTap: () {
                                     artist_song
                                         .retrive_artist_with_song(artist.id);

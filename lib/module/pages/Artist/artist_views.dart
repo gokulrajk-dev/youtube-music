@@ -1,16 +1,19 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:youtube_music/core/action/action_context.dart';
 import 'package:youtube_music/module/pages/Artist/artist_controller.dart';
 import 'package:youtube_music/module/pages/home/controllers/all_song_controller.dart';
 
 import '../../../route/app_route.dart';
 import '../../../services/helper_code/helper_code.dart';
 import '../../../widgets/songListView.dart';
+import '../globle_bottom_sheet/globle_bottom_sheet_views.dart';
 import '../like_page/like_views.dart';
 
-class Artist_Views extends GetView<Artist_Controller>{
+class Artist_Views extends GetView<Artist_Controller> {
   final get_current_song song = Get.find<get_current_song>();
+
   @override
   Widget build(BuildContext context) {
     final helper_code help = helper_code();
@@ -34,12 +37,14 @@ class Artist_Views extends GetView<Artist_Controller>{
         // DateTime dateTime = DateTime.parse(song_date!);
         // final year = dateTime.year.toString();
 
-        if(controller.is_loading.value){
+        if (controller.is_loading.value) {
           return const Center(
-            child: CircularProgressIndicator(color: Colors.white,),
+            child: CircularProgressIndicator(
+              color: Colors.white,
+            ),
           );
         }
-        if(controller.error.value.isNotEmpty){
+        if (controller.error.value.isNotEmpty) {
           return Center(
             child: Text(controller.error.value),
           );
@@ -54,10 +59,9 @@ class Artist_Views extends GetView<Artist_Controller>{
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
                     image: DecorationImage(
-                        image:artist_song!.artistImage == null
+                        image: artist_song!.artistImage == null
                             ? const AssetImage('assets/_joker1.png')
-                            : NetworkImage(
-                            artist_song.artistImage ?? ""),
+                            : NetworkImage(artist_song.artistImage ?? ""),
                         scale: 1)),
               ),
             ),
@@ -77,12 +81,9 @@ class Artist_Views extends GetView<Artist_Controller>{
                   const SizedBox(
                     height: 7,
                   ),
-
-
                   Padding(
                     padding: const EdgeInsets.only(top: 10, bottom: 10),
-                    child:
-                    Text(
+                    child: Text(
                       artist_song.artistBio ?? 'unknown',
                       style: const TextStyle(color: Colors.grey, fontSize: 13),
                     ),
@@ -97,14 +98,14 @@ class Artist_Views extends GetView<Artist_Controller>{
                               CupertinoIcons.arrow_down_to_line,
                               color: Colors.white,
                             ),
-                                () {},
+                            () {},
                             Colors.white.withOpacity(0.2)),
                         Like_Views.rowicon(
                             const Icon(
                               Icons.add_to_photos_outlined,
                               color: Colors.white,
                             ),
-                                () {},
+                            () {},
                             Colors.white.withOpacity(0.2)),
                         Like_Views.rowicon(
                             const Icon(
@@ -112,22 +113,37 @@ class Artist_Views extends GetView<Artist_Controller>{
                               color: Colors.black,
                               size: 50,
                             ),
-                                () {},
+                            () {},
                             Colors.white),
                         Like_Views.rowicon(
                             const Icon(
                               CupertinoIcons.arrow_turn_up_right,
                               color: Colors.white,
                             ),
-                                () {},
+                            () {},
                             Colors.white.withOpacity(0.2)),
                         Like_Views.rowicon(
                             const Icon(
                               Icons.more_vert,
                               color: Colors.white,
-                            ),
-                                () {},
-                            Colors.white.withOpacity(0.2)),
+                            ), () {
+                          Get.bottomSheet(
+                            elevation: 5,
+                            DraggableScrollableSheet(builder:
+                                (BuildContext context,
+                                    ScrollController scrollController) {
+                              return ContextBottomSheet(
+                                  controllers: scrollController,
+                                  context: ActionContext(
+                                      entityType: EntityType.artist,
+                                      entity: artist_song,
+                                      page: PageContext.artist,
+                                      isOwner: false,
+                                      isSaved: false));
+                            }),
+                            isScrollControlled: true,
+                          );
+                        }, Colors.white.withOpacity(0.2)),
                       ],
                     ),
                   ),
@@ -188,6 +204,7 @@ class Artist_Views extends GetView<Artist_Controller>{
             // }).toList()),
             SongListViews(
               songs: song_only,
+              typeOfcontext: PageContext.artist,
               onTap: (selectedSong) {
                 final index = song_only.indexOf(selectedSong);
                 song.setQueue(song_only, index);

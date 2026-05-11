@@ -1,11 +1,12 @@
 enum ActionId{
   playNext,
   addToQueue,
+  dismissQueue,
   saveToLibrary,
   removeFromLibrary,
   download,
   removeDownload,
-  addToPlaylist,
+  saveToPlaylist,
   removeFromPlaylist,
   goToAlbum,
   goToArtist,
@@ -13,4 +14,8 @@ enum ActionId{
   startMix,
   viewCredits,
   pin,
+  notInterest,
+  shufflePlay,
+  deletePlaylist,
+  helpAndFeedback
 }

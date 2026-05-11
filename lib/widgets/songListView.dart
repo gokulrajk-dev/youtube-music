@@ -8,11 +8,13 @@ import '../module/pages/globle_bottom_sheet/globle_bottom_sheet_views.dart';
 class SongListViews extends StatelessWidget {
   final List<Song> songs;
   final void Function(Song song) onTap;
+  final dynamic typeOfcontext;
 
   const SongListViews({
     super.key,
     required this.songs,
     required this.onTap,
+    required this.typeOfcontext,
   });
 
   @override
@@ -36,11 +38,20 @@ class SongListViews extends StatelessWidget {
             onTap: () => onTap(playlist_songs),
             onLongPress: () {
               Get.bottomSheet(
-                ContextBottomSheet(
-                    context: ActionContext(
-                        entityType: EntityType.song,
-                        entity: playlist_songs,
-                        page: PageContext.artist,isOwner: true,isSaved: false)),
+                DraggableScrollableSheet(
+                  builder: (BuildContext context,
+                      ScrollController scrollController) {
+                    return ContextBottomSheet(
+                      controllers: scrollController,
+                        context: ActionContext(
+                            entityType: EntityType.song,
+                            entity: playlist_songs,
+                            songIndex: index,
+                            page: typeOfcontext,
+                            isOwner: true,
+                            isSaved: false));
+                  },
+                ),
                 isScrollControlled: true,
               );
             },

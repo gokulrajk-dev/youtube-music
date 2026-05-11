@@ -119,7 +119,8 @@ class get_current_song extends base_controller {
     if (index == currentIndex.value && index != -1) {
       try {
         isReordering.value = false;
-        await play_Next();
+        currentIndex.value++;
+        await get_current_user_pick_song(queue[currentIndex.value].id);
       } finally {
         isReordering.value = true;
       }

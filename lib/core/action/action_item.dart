@@ -8,6 +8,7 @@ class ActionItem {
   final String title;
   final IconData icon;
 
+
   final bool Function(ActionContext ctx) isVisible;
 
   final Future<void> Function(ActionContext ctx) onExecute;
@@ -17,5 +18,6 @@ class ActionItem {
       required this.title,
       required this.icon,
       required this.isVisible,
-      required this.onExecute});
+      required this.onExecute,
+      });
 }
