@@ -355,13 +355,6 @@ class ContextBottomSheet extends StatelessWidget {
                             fontSize: 20,
                             color: Colors.white),
                       ),
-                      // subtitle: Text(
-                      //   "${song.SongArtist.length} songs",
-                      //   maxLines: 1,
-                      //   softWrap: true,
-                      //   overflow: TextOverflow.ellipsis,
-                      //   style: const TextStyle(color: Colors.grey),
-                      // ),
                       trailing: IconButton(
                         onPressed: () {
                           Get.back();

@@ -247,58 +247,6 @@ class Album_Views extends GetView<Album_Controller> {
                 ],
               ),
             ),
-            // Column(
-            //     children: playlist_song.songs!.map((playlist_songs) {
-            //   return ListTile(
-            //       onTap: () {
-            //         song.get_current_user_pick_song(playlist_songs.id);
-            //       },
-            //       style: ListTileStyle.drawer,
-            //       leading: Image.network(playlist_songs.coverImage ?? ''),
-            //       titleAlignment: ListTileTitleAlignment.center,
-            //       title: Text(
-            //         playlist_songs.title ?? "Unknown",
-            //         style: TextStyle(
-            //             color: Colors.white,
-            //             fontWeight: FontWeight.bold,
-            //             fontSize: 20),
-            //       ),
-            //       subtitle: Text(
-            //         playlist_songs.artist!
-            //             .map((artist) => artist.artistName)
-            //             .join(','),
-            //         style: TextStyle(
-            //           color: Colors.grey,
-            //           fontSize: 13,
-            //         ),
-            //         softWrap: true,
-            //         maxLines: 1,
-            //         overflow: TextOverflow.ellipsis,
-            //       ),
-            //       trailing: IconButton(
-            //           onPressed: () {
-            //             Get.bottomSheet(
-            //               elevation: 5,
-            //               DraggableScrollableSheet(
-            //                 expand: false,
-            //                 builder: (context, scrollController) {
-            //                   return globle_bottom_sheet(
-            //                     controllers: scrollController,
-            //                     song_cover_img: playlist_songs.coverImage,
-            //                     song_title: playlist_songs.title,
-            //                     song_artist: playlist_songs.artist,
-            //                     song_id: playlist_songs.id,
-            //                   );
-            //                 },
-            //               ),
-            //               isScrollControlled: true,
-            //             );
-            //           },
-            //           icon: Icon(
-            //             Icons.more_vert,
-            //             color: Colors.white,
-            //           )));
-            // }).toList()),
             SongListViews(
               songs: songOnly,
               typeOfcontext: PageContext.album,
