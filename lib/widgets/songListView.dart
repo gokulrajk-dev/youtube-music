@@ -82,14 +82,17 @@ class SongListViews extends StatelessWidget {
               onPressed: () {
                 Get.bottomSheet(
                   DraggableScrollableSheet(
-                    expand: false,
-                    builder: (context, scrollController) {
-                      return globle_bottom_sheet(
-                        controllers: scrollController,
-                        song: playlist_songs,
-                        type: "playlist",
-                        songIndex: index,
-                      );
+                    builder: (BuildContext context,
+                        ScrollController scrollController) {
+                      return ContextBottomSheet(
+                          controllers: scrollController,
+                          context: ActionContext(
+                              entityType: EntityType.song,
+                              entity: playlist_songs,
+                              songIndex: index,
+                              page: typeOfcontext,
+                              isOwner: true,
+                              isSaved: false));
                     },
                   ),
                   isScrollControlled: true,

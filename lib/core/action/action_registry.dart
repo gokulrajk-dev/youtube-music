@@ -2,6 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:youtube_music/core/action/action_item.dart';
+import 'package:youtube_music/data/data_module/album_module.dart';
+import 'package:youtube_music/data/data_module/artist.dart';
+import 'package:youtube_music/data/data_module/playlist.dart';
+import 'package:youtube_music/data/data_module/song_module.dart';
 
 import '../../module/pages/Album/album_controller.dart';
 import '../../module/pages/Artist/artist_controller.dart';
@@ -18,8 +22,6 @@ import 'action_id.dart';
 class ActionRegistry {
   final get_current_song controller = Get.find<get_current_song>();
   final Like_Controller like = Get.find<Like_Controller>();
-
-  final main_page = Get.find<Main_Home_Page_Controller>();
 
   static List<ActionItem> all = [
     ActionItem(
@@ -45,7 +47,9 @@ class ActionRegistry {
       id: ActionId.playNext,
       title: "Play Next",
       icon: Icons.playlist_play,
-      isVisible: (ctx) => ctx.entityType == EntityType.playlist || ctx.entityType ==EntityType.album,
+      isVisible: (ctx) =>
+          ctx.entityType == EntityType.playlist ||
+          ctx.entityType == EntityType.album,
       onExecute: (ctx) async {
         final controller = Get.find<get_current_song>();
         final song = ctx.entity;
@@ -97,7 +101,91 @@ class ActionRegistry {
       title: "Delete playlist",
       icon: CupertinoIcons.delete_simple,
       isVisible: (ctx) => ctx.entityType == EntityType.playlist,
-      onExecute: (ctx) async {},
+      onExecute: (ctx) async {
+        Get.back();
+        showDialog(
+          context: Get.context!,
+          builder: (context) {
+            return Dialog(
+              child: Container(
+                decoration: BoxDecoration(
+                    color: Colors.black,
+                    borderRadius: BorderRadius.circular(20)),
+                height: 130,
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Delete this Playlist?',
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            child: OutlinedButton(
+                                onPressed: () {
+                                  Get.back();
+                                },
+                                style: OutlinedButton.styleFrom(
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(20)),
+                                ),
+                                child: const Center(
+                                  child: Text(
+                                    '\tCancel\t',
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                )),
+                          ),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          Expanded(
+                            child: ElevatedButton(
+                                onPressed: () async {
+                                  final playlistSong =
+                                      Get.find<Playlist_Controller>();
+                                  final playlists = ctx.entity;
+                                  Get.back();
+                                  await playlistSong.deleteExistPlaylist(
+                                    playlists.id,
+                                    ctx.songIndex ?? -1,
+                                  );
+                                  Get.back(); // close dialog
+                                  if (ctx.page == PageContext.playlist) {
+                                    Get.back(); // leave playlist page
+                                  }
+                                },
+                                style: const ButtonStyle(
+                                    backgroundColor:
+                                        WidgetStatePropertyAll(Colors.white)),
+                                child: const Text(
+                                  '\tDelete\t',
+                                  style: TextStyle(color: Colors.black),
+                                )),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          },
+        );
+      },
     ),
     ActionItem(
       id: ActionId.saveToLibrary,
@@ -128,7 +216,8 @@ class ActionRegistry {
       id: ActionId.removeFromPlaylist,
       title: "Remove from Playlist",
       icon: Icons.delete,
-      isVisible: (ctx) => ctx.entityType== EntityType.song && ctx.page == PageContext.playlist,
+      isVisible: (ctx) =>
+          ctx.entityType == EntityType.song && ctx.page == PageContext.playlist,
       onExecute: (ctx) async {
         final playlist = Get.find<Playlist_Controller>();
         final song = ctx.entity;
@@ -154,11 +243,11 @@ class ActionRegistry {
       isVisible: (ctx) =>
           ctx.entityType == EntityType.song && ctx.page != PageContext.album,
       onExecute: (ctx) async {
-        final main_page = Get.find<Main_Home_Page_Controller>();
+        final mainPage = Get.find<Main_Home_Page_Controller>();
         final Album_Controller album = Get.find<Album_Controller>();
         final song = ctx.entity;
         Get.back();
-        final naviId = NavHelper.getNavId(main_page.current_index.value);
+        final naviId = NavHelper.getNavId(mainPage.current_index.value);
         await album.retrive_album_song_con(song.album!.id);
         Get.toNamed(App_route.album_page, id: naviId);
       },
@@ -168,13 +257,15 @@ class ActionRegistry {
       title: "Go to Artist",
       icon: Icons.person_outline,
       isVisible: (ctx) =>
-          ctx.page != PageContext.artist && (ctx.entityType ==EntityType.song || ctx.entityType == EntityType.album),
+          ctx.page != PageContext.artist &&
+          (ctx.entityType == EntityType.song ||
+              ctx.entityType == EntityType.album),
       onExecute: (ctx) async {
-        final main_page = Get.find<Main_Home_Page_Controller>();
+        final mainPage = Get.find<Main_Home_Page_Controller>();
         final Artist_Controller artist = Get.find<Artist_Controller>();
         final song = ctx.entity;
         Get.back();
-        final naviId = NavHelper.getNavId(main_page.current_index.value);
+        final naviId = NavHelper.getNavId(mainPage.current_index.value);
         await artist.retrive_artist_with_song(song.artist!.first.id);
         Get.toNamed(App_route.artist_page, id: naviId);
       },
@@ -184,6 +275,14 @@ class ActionRegistry {
       title: "View song credits",
       icon: CupertinoIcons.person_3,
       isVisible: (ctx) => ctx.entityType == EntityType.song,
+      onExecute: (ctx) async {},
+    ),
+    ActionItem(
+      id: ActionId.removeHistory,
+      title: "Remove from History",
+      icon: CupertinoIcons.delete_simple,
+      isVisible: (ctx) =>
+          ctx.entityType == EntityType.song && ctx.page == PageContext.history,
       onExecute: (ctx) async {},
     ),
     ActionItem(
@@ -204,7 +303,9 @@ class ActionRegistry {
       id: ActionId.helpAndFeedback,
       title: "Help and feedback",
       icon: Icons.help_outline,
-      isVisible: (ctx) => ctx.entityType==EntityType.playlist && ctx.page == PageContext.playlist,
+      isVisible: (ctx) =>
+          ctx.entityType == EntityType.playlist &&
+          ctx.page == PageContext.playlist,
       onExecute: (ctx) async {},
     ),
   ];
@@ -283,4 +384,37 @@ class ActionRegistry {
       onExecute: (ctx) async {},
     ),
   ];
+}
+
+class BottomSheetHeaderMapper {
+  static BottomSheetHeader map(ActionContext ctx) {
+    switch (ctx.entityType) {
+      case EntityType.song:
+        final songs = ctx.entity as Song;
+        return BottomSheetHeader(
+            title: songs.title ?? "",
+            coverImage: songs.coverImage ?? "",
+            subtitle: songs.artist!.map((e) => e.artistName).join(","));
+      case EntityType.album:
+        final albums = ctx.entity as Album;
+        return BottomSheetHeader(
+            title: albums.title ?? "",
+            coverImage: albums.coverImage ?? "",
+            subtitle: albums.artists!.map((e) => e.artistName).join(","));
+      case EntityType.playlist:
+        final playlists = ctx.entity as Playlist;
+        return BottomSheetHeader(
+          title: playlists.playlistName ?? "",
+          coverImage: playlists.playlistcoverimage ?? "",
+        );
+      case EntityType.artist:
+        final artists = ctx.entity as Artist;
+        return BottomSheetHeader(
+          title: artists.artistName ?? "",
+          coverImage: artists.artistImage ?? "",
+        );
+      default :
+        return BottomSheetHeader(title: "", coverImage: "");
+    }
+  }
 }

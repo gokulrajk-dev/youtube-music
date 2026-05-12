@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:youtube_music/module/pages/home/controllers/all_song_controller.dart';
 import 'package:youtube_music/module/pages/main_home_page/full_screen_media_player/full_screen_player_controller.dart';
 
+import '../../../../core/action/action_context.dart';
 import '../../globle_bottom_sheet/globle_bottom_sheet_views.dart';
 import '../../like_page/like_controller.dart';
 import '../../profile/profile_views.dart';
@@ -142,16 +143,17 @@ class _full_screen_media_playerState extends State<full_screen_media_player>
                         onPressed: () {
                           Get.bottomSheet(
                             elevation: 5,
-                            DraggableScrollableSheet(
-                              expand: false,
-                              builder: (context, scrollController) {
-                                return globle_bottom_sheet(
+                            DraggableScrollableSheet(builder: (BuildContext context,
+                                ScrollController scrollController) {
+                              return ContextBottomSheet(
                                   controllers: scrollController,
-                                  song: song.current_song.value!,
-                                  type: "queue",
-                                );
-                              },
-                            ),
+                                  context: ActionContext(
+                                      entityType: EntityType.song,
+                                      entity: song.current_song.value,
+                                      page: PageContext.queue,
+                                      isOwner: false,
+                                      isSaved: false));
+                            }),
                             isScrollControlled: true,
                           );
                         },
@@ -601,17 +603,19 @@ class _List_songState extends State<List_song> {
                 trailing: IconButton(
                   onPressed: () {
                     Get.bottomSheet(
-                      DraggableScrollableSheet(
-                        expand: false,
-                        builder: (context, scrollController) {
-                          return globle_bottom_sheet(
+                      elevation: 5,
+                      DraggableScrollableSheet(builder: (BuildContext context,
+                          ScrollController scrollController) {
+                        return ContextBottomSheet(
                             controllers: scrollController,
-                            song: songss,
-                            songIndex: index,
-                            type: "queue",
-                          );
-                        },
-                      ),
+                            context: ActionContext(
+                                entityType: EntityType.song,
+                                entity: songss,
+                                page: PageContext.queue,
+                                songIndex: index,
+                                isOwner: false,
+                                isSaved: false));
+                      }),
                       isScrollControlled: true,
                     );
                   },

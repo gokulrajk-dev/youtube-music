@@ -5,6 +5,7 @@ import 'package:youtube_music/module/pages/history/history_controller.dart';
 import 'package:youtube_music/module/pages/home/controllers/all_song_controller.dart';
 import 'package:youtube_music/services/helper_code/helper_code.dart';
 
+import '../../../core/action/action_context.dart';
 import '../globle_bottom_sheet/globle_bottom_sheet_views.dart';
 
 class History_Views extends GetView<Histroy_Controller> {
@@ -78,16 +79,18 @@ class History_Views extends GetView<Histroy_Controller> {
                         onLongPress: () {
                           Get.bottomSheet(
                             elevation: 5,
-                            DraggableScrollableSheet(
-                              expand: false,
-                              builder: (context, scrollController) {
-                                return globle_bottom_sheet(
+                            DraggableScrollableSheet(builder: (BuildContext context,
+                                ScrollController scrollController) {
+                              return ContextBottomSheet(
                                   controllers: scrollController,
-                                  song: song,
-                                  type: "history",
-                                );
-                              },
-                            ),
+                                  context: ActionContext(
+                                      entityType: EntityType.song,
+                                      entity: song,
+                                      page: PageContext.history,
+                                      songIndex: index,
+                                      isOwner: false,
+                                      isSaved: false));
+                            }),
                             isScrollControlled: true,
                           );
                         },
@@ -117,16 +120,19 @@ class History_Views extends GetView<Histroy_Controller> {
                         trailing: IconButton(
                           onPressed: () {
                             Get.bottomSheet(
-                              DraggableScrollableSheet(
-                                expand: false,
-                                builder: (context, scrollController) {
-                                  return globle_bottom_sheet(
+                              elevation: 5,
+                              DraggableScrollableSheet(builder: (BuildContext context,
+                                  ScrollController scrollController) {
+                                return ContextBottomSheet(
                                     controllers: scrollController,
-                                    song: song,
-                                    type: "history",
-                                  );
-                                },
-                              ),
+                                    context: ActionContext(
+                                        entityType: EntityType.song,
+                                        entity: song,
+                                        page: PageContext.history,
+                                        songIndex: index,
+                                        isOwner: false,
+                                        isSaved: false));
+                              }),
                               isScrollControlled: true,
                             );
                           },

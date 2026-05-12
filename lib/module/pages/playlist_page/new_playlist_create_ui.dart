@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:youtube_music/module/pages/playlist_page/playlist_controller.dart';
 
 class newPlaylistCreate extends StatefulWidget {
-  final dynamic songId;
+  final List<int> songId;
    newPlaylistCreate({super.key,required this.songId});
 
   @override

@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:youtube_music/core/action/action_context.dart';
+import 'package:youtube_music/core/action/action_registry.dart';
 import 'package:youtube_music/core/action/action_resolver.dart';
 import 'package:youtube_music/module/pages/Album/album_controller.dart';
 import 'package:youtube_music/module/pages/Artist/artist_controller.dart';
@@ -10,7 +11,6 @@ import 'package:youtube_music/module/pages/playlist_page/playlist_controller.dar
 import 'package:youtube_music/route/app_route.dart';
 import 'package:youtube_music/services/helper_code/helper_code.dart';
 
-import '../../../data/data_module/artist.dart';
 import '../../../data/data_module/song_module.dart';
 import '../like_page/like_controller.dart';
 import '../main_home_page/main_home_page_controller.dart';
@@ -265,7 +265,9 @@ class ContextBottomSheet extends StatelessWidget {
   Widget build(BuildContext contextUI) {
     final actions = ActionResolver.resolve(context);
     final comAction = ActionResolver.resolveCom(context);
+    final header = BottomSheetHeaderMapper.map(context);
     final song = context.entity;
+
     return SafeArea(
       child: Container(
         color: Colors.transparent.withOpacity(0.85),
@@ -275,41 +277,46 @@ class ContextBottomSheet extends StatelessWidget {
             shrinkWrap: true,
             controller: controllers,
             children: [
-
-              song is Song
-                  ? ListTile(
-                      focusColor: Colors.black,
-                      leading: Container(
-                        clipBehavior: Clip.hardEdge,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10)),
-                        child: Image.network(
-                          song.coverImage ?? '',
+              ListTile(
+                focusColor: Colors.black,
+                leading: Container(
+                  clipBehavior: Clip.hardEdge,
+                  decoration:
+                      BoxDecoration(borderRadius: BorderRadius.circular(10)),
+                  child: header.coverImage.isEmpty
+                      ? const SizedBox(
+                          width: 55,
+                          height: 55,
+                          child: Icon(
+                            Icons.music_note_outlined,
+                            color: Colors.white,
+                          ))
+                      : Image.network(
+                          header.coverImage,
                         ),
-                      ),
-                      title: Text(
-                        song.title ?? '',
-                        maxLines: 1,
-                        softWrap: true,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20,
-                            color: Colors.white),
-                      ),
-                      subtitle: Text(
-                        song.artist!
-                            .map((artist) => artist.artistName)
-                            .join(','),
-                        maxLines: 1,
-                        softWrap: true,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(color: Colors.grey),
-                      ),
-                      trailing: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Obx(
+                ),
+                title: Text(
+                  header.title,
+                  maxLines: 1,
+                  softWrap: true,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                      color: Colors.white),
+                ),
+                subtitle: Text(
+                  header.subtitle ?? "",
+                  maxLines: 1,
+                  softWrap: true,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(color: Colors.grey),
+                ),
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    context.entityType == EntityType.song
+                        ? Obx(
                             () => IconButton(
                               onPressed: () async {
                                 await like.post_del_user_like(song.id);
@@ -321,112 +328,86 @@ class ContextBottomSheet extends StatelessWidget {
                                 color: Colors.white,
                               ),
                             ),
-                          ),
-                          IconButton(
-                            onPressed: () {
-                              Get.back();
-                            },
-                            icon: const Icon(
-                              Icons.close,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ],
-                      ),
-                    )
-                  : song is Artist
-              ?ListTile(
-                      focusColor: Colors.black,
-                      leading: Container(
-                        clipBehavior: Clip.hardEdge,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10)),
-                        child: Image.network(
-                          song.artistImage ?? '',
-                        ),
-                      ),
-                      title: Text(
-                        song.artistName ?? '',
-                        maxLines: 1,
-                        softWrap: true,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20,
-                            color: Colors.white),
-                      ),
-                      trailing: IconButton(
-                        onPressed: () {
-                          Get.back();
-                        },
-                        icon: const Icon(
-                          Icons.close,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ):const SizedBox(),
-              const Divider(),
-              SizedBox(
-                height: 125,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: comAction.map((most) {
-                    return Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Builder(builder: (context6) {
-                            return GestureDetector(
-                              // todo the playnext,save,share
-                              onTap: () async {
-                                await most.onExecute(context);
-                              },
-                              child: Container(
-                                height: 80,
-                                width: 100,
-                                decoration: BoxDecoration(
-                                    color: Colors.grey.withOpacity(0.5),
-                                    borderRadius: BorderRadius.circular(20)),
-                                child: Center(
-                                  child: Icon(
-                                    most.icon,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ),
-                            );
-                          }),
-                          const Spacer(),
-                          Text(
-                            most.title,
-                            style: const TextStyle(color: Colors.white),
                           )
-                        ],
+                        : const SizedBox.shrink(),
+                    IconButton(
+                      onPressed: () {
+                        Get.back();
+                      },
+                      icon: const Icon(
+                        Icons.close,
+                        color: Colors.white,
                       ),
-                    );
-                  }).toList(),
+                    ),
+                  ],
                 ),
               ),
-              Column(
-                children: actions.map((a) {
-                  return ListTile(
-                    leading: Icon(
-                      a.icon,
-                      color: Colors.white,
+              const Divider(),
+              context.entityType == EntityType.playlist
+                  ? const SizedBox.shrink()
+                  : SizedBox(
+                      height: 125,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: comAction.map((most) {
+                          return Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Builder(builder: (context6) {
+                                  return GestureDetector(
+                                    onTap: () async {
+                                      await most.onExecute(context);
+                                    },
+                                    child: Container(
+                                      height: 80,
+                                      width: 100,
+                                      decoration: BoxDecoration(
+                                          color: Colors.grey.withOpacity(0.5),
+                                          borderRadius:
+                                              BorderRadius.circular(20)),
+                                      child: Center(
+                                        child: Icon(
+                                          most.icon,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                }),
+                                const Spacer(),
+                                Text(
+                                  most.title,
+                                  style: const TextStyle(color: Colors.white),
+                                )
+                              ],
+                            ),
+                          );
+                        }).toList(),
+                      ),
                     ),
-                    title: Text(
-                      a.title,
-                      style: const TextStyle(color: Colors.white),
+              context.entityType == EntityType.artist
+                  ? const SizedBox.shrink()
+                  : Column(
+                      children: actions.map((a) {
+                        return ListTile(
+                          leading: Icon(
+                            a.icon,
+                            color: Colors.white,
+                          ),
+                          title: Text(
+                            a.title,
+                            style: const TextStyle(color: Colors.white),
+                          ),
+                          onTap: () async {
+                            await a.onExecute(context);
+                          },
+                        );
+                      }).toList(),
                     ),
-                    onTap: () async {
-                      await a.onExecute(context);
-                    },
-                  );
-                }).toList(),
-              ),
             ],
           ),
         ),

@@ -58,13 +58,17 @@ class Playlist_Controller extends base_controller {
         user_playlist.add(user_playlist_song.value!);
         user_playlist.refresh();
       }
-    } catch (_) {}
+    } catch (e) {
+      print(e.toString());
+    }
   }
 
   Future<void> deleteExistPlaylist(int playlistId, int index) async {
     final status = await playlistCrud.deleteUserPlaylist(playlistId);
     if (status == 204) {
-      user_playlist.removeAt(index);
+      var playlist=user_playlist.removeAt(index);
+      user_playlist.refresh();
+      showGlobalMessage("${playlist.playlistName} playlist delete successfully");
     }
   }
 

@@ -17,5 +17,6 @@ enum ActionId{
   notInterest,
   shufflePlay,
   deletePlaylist,
-  helpAndFeedback
+  helpAndFeedback,
+  removeHistory,
 }

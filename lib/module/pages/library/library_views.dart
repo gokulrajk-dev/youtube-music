@@ -5,8 +5,10 @@ import 'package:youtube_music/module/pages/home/music_home_page.dart';
 import 'package:youtube_music/module/pages/library/library_controller.dart';
 import 'package:youtube_music/module/pages/playlist_page/new_playlist_create_ui.dart';
 
+import '../../../core/action/action_context.dart';
 import '../../../route/app_route.dart';
 import '../download/download_views.dart';
+import '../globle_bottom_sheet/globle_bottom_sheet_views.dart';
 import '../home/controllers/user_data_controller.dart';
 import '../playlist_page/playlist_controller.dart';
 
@@ -365,82 +367,21 @@ class _library_bodyState extends State<library_body> {
                   Get.toNamed(App_route.playlist_page, id: 4);
                 },
                 onLongPress: () {
-                  showDialog(
-                    context: context,
-                    builder: (context) {
-                      return Dialog(
-                        child: Container(
-                          decoration: BoxDecoration(
-                              color: Colors.black,
-                              borderRadius: BorderRadius.circular(20)),
-                          height: 130,
-                          child: Padding(
-                            padding: const EdgeInsets.all(20.0),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Text(
-                                  'Delete this Playlist?',
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Expanded(
-                                      child: OutlinedButton(
-                                          onPressed: () {
-                                            Get.back();
-                                          },
-                                          style: OutlinedButton.styleFrom(
-                                            shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(20)),
-                                          ),
-                                          child: const Center(
-                                            child: Text(
-                                              '\tCancel\t',
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                          )),
-                                    ),
-                                    const SizedBox(
-                                      width: 10,
-                                    ),
-                                    Expanded(
-                                      child: ElevatedButton(
-                                          onPressed: () {
-                                            playlist_song.deleteExistPlaylist(
-                                                playlist.id, index);
-                                            Get.back();
-                                          },
-                                          style: const ButtonStyle(
-                                              backgroundColor:
-                                                  WidgetStatePropertyAll(
-                                                      Colors.white)),
-                                          child: const Text(
-                                            '\tDelete\t',
-                                            style:
-                                                TextStyle(color: Colors.black),
-                                          )),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      );
-                    },
+                  Get.bottomSheet(
+                    elevation: 5,
+                    DraggableScrollableSheet(builder: (BuildContext context,
+                        ScrollController scrollController) {
+                      return ContextBottomSheet(
+                          controllers: scrollController,
+                          context: ActionContext(
+                              entityType: EntityType.playlist,
+                              entity: playlist,
+                              page: PageContext.playlist,
+                              songIndex: index,
+                              isOwner: false,
+                              isSaved: false));
+                    }),
+                    isScrollControlled: true,
                   );
                 },
                 leading: playlist.playlistcoverimage == ''
@@ -467,7 +408,24 @@ class _library_bodyState extends State<library_body> {
                   style: const TextStyle(color: Colors.grey),
                 ),
                 trailing: IconButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Get.bottomSheet(
+                        elevation: 5,
+                        DraggableScrollableSheet(builder: (BuildContext context,
+                            ScrollController scrollController) {
+                          return ContextBottomSheet(
+                              controllers: scrollController,
+                              context: ActionContext(
+                                  entityType: EntityType.playlist,
+                                  entity: playlist,
+                                  page: PageContext.library,
+                                  songIndex: index,
+                                  isOwner: false,
+                                  isSaved: false));
+                        }),
+                        isScrollControlled: true,
+                      );
+                    },
                     icon: const Icon(
                       Icons.more_vert,
                       color: Colors.white,
