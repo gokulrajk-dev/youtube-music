@@ -363,6 +363,7 @@ class _library_bodyState extends State<library_body> {
             itemCount: playlist_song.user_playlist.length,
             itemBuilder: (context, index) {
               final playlist = playlist_song.user_playlist[index];
+              final playlistSong = playlist_song.user_playlist_song.value;
               return ListTile(
                 onTap: () {
                   playlist_song.get_user_pick_song_playlist(playlist.id);
@@ -377,7 +378,7 @@ class _library_bodyState extends State<library_body> {
                           controllers: scrollController,
                           context: ActionContext(
                               entityType: EntityType.playlist,
-                              entity: playlist,
+                              entity: playlistSong,
                               page: PageContext.playlist,
                               songIndex: index,
                               isOwner: false,
@@ -419,7 +420,7 @@ class _library_bodyState extends State<library_body> {
                               controllers: scrollController,
                               context: ActionContext(
                                   entityType: EntityType.playlist,
-                                  entity: playlist,
+                                  entity: playlistSong,
                                   page: PageContext.library,
                                   songIndex: index,
                                   isOwner: false,
