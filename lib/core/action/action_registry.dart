@@ -49,15 +49,13 @@ class ActionRegistry {
       icon: Icons.playlist_play,
       isVisible: (ctx) =>
           ctx.entityType == EntityType.playlist ||
-          ctx.entityType == EntityType.album,
+          ctx.page == PageContext.album,
       onExecute: (ctx) async {
         final controller = Get.find<get_current_song>();
-        final song = ctx.entity;
-        if (ctx.page == PageContext.queue) {
-          controller.autoplayNextDataType(song, ctx.songIndex ?? -1);
-        } else {
-          controller.autoplayNextDataType(song, -1);
-        }
+        final song = ctx.entity is Album
+            ? ctx.entity.songAlbum ?? []
+            : ctx.entity.songs ?? [];
+        controller.autoplayNextDataType(song, 0);
         Get.back();
       },
     ),
@@ -316,25 +314,29 @@ class ActionRegistry {
       title: "Play Next",
       icon: Icons.playlist_play,
       isVisible: (ctx) =>
-          ctx.entityType == EntityType.song &&
-          ctx.entityType != EntityType.playlist,
+          ctx.entityType == EntityType.song ||
+          (ctx.entityType == EntityType.album &&
+              ctx.entityType != EntityType.playlist),
       onExecute: (ctx) async {
         final controller = Get.find<get_current_song>();
-        final song = ctx.entity;
+        final song =
+            ctx.entity is Album ? ctx.entity.songAlbum ?? [] : ctx.entity;
+        Get.back();
         if (ctx.page == PageContext.queue) {
           controller.autoplayNextDataType(song, ctx.songIndex ?? -1);
-        } else if (ctx.page == PageContext.playlist) {
-          Get.back();
+        } else if (ctx.entityType == EntityType.album) {
           controller.autoplayNextDataType(song, 0);
         } else {
           controller.autoplayNextDataType(song, -1);
         }
-        // if(ctx.page == PageContext.playlist){
-        //   Get.back();
-        //   controller.autoplayNextDataType(song,0);
-        // }
-        Get.back();
       },
+    ),
+    ActionItem(
+      id: ActionId.saveToLibrary,
+      title: "Saved",
+      icon: CupertinoIcons.bookmark,
+      isVisible: (ctx) => ctx.entityType == EntityType.album,
+      onExecute: (ctx) async {},
     ),
     ActionItem(
       id: ActionId.saveToPlaylist,
@@ -378,9 +380,7 @@ class ActionRegistry {
       id: ActionId.share,
       title: "Share",
       icon: CupertinoIcons.arrow_turn_up_right,
-      isVisible: (ctx) =>
-          ctx.entityType == EntityType.song ||
-          ctx.entityType == EntityType.artist,
+      isVisible: (ctx) => ctx.entityType != EntityType.playlist,
       onExecute: (ctx) async {},
     ),
   ];
@@ -413,7 +413,7 @@ class BottomSheetHeaderMapper {
           title: artists.artistName ?? "",
           coverImage: artists.artistImage ?? "",
         );
-      default :
+      default:
         return BottomSheetHeader(title: "", coverImage: "");
     }
   }

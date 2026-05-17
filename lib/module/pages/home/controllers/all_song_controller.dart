@@ -75,8 +75,7 @@ class get_current_song extends base_controller {
         Get.toNamed(App_route.full_screen_media_player_page);
       });
       return;
-    }
-    ;
+    };
 
     // 🔵 CASE 1: From queue
     if (index != -1) {
@@ -90,6 +89,7 @@ class get_current_song extends base_controller {
         // insert next
         queue.insert(currentIndex.value + 1, item);
         queue.refresh();
+        showGlobalMessage("${song.first.title} will play next");
         return;
       }
     }

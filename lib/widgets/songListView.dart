@@ -27,7 +27,6 @@ class SongListViews extends StatelessWidget {
         ),
       );
     }
-
     return ListView.builder(
         shrinkWrap: true,
         physics: NeverScrollableScrollPhysics(),

@@ -319,7 +319,8 @@ class _home_pageState extends State<home_page> {
                                           elevation: 5,
                                           DraggableScrollableSheet(builder:
                                               (BuildContext context,
-                                              ScrollController scrollController) {
+                                                  ScrollController
+                                                      scrollController) {
                                             return ContextBottomSheet(
                                                 controllers: scrollController,
                                                 context: ActionContext(
@@ -369,26 +370,28 @@ class _home_pageState extends State<home_page> {
                           return album.songAlbum!.isEmpty
                               ? const SizedBox()
                               : GestureDetector(
-                            onLongPress: () {
-                              Get.bottomSheet(
-                                elevation: 5,
-                                DraggableScrollableSheet(builder:
-                                    (BuildContext context,
-                                    ScrollController scrollController) {
-                                  return ContextBottomSheet(
-                                      controllers: scrollController,
-                                      context: ActionContext(
-                                          entityType: EntityType.album,
-                                          entity: album,
-                                          page: PageContext.home,
-                                          isOwner: false,
-                                          isSaved: false));
-                                }),
-                                isScrollControlled: true,
-                              );
-                            },
-                                  onTap: () {
-                                    album_song.retrive_album_song_con(album.id);
+                                  onLongPress: () {
+                                    Get.bottomSheet(
+                                      elevation: 5,
+                                      DraggableScrollableSheet(builder:
+                                          (BuildContext context,
+                                              ScrollController
+                                                  scrollController) {
+                                        return ContextBottomSheet(
+                                            controllers: scrollController,
+                                            context: ActionContext(
+                                                entityType: EntityType.album,
+                                                entity: album,
+                                                page: PageContext.home,
+                                                isOwner: false,
+                                                isSaved: false));
+                                      }),
+                                      isScrollControlled: true,
+                                    );
+                                  },
+                                  onTap: () async {
+                                    await album_song
+                                        .retrive_album_song_con(album.id);
                                     Get.toNamed(App_route.album_page, id: 1);
                                   },
                                   child: Container(

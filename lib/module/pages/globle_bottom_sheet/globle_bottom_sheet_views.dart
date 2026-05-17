@@ -343,7 +343,7 @@ class ContextBottomSheet extends StatelessWidget {
                 ),
               ),
               const Divider(),
-              context.entityType == EntityType.playlist
+              context.entityType == EntityType.playlist ||(context.entityType==EntityType.album && context.page == PageContext.album)
                   ? const SizedBox.shrink()
                   : SizedBox(
                       height: 125,

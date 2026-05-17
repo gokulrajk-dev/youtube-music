@@ -77,7 +77,7 @@ class _Library_ViewsState extends State<Library_Views> {
                           isDismissible: false,
                           DraggableScrollableSheet(
                             builder: (context, scrollController) {
-                              return showPlaylistBottom();
+                              return const showPlaylistBottom();
                             },
                           ),
                         );
@@ -215,57 +215,59 @@ class _Library_ViewsState extends State<Library_Views> {
                               builder: (context, scrollController) {
                                 return Scaffold(
                                   backgroundColor: Colors.black,
-                                  body: Column(
-                                    children: [
-                                      ListTile(
-                                        title: const Text(
-                                          'New',
-                                          style: TextStyle(color: Colors.white),
+                                  body: SingleChildScrollView(
+                                    child: Column(
+                                      children: [
+                                        ListTile(
+                                          title: const Text(
+                                            'New',
+                                            style: TextStyle(color: Colors.white),
+                                          ),
+                                          trailing: IconButton(
+                                              onPressed: () {
+                                                Get.back();
+                                              },
+                                              icon: const Icon(
+                                                Icons.close,
+                                                color: Colors.white,
+                                              )),
                                         ),
-                                        trailing: IconButton(
-                                            onPressed: () {
-                                              Get.back();
-                                            },
-                                            icon: const Icon(
-                                              Icons.close,
-                                              color: Colors.white,
-                                            )),
-                                      ),
-                                      const Divider(
-                                        color: Colors.white12,
-                                      ),
-                                      newPlaylist(
-                                        Icons.playlist_add,
-                                        'Playlist',
-                                        () {
-                                          Get.back();
-                                          showDialog(
-                                            context: context,
-                                            builder: (context) {
-                                              return Dialog(
-                                                  child: newPlaylistCreate(
-                                                songId: const [],
-                                              ));
-                                            },
-                                          );
-                                        },
-                                      ),
-                                      newPlaylist(
-                                        CupertinoIcons
-                                            .dot_radiowaves_left_right,
-                                        'Mix',
-                                        () {
-                                          Get.back();
-                                        },
-                                      ),
-                                      newPlaylist(
-                                        CupertinoIcons.person_2_fill,
-                                        'Taste match',
-                                        () {
-                                          Get.back();
-                                        },
-                                      ),
-                                    ],
+                                        const Divider(
+                                          color: Colors.white12,
+                                        ),
+                                        newPlaylist(
+                                          Icons.playlist_add,
+                                          'Playlist',
+                                          () {
+                                            Get.back();
+                                            showDialog(
+                                              context: context,
+                                              builder: (context) {
+                                                return Dialog(
+                                                    child: newPlaylistCreate(
+                                                  songId: const [],
+                                                ));
+                                              },
+                                            );
+                                          },
+                                        ),
+                                        newPlaylist(
+                                          CupertinoIcons
+                                              .dot_radiowaves_left_right,
+                                          'Mix',
+                                          () {
+                                            Get.back();
+                                          },
+                                        ),
+                                        newPlaylist(
+                                          CupertinoIcons.person_2_fill,
+                                          'Taste match',
+                                          () {
+                                            Get.back();
+                                          },
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 );
                               },
@@ -384,7 +386,7 @@ class _library_bodyState extends State<library_body> {
                     isScrollControlled: true,
                   );
                 },
-                leading: playlist.playlistcoverimage == ''
+                leading: playlist.playlistcoverimage ==''
                     ? Image.network(playlist.playlistcoverimage ?? "")
                     : Container(
                         decoration: BoxDecoration(
@@ -453,84 +455,87 @@ class _showPlaylistBottomState extends State<showPlaylistBottom> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
-      body: Column(
-        children: [
-          ListTile(
-            title: const Text(
-              'Views by',
-              style: TextStyle(color: Colors.white),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            ListTile(
+              title: const Text(
+                'Views by',
+                style: TextStyle(color: Colors.white),
+              ),
+              trailing: IconButton(
+                  onPressed: () {
+                    Get.back();
+                  },
+                  icon: const Icon(
+                    Icons.close,
+                    color: Colors.white,
+                  )),
             ),
-            trailing: IconButton(
-                onPressed: () {
-                  Get.back();
-                },
-                icon: const Icon(
-                  Icons.close,
+            const Divider(
+              color: Colors.white12,
+            ),
+            ListTile(
+              onTap: () {
+                library_controller.change_current_index(0, 'Library');
+                Get.back();
+              },
+              leading: library_controller.current_page_title == 'Library'
+                  ? const Icon(
+                      Icons.check,
+                      color: Colors.white,
+                    )
+                  : const SizedBox(
+                      width: 5,
+                    ),
+              title: const Text(
+                'Library',
+                style: TextStyle(
                   color: Colors.white,
-                )),
-          ),
-          const Divider(
-            color: Colors.white12,
-          ),
-          ListTile(
-            onTap: () {
-              library_controller.change_current_index(0, 'Library');
-              Get.back();
-            },
-            leading: library_controller.current_page_title == 'Library'
-                ? const Icon(
-                    Icons.check,
-                    color: Colors.white,
-                  )
-                : const SizedBox(
-                    width: 5,
-                  ),
-            title: const Text(
-              'Library',
-              style: TextStyle(
-                color: Colors.white,
+                ),
               ),
             ),
-          ),
-          ListTile(
-            onTap: () {
-              library_controller.get_current_lib_index();
-              Get.back();
-            },
-            leading: library_controller.current_page_title == 'Download'
-                ? const Icon(
-                    Icons.check,
-                    color: Colors.white,
-                  )
-                : const SizedBox(
-                    width: 5,
-                  ),
-            title: const Text(
-              'Download',
-              style: TextStyle(color: Colors.white),
-            ),
-          ),
-          ListTile(
-            onTap: () {
-              library_controller.change_current_index(1, 'Device Files');
-              Get.back();
-            },
-            leading: library_controller.current_page_title == 'Device Files'
-                ? const Icon(
-                    Icons.check,
-                    color: Colors.white,
-                  )
-                : const SizedBox(
-                    width: 5,
-                  ),
-            title: const Text(
-              'Device Files',
-              style: TextStyle(
+            ListTile(
+              onTap: () {
+                library_controller.get_current_lib_index();
+                Get.back();
+              },
+              leading: library_controller.current_page_title == 'Download'
+                  ? const Icon(
+                Icons.check,
                 color: Colors.white,
+              )
+                  : const SizedBox(
+                width: 5,
+              ),
+              title: const Text(
+                'Download',
+                style: TextStyle(color: Colors.white),
               ),
             ),
-          ),
-        ],
+            ListTile(
+              onTap: () {
+                library_controller.change_current_index(1, 'Device Files');
+                Get.back();
+              },
+              leading: library_controller.current_page_title == 'Device Files'
+                  ? const Icon(
+                Icons.check,
+                color: Colors.white,
+              )
+                  : const SizedBox(
+                width: 5,
+              ),
+              title: const Text(
+                'Device Files',
+                style: TextStyle(
+                  color: Colors.white,
+                ),
+              ),
+            ),
+
+          ],
+        ),
       ),
     );
   }
