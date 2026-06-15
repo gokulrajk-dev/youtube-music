@@ -54,31 +54,34 @@ class Album_Views extends GetView<Album_Controller> {
         return ListView(
           children: [
             GestureDetector(
-              onTap: () async {
-                await artist_song
+              onTap: () {
+                 artist_song
                     .retrive_artist_with_song(albumSong.artists!.first.id);
                 Get.toNamed(App_route.artist_page, id: 1);
               },
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  CircleAvatar(
-                    backgroundImage:
-                        albumSong.artists!.first.artistImage == null
-                            ? const AssetImage('assets/img.png')
-                            : NetworkImage(
-                                albumSong.artists!.first.artistImage ?? "",
-                                scale: 1,
-                              ),
-                  ),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  Text(
-                    albumSong.artists!.first.artistName ?? 'unknown',
-                    style: const TextStyle(color: Colors.white),
-                  )
-                ],
+              child: Container(
+                color: Colors.transparent,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    CircleAvatar(
+                      backgroundImage:
+                          albumSong.artists!.first.artistImage == null
+                              ? const AssetImage('assets/img.png')
+                              : NetworkImage(
+                                  albumSong.artists!.first.artistImage ?? "",
+                                  scale: 1,
+                                ),
+                    ),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    Text(
+                      albumSong.artists!.first.artistName ?? 'unknown',
+                      style: const TextStyle(color: Colors.white),
+                    )
+                  ],
+                ),
               ),
             ),
             Padding(

@@ -152,12 +152,18 @@ class Song  {
     );
   }
 
-  static Duration _parseDuration(String duration){
-    final part  = duration.split(':');
+  static Duration _parseDuration(String duration) {
+    final part = duration.split(':');
+
+    if (part.length < 3) {
+      double totalSeconds = double.tryParse(duration) ?? 0;
+      return Duration(seconds: totalSeconds.round());
+    }
+
     return Duration(
-      hours: int.parse(part[0]),
-      minutes: int.parse(part[1]),
-      seconds: int.parse(part[2])
+      hours: double.parse(part[0]).round(),
+      minutes: double.parse(part[1]).round(),
+      seconds: double.parse(part[2]).round(),
     );
   }
 

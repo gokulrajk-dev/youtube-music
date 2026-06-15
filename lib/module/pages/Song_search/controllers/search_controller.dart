@@ -158,10 +158,10 @@ class Search_Controller extends base_controller {
       final artists = await _artistRepo.search_get_artist_list(query);
 
       searchResults.addAll(
-        songs.map((e) => SearchResult(type: SearchType.song, data: e)),
+        songs.map((e) => SearchResult(type: SearchType.song, data: e)).toSet(),
       );
       searchResults.addAll(
-        artists.map((e) => SearchResult(type: SearchType.artist, data: e)),
+        artists.map((e) => SearchResult(type: SearchType.artist, data: e)).toSet(),
       );
     } finally {
       isLoading.value = false;
@@ -175,7 +175,6 @@ class Search_Controller extends base_controller {
         .where((t) => t.isNotEmpty)
         .toSet()
         .toList();
-
     suggestions.assignAll(titles);
   }
 

@@ -22,6 +22,7 @@ class get_all_song_controller extends base_controller {
       noerror();
       final result = await song_repository.get_all_song();
       songs.value = result;
+      print("songs:$songs");
     } catch (e) {
       get_error(e.toString());
     } finally {
