@@ -29,4 +29,5 @@ class Main_Home_Page_Controller extends GetxController {
     }
     current_index.value = index;
   }
+
 }
