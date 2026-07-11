@@ -239,8 +239,7 @@ class SearchViewsState extends State<SearchViews>
     super.initState();
 
     _textController = TextEditingController();
-    _focusNode = FocusNode();
-
+    // main.focusNode = FocusNode();
     // ✅ KEY FIX — Do NOT call requestFocus() here or in initState directly.
     // IndexedStack keeps all tabs alive. If we focus here, the keyboard pops
     // even when this tab is not visible.
