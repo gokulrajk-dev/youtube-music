@@ -293,6 +293,7 @@ class ActionRegistry {
         Get.toNamed(App_route.artist_page, id: naviId);
       },
     ),
+
     ActionItem(
       id: ActionId.viewCredits,
       title: "View song credits",
@@ -300,6 +301,7 @@ class ActionRegistry {
       isVisible: (ctx) => ctx.entityType == EntityType.song,
       onExecute: (ctx) async {},
     ),
+
     ActionItem(
       id: ActionId.removeHistory,
       title: "Remove from History",

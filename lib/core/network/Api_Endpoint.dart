@@ -11,6 +11,7 @@ class Api_Endpoint {
   static const get_album_song = '/songs_app/album_views/';
   static const post_histroy = '/songs_app/listen_history_views_post/';
   static const get_artist = '/songs_app/artist_views/';
+  static const get_genre = '/songs_app/genre_views/';
 
   // search api
   static String search_Song(String search) {
@@ -19,6 +20,9 @@ class Api_Endpoint {
 
   static String search_artist(String artistSearch) {
     return '/songs_app/artist_views/?search=$artistSearch';
+  }
+  static String search_album(String albumSearch) {
+    return '/songs_app/album_views/?search=$albumSearch';
   }
 
   //

@@ -11,6 +11,7 @@ import '../../../../widgets/songListView.dart';
 import '../../../route/app_route.dart';
 import '../globle_bottom_sheet/globle_bottom_sheet_views.dart';
 import '../like_page/like_views.dart';
+import '../main_home_page/main_home_page_controller.dart';
 
 class Playlist_Views extends GetView<Playlist_Controller> {
   final get_current_song song = Get.find<get_current_song>();
@@ -147,63 +148,6 @@ class Playlist_Views extends GetView<Playlist_Controller> {
                             color: Colors.white,
                           ),
                           () {
-                            print("songsss : $playlistSong");
-                            // Get.bottomSheet(
-                            //   DraggableScrollableSheet(
-                            //     expand: false,
-                            //     builder: (context, scrollController) {
-                            //       return Container(
-                            //         color: Colors.black,
-                            //         child: Column(
-                            //           children: [
-                            //             ListTile(
-                            //               onTap: () {
-                            //                 Get.back();
-                            //                 song.autoplayNextDataType(songs_only,0);
-                            //               },
-                            //               leading: Icon(Icons.playlist_play,color: Colors.white,),
-                            //               title: Text('play next',style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 20),),
-                            //             ),
-                            //             ListTile(
-                            //               onTap: () {
-                            //                 Get.back();
-                            //                 song.AddToQueue(songs_only);
-                            //               },
-                            //               leading: Icon(Icons.playlist_play,color: Colors.white,),
-                            //               title: Text('Add to Queue',style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 20),),
-                            //             ), ListTile(
-                            //               onTap: () {
-                            //                 Get.back();
-                            //                 Get.bottomSheet(
-                            //                   DraggableScrollableSheet(
-                            //                     expand: false,
-                            //                     builder: (context, scrollController) {
-                            //                       return showPlaylistBottomSheet(
-                            //                         controller: scrollController,
-                            //                         songId: songs_only.map((song)=>song.id).toList(),
-                            //                       );
-                            //                     },
-                            //                   ),
-                            //                   isScrollControlled: true,
-                            //                 );
-                            //               },
-                            //               leading: Icon(Icons.playlist_play,color: Colors.white,),
-                            //               title: Text('Save to playlist',style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 20),),
-                            //             ),
-                            //             ListTile(
-                            //               onTap: () {
-                            //                 Get.back();
-                            //               },
-                            //               leading: Icon(CupertinoIcons.arrow_down_to_line_alt,color: Colors.white,),
-                            //               title: Text('Download',style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 20),),
-                            //             ),
-                            //           ],
-                            //         ),
-                            //       );
-                            //     },
-                            //   ),
-                            //   isScrollControlled: true,
-                            // );
                             Get.bottomSheet(
                               elevation: 5,
                               DraggableScrollableSheet(builder:
@@ -231,7 +175,11 @@ class Playlist_Views extends GetView<Playlist_Controller> {
               padding: const EdgeInsets.only(top: 10, bottom: 18.0),
               child: ListTile(
                 // todo add the song in the playlist
-                onTap: () {},
+                onTap: () {
+                  final mainPage = Get.find<Main_Home_Page_Controller>();
+                  final naviId = NavHelper.getNavId(mainPage.current_index.value);
+                  Get.toNamed(App_route.search_page,id: naviId);
+                },
                 leading: Container(
                   width: 65,
                   height: 100,
@@ -247,58 +195,6 @@ class Playlist_Views extends GetView<Playlist_Controller> {
                 ),
               ),
             ),
-            // Column(
-            //     children: playlist_song.songs!.map((playlist_songs) {
-            //   return ListTile(
-            //       onTap: () {
-            //         song.get_current_user_pick_song(playlist_songs.id);
-            //       },
-            //       style: ListTileStyle.drawer,
-            //       leading: Image.network(playlist_songs.coverImage ?? ''),
-            //       titleAlignment: ListTileTitleAlignment.center,
-            //       title: Text(
-            //         playlist_songs.title ?? "Unknown",
-            //         style: TextStyle(
-            //             color: Colors.white,
-            //             fontWeight: FontWeight.bold,
-            //             fontSize: 20),
-            //       ),
-            //       subtitle: Text(
-            //         playlist_songs.artist!
-            //             .map((artist) => artist.artistName)
-            //             .join(','),
-            //         style: TextStyle(
-            //           color: Colors.grey,
-            //           fontSize: 13,
-            //         ),
-            //         softWrap: true,
-            //         maxLines: 1,
-            //         overflow: TextOverflow.ellipsis,
-            //       ),
-            //       trailing: IconButton(
-            //           onPressed: () {
-            //             Get.bottomSheet(
-            //               elevation: 5,
-            //               DraggableScrollableSheet(
-            //                 expand: false,
-            //                 builder: (context, scrollController) {
-            //                   return globle_bottom_sheet(
-            //                     controllers: scrollController,
-            //                     song_cover_img: playlist_songs.coverImage,
-            //                     song_title: playlist_songs.title,
-            //                     song_artist: playlist_songs.artist,
-            //                     song_id: playlist_songs.id,
-            //                   );
-            //                 },
-            //               ),
-            //               isScrollControlled: true,
-            //             );
-            //           },
-            //           icon: Icon(
-            //             Icons.more_vert,
-            //             color: Colors.white,
-            //           )));
-            // }).toList()),
             SongListViews(
               songs: songsOnly,
               typeOfcontext: PageContext.playlist,

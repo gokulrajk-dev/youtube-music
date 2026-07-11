@@ -312,155 +312,159 @@ class _library_bodyState extends State<library_body> {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      shrinkWrap: true,
-      children: [
-        const Padding(
-          padding: EdgeInsets.only(top: 16, left: 16, right: 16, bottom: 20),
-          child: Text(
-            "Recently played",
-            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey),
-          ),
-        ),
-        GestureDetector(
-          onTap: () {
-            Get.toNamed(App_route.like_page, id: 4);
-          },
-          child: ListTile(
-            style: ListTileStyle.drawer,
-            leading: Image.asset('assets/liked_pic.png'),
-            title: const Text(
-              'Liked Music',
-              style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20),
-            ),
-            subtitle: const Text(
-              '📌 Auto playlist',
-              style: TextStyle(color: Colors.grey),
-            ),
-            trailing:  IconButton(
-              onPressed: () {
-                Get.bottomSheet(
-                  elevation: 5,
-                  DraggableScrollableSheet(builder:
-                      (BuildContext context,
-                      ScrollController scrollController) {
-                    return ContextBottomSheet(
-                        controllers: scrollController,
-                        context: ActionContext(
-                            entityType: EntityType.like,
-                            entity: "",
-                            page: PageContext.like,
-                            isOwner: false,
-                            isSaved: false));
-                  }),
-                  isScrollControlled: true,
-                );
-              },
-              icon:Icon(Icons.more_vert),
-              color: Colors.white,
+    return RefreshIndicator(
+      displacement: 100,
+      color: Colors.red,
+      backgroundColor: Colors.black,
+      onRefresh: ()async{
+        playlist_song.show_user_playlist();
+      },
+      child: ListView(
+        shrinkWrap: true,
+        children: [
+          const Padding(
+            padding: EdgeInsets.only(top: 16, left: 16, right: 16, bottom: 20),
+            child: Text(
+              "Recently played",
+              style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey),
             ),
           ),
-        ),
-        // ElevatedButton(
-        //     onPressed: () {
-        //       playlist_song.show_user_playlist();
-        //     },
-        //     child: Text('playlist')),
-        Obx(() {
-          if (controller.is_loading.value) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          if (controller.error.value.isNotEmpty) {
-            return Center(
-              child: Text(controller.error.value),
-            );
-          }
-          return ListView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: playlist_song.user_playlist.length,
-            itemBuilder: (context, index) {
-              final playlist = playlist_song.user_playlist[index];
-              return ListTile(
-                onTap: () {
-                  playlist_song.get_user_pick_song_playlist(playlist.id);
-                  Get.toNamed(App_route.playlist_page, id: 4);
-                },
-                onLongPress: () {
-                  print("songs : ${playlist.songs}");
+          GestureDetector(
+            onTap: () {
+              Get.toNamed(App_route.like_page, id: 4);
+            },
+            child: ListTile(
+              style: ListTileStyle.drawer,
+              leading: Image.asset('assets/liked_pic.png'),
+              title: const Text(
+                'Liked Music',
+                style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20),
+              ),
+              subtitle: const Text(
+                '📌 Auto playlist',
+                style: TextStyle(color: Colors.grey),
+              ),
+              trailing:  IconButton(
+                onPressed: () {
                   Get.bottomSheet(
                     elevation: 5,
-                    DraggableScrollableSheet(builder: (BuildContext context,
+                    DraggableScrollableSheet(builder:
+                        (BuildContext context,
                         ScrollController scrollController) {
                       return ContextBottomSheet(
                           controllers: scrollController,
                           context: ActionContext(
-                              entityType: EntityType.playlist,
-                              entity: playlist,
-                              page: PageContext.library,
-                              songIndex: index,
+                              entityType: EntityType.like,
+                              entity: "",
+                              page: PageContext.like,
                               isOwner: false,
                               isSaved: false));
                     }),
                     isScrollControlled: true,
                   );
                 },
-                leading:
-                    // playlist.playlistcoverimage == ''
-                    //     ? Image.network(playlist.playlistcoverimage ?? "")
-                    //     :
-                    Container(
-                        decoration: BoxDecoration(
-                            border:
-                                Border.all(color: Colors.white, width: 0.5)),
-                        width: 55,
-                        height: 55,
-                        child: const Icon(
-                          Icons.music_note_outlined,
-                          color: Colors.white,
-                        )),
-                title: Text(
-                  playlist.playlistName ?? 'unknown',
-                  style: const TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20),
-                ),
-                subtitle: Text(
-                  'Playlist . ${user.user.value!.userName} . ${playlist.songs!.length} Tracks',
-                  style: const TextStyle(color: Colors.grey),
-                ),
-                trailing: IconButton(
-                    onPressed: () {
-                      Get.bottomSheet(
-                        elevation: 5,
-                        DraggableScrollableSheet(builder: (BuildContext context,
-                            ScrollController scrollController) {
-                          return ContextBottomSheet(
-                              controllers: scrollController,
-                              context: ActionContext(
-                                  entityType: EntityType.playlist,
-                                  entity: playlist,
-                                  page: PageContext.library,
-                                  songIndex: index,
-                                  isOwner: false,
-                                  isSaved: false));
-                        }),
-                        isScrollControlled: true,
-                      );
-                    },
-                    icon: const Icon(
-                      Icons.more_vert,
-                      color: Colors.white,
-                    )),
+                icon:Icon(Icons.more_vert),
+                color: Colors.white,
+              ),
+            ),
+          ),
+          // ElevatedButton(
+          //     onPressed: () {
+          //       playlist_song.show_user_playlist();
+          //     },
+          //     child: Text('playlist')),
+          Obx(() {
+            if (controller.is_loading.value) {
+              return const Center(child: CircularProgressIndicator());
+            }
+            if (controller.error.value.isNotEmpty) {
+              return Center(
+                child: Text(controller.error.value),
               );
-            },
-          );
-        }),
-      ],
+            }
+            return ListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: playlist_song.user_playlist.length,
+              itemBuilder: (context, index) {
+                final playlist = playlist_song.user_playlist[index];
+                return ListTile(
+                  onTap: () {
+                    playlist_song.get_user_pick_song_playlist(playlist.id);
+                    Get.toNamed(App_route.playlist_page, id: 4);
+                  },
+                  onLongPress: () {
+                    Get.bottomSheet(
+                      elevation: 5,
+                      DraggableScrollableSheet(builder: (BuildContext context,
+                          ScrollController scrollController) {
+                        return ContextBottomSheet(
+                            controllers: scrollController,
+                            context: ActionContext(
+                                entityType: EntityType.playlist,
+                                entity: playlist,
+                                page: PageContext.library,
+                                songIndex: index,
+                                isOwner: false,
+                                isSaved: false));
+                      }),
+                      isScrollControlled: true,
+                    );
+                  },
+                  leading:
+                      Container(
+                          decoration: BoxDecoration(
+                              border:
+                                  Border.all(color: Colors.white, width: 0.5)),
+                          width: 55,
+                          height: 55,
+                          child: const Icon(
+                            Icons.music_note_outlined,
+                            color: Colors.white,
+                          )),
+                  title: Text(
+                    playlist.playlistName ?? 'unknown',
+                    style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20),
+                  ),
+                  subtitle: Text(
+                    'Playlist . ${user.user.value!.userName} . ${playlist.songs!.length} Tracks',
+                    style: const TextStyle(color: Colors.grey),
+                  ),
+                  trailing: IconButton(
+                      onPressed: () {
+                        Get.bottomSheet(
+                          elevation: 5,
+                          DraggableScrollableSheet(builder: (BuildContext context,
+                              ScrollController scrollController) {
+                            return ContextBottomSheet(
+                                controllers: scrollController,
+                                context: ActionContext(
+                                    entityType: EntityType.playlist,
+                                    entity: playlist,
+                                    page: PageContext.library,
+                                    songIndex: index,
+                                    isOwner: false,
+                                    isSaved: false));
+                          }),
+                          isScrollControlled: true,
+                        );
+                      },
+                      icon: const Icon(
+                        Icons.more_vert,
+                        color: Colors.white,
+                      )),
+                );
+              },
+            );
+          }),
+        ],
+      ),
     );
   }
 }

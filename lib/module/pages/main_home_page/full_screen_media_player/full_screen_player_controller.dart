@@ -10,6 +10,12 @@ import 'package:youtube_music/data/user_respository/user_history_respository.dar
 import 'package:youtube_music/module/pages/home/controllers/all_song_controller.dart';
 import 'package:youtube_music/services/audio_helper/audio_helper.dart';
 
+import 'full_screen_player_controller.dart';
+
+enum direction  {
+  left,right
+}
+
 class full_screen_media_player_controller extends base_controller
     with GetSingleTickerProviderStateMixin {
   /// ✅ AUDIO SERVICE CONTROLLER
@@ -41,6 +47,10 @@ class full_screen_media_player_controller extends base_controller
   late PageController pageControllerFull;
   int? lastsong;
   bool _isSyncing = false;
+  final  showSeek=false.obs;
+  final seekValue=0.obs;
+  Timer? _seekOverlayTimer;
+  final seekDirection = direction.left.obs;
 
   @override
   void onInit() {
@@ -140,6 +150,7 @@ class full_screen_media_player_controller extends base_controller
     animationController.dispose();
     pageControllerFull.dispose();
     pageControllerMini.dispose();
+    _seekOverlayTimer?.cancel();
     super.onClose();
   }
 
@@ -259,7 +270,50 @@ class full_screen_media_player_controller extends base_controller
 
     await audioPlayer.seek(safeSeek);
   }
+  void _showSeekOverlay(int seconds,direction directions) {
+    seekDirection.value = directions;
+    seekValue.value += seconds;
+    showSeek.value = true;
 
+
+    _seekOverlayTimer?.cancel();
+
+    _seekOverlayTimer = Timer(
+      const Duration(milliseconds: 700),
+          () {
+        showSeek.value = false;
+        seekValue.value=0;
+      },
+    );
+  }
+
+  Future<void> leftSeekJump() async {
+    final current = position.value;
+    final target = current - const Duration(seconds: 10);
+
+    _showSeekOverlay(-10,direction.left);
+
+    await audioPlayer.seek(
+      target.isNegative ? Duration.zero : target,
+    );
+
+  }
+
+  Future<void> rightSeekJump() async {
+    final current =position.value;
+    final total = duration.value;
+
+    var target = current + const Duration(seconds: 10);
+
+    if (target > total) {
+      target = total;
+    }
+
+    _showSeekOverlay(10,direction.right);
+
+    await audioPlayer.seek(target);
+
+  }
   /// 🎬 ANIMATION
   void play_pause_animation() {
     if (isplaying.value) {

@@ -1,4 +1,6 @@
 import 'package:get/get.dart';
+import 'package:youtube_music/data/data_module/genre.dart';
+import 'package:youtube_music/data/user_respository/genre_respository.dart';
 import 'package:youtube_music/data/user_respository/song_respository.dart';
 import 'package:youtube_music/route/app_route.dart';
 import 'package:youtube_music/services/helper_code/helper_code.dart';
@@ -8,11 +10,15 @@ import '../../../../data/data_module/song_module.dart';
 
 class get_all_song_controller extends base_controller {
   final Song_Repository song_repository = Song_Repository();
+  final Genre_crud genre_crud = Genre_crud();
+
   final RxList<Song> songs = <Song>[].obs;
+  final RxList<Genre> genres = <Genre>[].obs;
 
   @override
   void onInit() async {
     await get_all_songs();
+    await get_all_Genre();
     super.onInit();
   }
 
@@ -22,7 +28,20 @@ class get_all_song_controller extends base_controller {
       noerror();
       final result = await song_repository.get_all_song();
       songs.value = result;
-      print("songs:$songs");
+    } catch (e) {
+      get_error(e.toString());
+    } finally {
+      get_isloading(false);
+    }
+  }
+
+
+Future<void> get_all_Genre() async {
+    try {
+      get_isloading(true);
+      noerror();
+      final result = await genre_crud.get_genre_list();
+      genres.value = result;
     } catch (e) {
       get_error(e.toString());
     } finally {

@@ -41,6 +41,7 @@ class _full_screen_media_playerState extends State<full_screen_media_player>
   @override
   void dispose() {
     song.isshuffleenabled.value = false;
+
     super.dispose();
   }
 
@@ -162,20 +163,6 @@ class _full_screen_media_playerState extends State<full_screen_media_player>
                         )),
                   ),
                   // todo after complete the project optimize the image appearence
-                  // Card(
-                  //   semanticContainer: true,
-                  //   borderOnForeground: true,
-                  //   shape: const CircleBorder(),
-                  //   clipBehavior: Clip.hardEdge,
-                  //   child: (song.current_song.value!.coverImage?.isNotEmpty ?? false)
-                  //       ? CachedNetworkImage(
-                  //           imageUrl: song.current_song.value!.coverImage ?? "",
-                  //           errorWidget: (context, url, error) =>
-                  //               const Icon(Icons.error),
-                  //           fit: BoxFit.cover,
-                  //         )
-                  //       : Image.asset("assets/img.png"),
-                  // ),
                   SizedBox(
                     height: 330,
                     child: PageView.builder(
@@ -188,23 +175,66 @@ class _full_screen_media_playerState extends State<full_screen_media_player>
                       itemCount: song.queue.length,
                       itemBuilder: (context, index) {
                         final item = song.queue[index];
-                        return ClipRRect(
-                          borderRadius: BorderRadius.circular(20),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 35),
-                            child: Container(
-                              clipBehavior: Clip.hardEdge,
-                              decoration: BoxDecoration(
+                        return Stack(
+                          children: [
+                            Container(
+                              height: 330,
+                              child: ClipRRect(
+                                clipBehavior: Clip.hardEdge,
                                 borderRadius: BorderRadius.circular(20),
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 35),
+                                  child: Container(
+                                    clipBehavior: Clip.hardEdge,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                    child: (item.coverImage?.isNotEmpty ?? false)
+                                        ? CachedNetworkImage(
+                                            imageUrl: item.coverImage!,
+                                            fit: BoxFit.cover,
+                                          )
+                                        : Image.asset("assets/img.png"),
+                                  ),
+                                ),
                               ),
-                              child: (item.coverImage?.isNotEmpty ?? false)
-                                  ? CachedNetworkImage(
-                                      imageUrl: item.coverImage!,
-                                      fit: BoxFit.cover,
-                                    )
-                                  : Image.asset("assets/img.png"),
                             ),
-                          ),
+                            Positioned.fill(
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 35),
+                                child: Obx(
+                                ()=> Row(
+                                    children: [
+                                      Expanded(
+                                        child: GestureDetector(
+                                          behavior: HitTestBehavior.translucent,
+                                          child: Center(
+                                            child:music_player.seekDirection.value == direction.left && music_player.showSeek.value ? Text(
+                                              "${music_player.seekValue.value} seconds",style: const TextStyle(color: Colors.white),):const SizedBox.shrink(),
+                                          ),
+                                          onDoubleTap: () async {
+                                            await music_player.leftSeekJump();
+                                          },
+                                        ),
+                                      ),
+                                      Expanded(
+                                        child: GestureDetector(
+                                          behavior: HitTestBehavior.translucent,
+                                          child:  Center(
+                                            child:music_player.seekDirection.value == direction.right && music_player.showSeek.value ? Text(
+                                              "+${music_player.seekValue.value} seconds",style: const TextStyle(color: Colors.white),):const SizedBox.shrink(),
+                                          ),
+                                          onDoubleTap: () async {
+                                            await music_player.rightSeekJump();
+                                          },
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            )
+                          ],
                         );
                       },
                     ),

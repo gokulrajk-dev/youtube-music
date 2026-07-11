@@ -15,4 +15,11 @@ class album_crud{
     final response = await dio.get(Api_Endpoint.get_user_pick_album_song(AlbumId));
     return Album.fromJson(response.data);
   }
+
+  Future<List<Album>> search_get_album_list(String searchAlbum) async{
+    final response = await dio.get(Api_Endpoint.search_album(searchAlbum));
+    final List result = response.data;
+    return result.map((album)=>Album.fromJson(album)).toList();
+  }
+
 }

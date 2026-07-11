@@ -1,219 +1,15 @@
-// import 'package:flutter/material.dart';
-// import 'package:get/get.dart';
-// import 'package:flutter/cupertino.dart';
-//
-// import '../../../../data/data_module/artist.dart';
-// import '../../../../data/data_module/song_module.dart';
-// import '../../../../services/helper_code/helper_code.dart';
-// import '../../Song_search/controllers/search_controller.dart';
-// import '../../Song_search/models/search_type.dart';
-// import '../../Song_search/views/widgets/artist_tile.dart';
-// import '../../Song_search/views/widgets/song_tile.dart';
-// import '../../home/controllers/all_song_controller.dart';
-//
-// class searchViews extends StatefulWidget {
-//   const searchViews({super.key});
-//
-//   @override
-//   State<searchViews> createState() => _searchViewsState();
-// }
-//
-// class _searchViewsState extends State<searchViews> {
-//   final singlesong = Get.find<get_current_song>();
-//   late final TextEditingController search;
-//   late final FocusNode focusNode;
-//   final search_Controller controller = Get.find<search_Controller>();
-//
-//   @override
-//   void initState() {
-//     super.initState();
-//     search = TextEditingController();
-//     focusNode = FocusNode();
-//
-//     // ✅ Only request focus AFTER the frame is built
-//     // This prevents keyboard from auto-popping on bottom sheet open
-//     WidgetsBinding.instance.addPostFrameCallback((_) {
-//       if (mounted) {
-//         focusNode.requestFocus();
-//       }
-//     });
-//   }
-//
-//   @override
-//   void dispose() {
-//     search.dispose();
-//     focusNode.dispose(); // ✅ MUST call dispose(), NOT unfocus()
-//     super.dispose();
-//   }
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       backgroundColor: Colors.black,
-//       body: CustomScrollView(
-//         slivers: [
-//           SliverAppBar(
-//             pinned: true, // ✅ keeps search bar visible on scroll
-//             backgroundColor: Colors.black,
-//             leading: IconButton(
-//               onPressed: () {
-//                 helper_code.helper();
-//               },
-//               icon: const Icon(
-//                 CupertinoIcons.back,
-//                 color: Colors.white,
-//               ),
-//             ),
-//             title: Container(
-//               decoration: const BoxDecoration(
-//                 color: Colors.white12,
-//                 borderRadius: BorderRadius.horizontal(
-//                   right: Radius.circular(70),
-//                   left: Radius.circular(70),
-//                 ),
-//               ),
-//               child: TextField(
-//                 focusNode: focusNode,
-//                 controller: search,
-//                 maxLines: 1,
-//                 autofocus: false, // ✅ disable autofocus — we control it manually
-//                 onChanged: (value) {
-//                   controller.searchtxt.value = value;
-//                 },
-//                 style: const TextStyle(
-//                   color: Colors.white,
-//                   fontSize: 16,
-//                 ),
-//                 cursorColor: Colors.white,
-//                 decoration: InputDecoration(
-//                   border: InputBorder.none,
-//                   suffixIcon: IconButton(
-//                     onPressed: () {
-//                       search.clear(); // ✅ use .clear() instead of .text = ''
-//                       controller.clearsearch();
-//                       focusNode.requestFocus(); // ✅ keep keyboard open after clear
-//                     },
-//                     icon: const Icon(
-//                       Icons.close,
-//                       color: Colors.white,
-//                     ),
-//                   ),
-//                   contentPadding: const EdgeInsets.all(20),
-//                   hintText: "Search songs, artists and album",
-//                   hintStyle: const TextStyle(
-//                     color: Colors.grey,
-//                     fontWeight: FontWeight.bold,
-//                   ),
-//                 ),
-//               ),
-//             ),
-//             actions: [
-//               Padding(
-//                 padding: const EdgeInsets.only(right: 20.0),
-//                 child: Container(
-//                   decoration: const BoxDecoration(
-//                     shape: BoxShape.circle,
-//                     color: Colors.white12,
-//                   ),
-//                   child: const Padding(
-//                     padding: EdgeInsets.all(10.0),
-//                     child: Icon(
-//                       CupertinoIcons.mic,
-//                       color: Colors.white,
-//                     ),
-//                   ),
-//                 ),
-//               ),
-//             ],
-//           ),
-//
-//           // ✅ Single Obx wrapping everything — no nested Obx
-//           SliverToBoxAdapter(
-//             child: Obx(() {
-//               final isEmpty = controller.search_songs.isEmpty || search.text.isEmpty;
-//
-//               if (isEmpty) {
-//                 return SizedBox(
-//                   height: MediaQuery.of(context).size.height * 0.8,
-//                   child: const Center(
-//                     child: Text(
-//                       "No songs, please search",
-//                       style: TextStyle(color: Colors.white),
-//                     ),
-//                   ),
-//                 );
-//               }
-//
-//               return Column(
-//                 children: [
-//                   // Suggestions list
-//                   if (controller.textSongSearch.isNotEmpty)
-//                     ListView.builder(
-//                       itemCount: controller.textSongSearch.length,
-//                       physics: const NeverScrollableScrollPhysics(),
-//                       shrinkWrap: true,
-//                       itemBuilder: (context, index) {
-//                         final textSearch = controller.textSongSearch[index];
-//                         return ListTile(
-//                           onTap: () {
-//                             search.text = textSearch;
-//                             // ✅ also update the reactive value so debounce sees the change
-//                             controller.searchtxt.value = textSearch;
-//                             controller.set_to_search(textSearch);
-//                           },
-//                           leading: const Icon(
-//                             Icons.history,
-//                             color: Colors.white,
-//                           ),
-//                           title: Text(
-//                             textSearch,
-//                             style: const TextStyle(color: Colors.white),
-//                           ),
-//                           trailing: const Icon(
-//                             CupertinoIcons.arrow_up_left,
-//                             color: Colors.white,
-//                           ),
-//                         );
-//                       },
-//                     ),
-//
-//                   // Results list — ✅ no nested Obx needed, parent Obx already reactive
-//                   ListView.builder(
-//                     shrinkWrap: true,
-//                     physics: const NeverScrollableScrollPhysics(),
-//                     itemCount: controller.search_songs.length,
-//                     itemBuilder: (context, index) {
-//                       final result = controller.search_songs[index];
-//                       switch (result.type) {
-//                         case SearchType.song:
-//                           return SongSearchTile(song: result.data as Song);
-//                         case SearchType.artist:
-//                           return ArtistSearchTile(artist: result.data as Artist);
-//                         default:
-//                           return const SizedBox.shrink();
-//                       }
-//                     },
-//                   ),
-//                 ],
-//               );
-//             }),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-// }
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:youtube_music/data/data_module/album_module.dart';
+import 'package:youtube_music/module/pages/Song_search/views/widgets/album_tile.dart';
 
 import '../../../../data/data_module/artist.dart';
 import '../../../../data/data_module/song_module.dart';
-import '../../../../services/helper_code/helper_code.dart';
 import '../../Song_search/models/search_type.dart';
 import '../../Song_search/views/widgets/artist_tile.dart';
 import '../../Song_search/views/widgets/song_tile.dart';
-import '../../home/controllers/all_song_controller.dart';
+import '../../main_home_page/main_home_page_controller.dart';
 import '../controllers/search_controller.dart';
 import '../models/search_result.dart';
 
@@ -228,9 +24,8 @@ class SearchViewsState extends State<SearchViews>
     with RouteAware, WidgetsBindingObserver {
   // ─── Controllers ─────────────────────────────────────────────────────────
   late final TextEditingController _textController;
-  late final FocusNode _focusNode;
   final Search_Controller _controller = Get.find<Search_Controller>();
-  final get_current_song _singleSong = Get.find<get_current_song>();
+  final Main_Home_Page_Controller main = Get.find<Main_Home_Page_Controller>();
 
   // ─── Lifecycle ───────────────────────────────────────────────────────────
 
@@ -279,7 +74,7 @@ class SearchViewsState extends State<SearchViews>
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     _textController.dispose();
-    _focusNode.dispose(); // ✅ dispose, never just unfocus
+    main.focusNode.dispose(); // ✅ dispose, never just unfocus
     super.dispose();
   }
 
@@ -289,13 +84,13 @@ class SearchViewsState extends State<SearchViews>
     _textController.clear();
     _controller.clearSearch();
     // Keep keyboard open after clear
-    _focusNode.requestFocus();
+    main.focusNode.requestFocus();
   }
 
   void _onSuggestionTapped(String text) {
     _controller.selectSuggestion(text);
     // Dismiss suggestion list, keep keyboard for further edits
-    _focusNode.requestFocus();
+    main.focusNode.requestFocus();
   }
 
   // ─── Build ───────────────────────────────────────────────────────────────
@@ -316,13 +111,13 @@ class SearchViewsState extends State<SearchViews>
             floating: true,
             backgroundColor: Colors.black,
             elevation: 0,
-            leading: IconButton(
-              onPressed: helper_code.helper,
-              icon: const Icon(CupertinoIcons.back, color: Colors.white),
-            ),
+            // leading: IconButton(
+            //   onPressed: helper_code.helper,
+            //   icon: const Icon(CupertinoIcons.back, color: Colors.white),
+            // ),
             title: _SearchBar(
               textController: _textController,
-              focusNode: _focusNode,
+              focusNode: main.focusNode,
               onChanged: (value) {
                 // Write to reactive observable → debounce fires
                 _controller.searchQuery.value = value;
@@ -340,9 +135,9 @@ class SearchViewsState extends State<SearchViews>
               final hasResults = _controller.searchResults.isNotEmpty;
 
               // Empty / idle state
-              if (!hasQuery || !hasResults && !_controller.isLoading.value) {
+              if (!hasQuery || !hasResults && !_controller.is_loading.value) {
                 return _EmptyState(
-                  isLoading: _controller.isLoading.value,
+                  isLoading: _controller.is_loading.value,
                   hasQuery: hasQuery,
                 );
               }
@@ -358,7 +153,7 @@ class SearchViewsState extends State<SearchViews>
                     ),
 
                   // Loading shimmer / results
-                  if (_controller.isLoading.value)
+                  if (_controller.is_loading.value)
                     const Padding(
                       padding: EdgeInsets.all(24),
                       child: Center(
@@ -470,27 +265,27 @@ class _EmptyState extends StatelessWidget {
         child: isLoading
             ? const CupertinoActivityIndicator(color: Colors.white)
             : Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              hasQuery ? Icons.search_off : CupertinoIcons.search,
-              color: Colors.white24,
-              size: 64,
-            ),
-            const SizedBox(height: 16),
-            Text(
-              hasQuery
-                  ? 'No results found'
-                  : 'Search for songs, artists\nand albums',
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                color: Colors.white38,
-                fontSize: 16,
-                height: 1.6,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    hasQuery ? Icons.search_off : CupertinoIcons.search,
+                    color: Colors.white24,
+                    size: 64,
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    hasQuery
+                        ? 'No results found'
+                        : 'Search for songs, artists\nand albums',
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      color: Colors.white38,
+                      fontSize: 16,
+                      height: 1.6,
+                    ),
+                  ),
+                ],
               ),
-            ),
-          ],
-        ),
       ),
     );
   }
@@ -544,6 +339,7 @@ class _ResultList extends StatelessWidget {
         return switch (result.type) {
           SearchType.song => SongSearchTile(song: result.data as Song),
           SearchType.artist => ArtistSearchTile(artist: result.data as Artist),
+          SearchType.album => AlbumSearchTile(album: result.data as Album),
           _ => const SizedBox.shrink(),
         };
       },
