@@ -269,8 +269,8 @@ class SearchViewsState extends State<SearchViews>
   /// Public so the parent can invoke it after IndexedStack switches to index 1.
   void activateFocus() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted && !_focusNode.hasFocus) {
-        _focusNode.requestFocus();
+      if (mounted && !main.focusNode.hasFocus) {
+        main.focusNode.requestFocus();
       }
     });
   }
