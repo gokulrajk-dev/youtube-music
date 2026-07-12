@@ -116,18 +116,6 @@ class _Library_ViewsState extends State<Library_Views> {
                         ),
                         color: Colors.black,
                       ),
-                      // IconButton(
-                      //   onPressed: () {
-                      //     final main = Get.find<Main_Home_Page_Controller>();
-                      //     final helper = NavHelper.getNavId(main.current_index.value);
-                      //     Get.toNamed(App_route.search_page,id: helper);
-                      //   },
-                      //   icon: const Icon(
-                      //     Icons.search,
-                      //     color: Colors.white,
-                      //   ),
-                      //   color: Colors.black,
-                      // ),
                       GestureDetector(
                         onTap: () {
                           Get.toNamed(App_route.profile_page);

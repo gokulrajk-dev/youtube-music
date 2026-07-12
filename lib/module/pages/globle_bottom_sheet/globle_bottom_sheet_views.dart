@@ -271,19 +271,19 @@ class ContextBottomSheet extends StatelessWidget {
               ListTile(
                 focusColor: Colors.black,
                 leading: Container(
+                  width: 55,
+                  height: 55,
                   clipBehavior: Clip.hardEdge,
                   decoration:
                       BoxDecoration(borderRadius: BorderRadius.circular(10)),
                   child: header.coverImage.isEmpty
-                      ? const SizedBox(
-                          width: 55,
-                          height: 55,
-                          child: Icon(
-                            Icons.music_note_outlined,
-                            color: Colors.white,
-                          ))
+                      ? Icon(
+                          Icons.music_note_outlined,
+                          color: Colors.white,
+                        )
                       : Image.network(
                           header.coverImage,
+                          fit: BoxFit.cover,
                         ),
                 ),
                 title: Text(
@@ -335,7 +335,8 @@ class ContextBottomSheet extends StatelessWidget {
                 ),
               ),
               const Divider(),
-              context.entityType == EntityType.playlist|| context.entityType==EntityType.like ||
+              context.entityType == EntityType.playlist ||
+                      context.entityType == EntityType.like ||
                       (context.entityType == EntityType.album &&
                           context.page == PageContext.album)
                   ? const SizedBox.shrink()

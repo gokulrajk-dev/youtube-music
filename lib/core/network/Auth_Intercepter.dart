@@ -1,11 +1,12 @@
 import 'package:dio/dio.dart';
 import 'package:youtube_music/core/network/refresh_dio.dart';
-
 import 'package:youtube_music/services/Token_Service.dart';
 
 class Auth_Interceptor extends Interceptor {
   final Dio dio;
+
   Auth_Interceptor(this.dio);
+
   @override
   void onRequest(
       RequestOptions options, RequestInterceptorHandler handler) async {
@@ -42,8 +43,7 @@ class Auth_Interceptor extends Interceptor {
         );
 
         // Retry original request
-        err.requestOptions.headers['Authorization'] =
-        'Bearer $newAccess';
+        err.requestOptions.headers['Authorization'] = 'Bearer $newAccess';
 
         final retryResponse = await dio.fetch(err.requestOptions);
         return handler.resolve(retryResponse);

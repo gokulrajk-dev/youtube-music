@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -92,7 +93,8 @@ class Like_Views extends GetView<Like_Controller> {
                       CircleAvatar(
                         backgroundImage: userdetails!.photoUrl == null
                             ? const AssetImage('assets/img.png')
-                            : NetworkImage(userdetails.photoUrl, scale: 5),
+                            : CachedNetworkImageProvider(userdetails.photoUrl,
+                                scale: 5),
                       ),
                       const SizedBox(
                         width: 10,
@@ -131,37 +133,35 @@ class Like_Views extends GetView<Like_Controller> {
                             Icons.play_arrow,
                             color: Colors.black,
                             size: 50,
-                          ),
-                          () {
-                            final likeSongList = controller.like_song.map((song)=>song.song!).toList();
-                            con.autoSongType(likeSongList, 0);
-                            Get.toNamed(App_route.full_screen_media_player_page);
-                          },
-                          Colors.white),
+                          ), () {
+                        final likeSongList = controller.like_song
+                            .map((song) => song.song!)
+                            .toList();
+                        con.autoSongType(likeSongList, 0);
+                        Get.toNamed(App_route.full_screen_media_player_page);
+                      }, Colors.white),
                       rowicon(
                           const Icon(
                             Icons.more_vert,
                             color: Colors.white,
-                          ),
-                          () {
-                            Get.bottomSheet(
-                              elevation: 5,
-                              DraggableScrollableSheet(builder:
-                                  (BuildContext context,
+                          ), () {
+                        Get.bottomSheet(
+                          elevation: 5,
+                          DraggableScrollableSheet(builder:
+                              (BuildContext context,
                                   ScrollController scrollController) {
-                                return ContextBottomSheet(
-                                    controllers: scrollController,
-                                    context: ActionContext(
-                                        entityType: EntityType.like,
-                                        entity: controller.like_song,
-                                        page: PageContext.like,
-                                        isOwner: false,
-                                        isSaved: false));
-                              }),
-                              isScrollControlled: true,
-                            );
-                          },
-                          Colors.white.withOpacity(0.2)),
+                            return ContextBottomSheet(
+                                controllers: scrollController,
+                                context: ActionContext(
+                                    entityType: EntityType.like,
+                                    entity: controller.like_song,
+                                    page: PageContext.like,
+                                    isOwner: false,
+                                    isSaved: false));
+                          }),
+                          isScrollControlled: true,
+                        );
+                      }, Colors.white.withOpacity(0.2)),
                     ],
                   ),
                 ),
@@ -199,7 +199,7 @@ class Like_Views extends GetView<Like_Controller> {
                           elevation: 5,
                           DraggableScrollableSheet(builder:
                               (BuildContext context,
-                              ScrollController scrollController) {
+                                  ScrollController scrollController) {
                             return ContextBottomSheet(
                                 controllers: scrollController,
                                 context: ActionContext(
@@ -213,7 +213,14 @@ class Like_Views extends GetView<Like_Controller> {
                         );
                       },
                       style: ListTileStyle.drawer,
-                      leading: Image.network(like.song!.coverImage ?? ""),
+                      leading: Container(
+                        height: 60,
+                          width: 60,
+                          clipBehavior: Clip.hardEdge,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10)
+                          ),
+                          child: CachedNetworkImage(imageUrl: like.song!.coverImage ?? "",fit: BoxFit.cover,)),
                       titleAlignment: ListTileTitleAlignment.center,
                       title: Text(
                         like.song!.title ?? "Unknown",
@@ -240,7 +247,7 @@ class Like_Views extends GetView<Like_Controller> {
                               elevation: 5,
                               DraggableScrollableSheet(builder:
                                   (BuildContext context,
-                                  ScrollController scrollController) {
+                                      ScrollController scrollController) {
                                 return ContextBottomSheet(
                                     controllers: scrollController,
                                     context: ActionContext(
@@ -260,7 +267,7 @@ class Like_Views extends GetView<Like_Controller> {
                 });
           }),
           Container(
-            height: 100,
+            height: 200,
           )
         ],
       ),

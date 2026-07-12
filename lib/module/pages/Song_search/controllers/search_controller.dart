@@ -110,12 +110,9 @@ class Search_Controller extends base_controller {
   // ─── State ───────────────────────────────────────────────────────────────
   final RxList<SearchResult> searchResults = <SearchResult>[].obs;
   final RxList<String> suggestions = <String>[].obs;
-
-  // final RxBool isLoading = false.obs;
   final RxBool _ignoreDebounce = false.obs;
 
-  // ─── Reactive text field value ────────────────────────────────────────────
-  // The view writes into this; the debounce listens to it.
+  // ─── Reactive text field value ───────────────────────────────────────────
   final searchQuery = ''.obs;
 
   // ─── Repositories ────────────────────────────────────────────────────────
@@ -127,7 +124,6 @@ class Search_Controller extends base_controller {
   @override
   void onInit() {
     super.onInit();
-    // Debounce so we don't fire on every keystroke
     debounce(
       searchQuery,
       _onQueryChanged,
@@ -218,8 +214,6 @@ class Search_Controller extends base_controller {
     suggestions.clear();
 
     await _fetchResults(query);
-
-    // Don't call _buildSuggestions()
   }
 
   void clearSearch() {

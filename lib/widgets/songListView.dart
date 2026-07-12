@@ -41,7 +41,7 @@ class SongListViews extends StatelessWidget {
                   builder: (BuildContext context,
                       ScrollController scrollController) {
                     return ContextBottomSheet(
-                      controllers: scrollController,
+                        controllers: scrollController,
                         context: ActionContext(
                             entityType: EntityType.song,
                             entity: playlist_songs,
@@ -56,7 +56,17 @@ class SongListViews extends StatelessWidget {
             },
             style: ListTileStyle.drawer,
             leading: playlist_songs.coverImage != null
-                ? Image.network(playlist_songs.coverImage!)
+                ? Container(
+                    height: 60,
+                    width: 60,
+                    clipBehavior: Clip.hardEdge,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10)
+                    ),
+                    child: Image.network(
+                      playlist_songs.coverImage!,
+                      fit: BoxFit.cover,
+                    ))
                 : const Icon(Icons.music_note, color: Colors.white),
             title: Text(
               playlist_songs.title ?? "Unknown",

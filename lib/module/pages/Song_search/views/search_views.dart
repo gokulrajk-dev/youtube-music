@@ -74,7 +74,7 @@ class SearchViewsState extends State<SearchViews>
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     _textController.dispose();
-    main.focusNode.dispose(); // ✅ dispose, never just unfocus
+    _controller.clearSearch();
     super.dispose();
   }
 

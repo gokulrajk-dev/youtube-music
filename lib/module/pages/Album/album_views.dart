@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -55,7 +56,7 @@ class Album_Views extends GetView<Album_Controller> {
           children: [
             GestureDetector(
               onTap: () {
-                 artist_song
+                artist_song
                     .retrive_artist_with_song(albumSong.artists!.first.id);
                 Get.toNamed(App_route.artist_page, id: 1);
               },
@@ -79,7 +80,7 @@ class Album_Views extends GetView<Album_Controller> {
                     Text(
                       albumSong.artists!.first.artistName ?? 'unknown',
                       style: const TextStyle(color: Colors.white),
-                    )
+                    ),
                   ],
                 ),
               ),
@@ -99,9 +100,11 @@ class Album_Views extends GetView<Album_Controller> {
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
                     image: DecorationImage(
+                        fit: BoxFit.cover,
                         image: albumSong.coverImage == null
                             ? const AssetImage('assets/_joker1.png')
-                            : NetworkImage(albumSong.coverImage ?? ""),
+                            : CachedNetworkImageProvider(
+                                albumSong.coverImage ?? ""),
                         scale: 1)),
               ),
             ),
@@ -167,82 +170,24 @@ class Album_Views extends GetView<Album_Controller> {
                             const Icon(
                               Icons.more_vert,
                               color: Colors.white,
-                            ),
-                            () {
-                              // Get.bottomSheet(
-                              //   DraggableScrollableSheet(
-                              //     expand: false,
-                              //     builder: (context, scrollController) {
-                              //       return Container(
-                              //         color: Colors.black,
-                              //         child: Column(
-                              //           children: [
-                              //             ListTile(
-                              //               onTap: () {
-                              //                 Get.back();
-                              //                 song.autoplayNextDataType(songOnly,0);
-                              //               },
-                              //               leading: Icon(Icons.playlist_play,color: Colors.white,),
-                              //               title: Text('play next',style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 20),),
-                              //             ),ListTile(
-                              //               onTap: () {
-                              //                 Get.back();
-                              //                 song.AddToQueue(songOnly);
-                              //               },
-                              //               leading: Icon(Icons.playlist_play,color: Colors.white,),
-                              //               title: Text('Add to Queue',style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 20),),
-                              //             ),
-                              //             ListTile(
-                              //               onTap: () {
-                              //                 Get.back();
-                              //                 Get.bottomSheet(
-                              //                   DraggableScrollableSheet(
-                              //                     expand: false,
-                              //                     builder: (context, scrollController) {
-                              //                       return showPlaylistBottomSheet(
-                              //                         controller: scrollController,
-                              //                         songId: songOnly.map((song)=>song.id).toList(),
-                              //                       );
-                              //                     },
-                              //                   ),
-                              //                   isScrollControlled: true,
-                              //                 );
-                              //               },
-                              //               leading: Icon(Icons.playlist_play,color: Colors.white,),
-                              //               title: Text('Save to playlist',style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 20),),
-                              //             ),
-                              //             ListTile(
-                              //               onTap: () {
-                              //                 Get.back();
-                              //               },
-                              //               leading: Icon(CupertinoIcons.arrow_down_to_line_alt,color: Colors.white,),
-                              //               title: Text('Download',style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 20),),
-                              //             ),
-                              //           ],
-                              //         ),
-                              //       );
-                              //     },
-                              //   ),
-                              //   isScrollControlled: true,
-                              // );
-                              Get.bottomSheet(
-                                elevation: 5,
-                                DraggableScrollableSheet(builder:
-                                    (BuildContext context,
+                            ), () {
+                          Get.bottomSheet(
+                            elevation: 5,
+                            DraggableScrollableSheet(builder:
+                                (BuildContext context,
                                     ScrollController scrollController) {
-                                  return ContextBottomSheet(
-                                      controllers: scrollController,
-                                      context: ActionContext(
-                                          entityType: EntityType.album,
-                                          entity: albumSong,
-                                          page: PageContext.album,
-                                          isOwner: false,
-                                          isSaved: false));
-                                }),
-                                isScrollControlled: true,
-                              );
-                            },
-                            Colors.white.withOpacity(0.2)),
+                              return ContextBottomSheet(
+                                  controllers: scrollController,
+                                  context: ActionContext(
+                                      entityType: EntityType.album,
+                                      entity: albumSong,
+                                      page: PageContext.album,
+                                      isOwner: false,
+                                      isSaved: false));
+                            }),
+                            isScrollControlled: true,
+                          );
+                        }, Colors.white.withOpacity(0.2)),
                       ],
                     ),
                   ),

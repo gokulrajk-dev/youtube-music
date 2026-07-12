@@ -74,30 +74,36 @@ class Playlist_Views extends GetView<Playlist_Controller> {
                     style: const TextStyle(
                         color: Colors.white,
                         fontSize: 25,
-                        fontWeight: FontWeight.bold),
+                        fontWeight: FontWeight.bold
+                    ),
                   ),
                   const SizedBox(
                     height: 7,
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      CircleAvatar(
-                        backgroundImage: userdetails!.photoUrl == null
-                            ? const AssetImage('assets/img.png')
-                            : NetworkImage(
-                                userdetails.photoUrl,
-                                scale: 1,
-                              ),
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      Text(
-                        userdetails.userName,
-                        style: const TextStyle(color: Colors.white),
-                      )
-                    ],
+                  GestureDetector(
+                    onTap: () {
+                      Get.toNamed(App_route.profile_page,);
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        CircleAvatar(
+                          backgroundImage: userdetails!.photoUrl == null
+                              ? const AssetImage('assets/img.png')
+                              : NetworkImage(
+                                  userdetails.photoUrl,
+                                  scale: 1,
+                                ),
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        Text(
+                          userdetails.userName,
+                          style: const TextStyle(color: Colors.white),
+                        )
+                      ],
+                    ),
                   ),
                   // todo binding to add the playlist view
                   Padding(

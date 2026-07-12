@@ -59,7 +59,7 @@ class _full_screen_media_playerState extends State<full_screen_media_player>
                 : CupertinoIcons.hand_thumbsup,
             text: type_name.like,
             onTap: () async {
-              final songs =song.current_song.value;
+              final songs = song.current_song.value;
               await like.post_del_user_like(songs!);
             }),
         Feature(
@@ -143,8 +143,9 @@ class _full_screen_media_playerState extends State<full_screen_media_player>
                         onPressed: () {
                           Get.bottomSheet(
                             elevation: 5,
-                            DraggableScrollableSheet(builder: (BuildContext context,
-                                ScrollController scrollController) {
+                            DraggableScrollableSheet(builder:
+                                (BuildContext context,
+                                    ScrollController scrollController) {
                               return ContextBottomSheet(
                                   controllers: scrollController,
                                   context: ActionContext(
@@ -183,34 +184,45 @@ class _full_screen_media_playerState extends State<full_screen_media_player>
                                 clipBehavior: Clip.hardEdge,
                                 borderRadius: BorderRadius.circular(20),
                                 child: Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 35),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 35),
                                   child: Container(
                                     clipBehavior: Clip.hardEdge,
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(20),
                                     ),
-                                    child: (item.coverImage?.isNotEmpty ?? false)
-                                        ? CachedNetworkImage(
-                                            imageUrl: item.coverImage!,
-                                            fit: BoxFit.cover,
-                                          )
-                                        : Image.asset("assets/img.png"),
+                                    child:
+                                        (item.coverImage?.isNotEmpty ?? false)
+                                            ? CachedNetworkImage(
+                                                imageUrl: item.coverImage!,
+                                                fit: BoxFit.cover,
+                                              )
+                                            : Image.asset("assets/img.png"),
                                   ),
                                 ),
                               ),
                             ),
                             Positioned.fill(
                               child: Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 35),
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 35),
                                 child: Obx(
-                                ()=> Row(
+                                  () => Row(
                                     children: [
                                       Expanded(
                                         child: GestureDetector(
                                           behavior: HitTestBehavior.translucent,
                                           child: Center(
-                                            child:music_player.seekDirection.value == direction.left && music_player.showSeek.value ? Text(
-                                              "${music_player.seekValue.value} seconds",style: const TextStyle(color: Colors.white),):const SizedBox.shrink(),
+                                            child: music_player.seekDirection
+                                                            .value ==
+                                                        direction.left &&
+                                                    music_player.showSeek.value
+                                                ? Text(
+                                                    "${music_player.seekValue.value} seconds",
+                                                    style: const TextStyle(
+                                                        color: Colors.white),
+                                                  )
+                                                : const SizedBox.shrink(),
                                           ),
                                           onDoubleTap: () async {
                                             await music_player.leftSeekJump();
@@ -220,9 +232,17 @@ class _full_screen_media_playerState extends State<full_screen_media_player>
                                       Expanded(
                                         child: GestureDetector(
                                           behavior: HitTestBehavior.translucent,
-                                          child:  Center(
-                                            child:music_player.seekDirection.value == direction.right && music_player.showSeek.value ? Text(
-                                              "+${music_player.seekValue.value} seconds",style: const TextStyle(color: Colors.white),):const SizedBox.shrink(),
+                                          child: Center(
+                                            child: music_player.seekDirection
+                                                            .value ==
+                                                        direction.right &&
+                                                    music_player.showSeek.value
+                                                ? Text(
+                                                    "+${music_player.seekValue.value} seconds",
+                                                    style: const TextStyle(
+                                                        color: Colors.white),
+                                                  )
+                                                : const SizedBox.shrink(),
                                           ),
                                           onDoubleTap: () async {
                                             await music_player.rightSeekJump();
@@ -528,10 +548,24 @@ class List_song extends StatefulWidget {
 
 class _List_songState extends State<List_song> {
   final current_song = Get.find<get_current_song>();
+  final get_all_song_controller controller_song =
+      Get.find<get_all_song_controller>();
+  final full_screen_media_player_controller music_player =
+      Get.find<full_screen_media_player_controller>();
 
   @override
   void initState() {
     current_song.isReordering.value = true;
+    ever(current_song.current_song, (newSong) async {
+      if (newSong != null) {
+        if (music_player.isRecom.value) {
+          music_player.get_all_songsFilter('',
+              current_song.current_song.value!.genre!.first.genreName ?? "");
+        } else {
+          music_player.songsFilter.clear();
+        }
+      }
+    });
     super.initState();
   }
 
@@ -573,87 +607,409 @@ class _List_songState extends State<List_song> {
         );
       }
 
-      return ReorderableListView.builder(
-        shrinkWrap: true,
-        scrollDirection: Axis.vertical,
-        itemCount: current_song.queue.length,
-        onReorder: reOrder,
-        itemBuilder: (context, index) {
-          final songss = current_song.queue[index];
-          final isCurrent = current_song.currentIndex.value == index;
-          return Dismissible(
-            direction: DismissDirection.horizontal,
-            background: Container(
-              color: Colors.red,
-              alignment: Alignment.centerLeft,
-              padding: const EdgeInsets.only(left: 20),
-              child: const Icon(Icons.delete, color: Colors.white),
-            ),
-            secondaryBackground: Container(
-              color: Colors.red,
-              alignment: Alignment.centerRight,
-              padding: const EdgeInsets.only(right: 20),
-              child: const Icon(Icons.delete, color: Colors.white),
-            ),
-            onDismissed: (_) {
-              current_song.dismissQueue(index);
-            },
-            key: ValueKey('dismiss_${songss.id}_${index}_${songss.hashCode}'),
-            // key: UniqueKey(),
-            child: Container(
-              clipBehavior: Clip.hardEdge,
-              decoration: BoxDecoration(
-                color: isCurrent ? Colors.brown.shade500 : Colors.transparent,
-              ),
-              child: ListTile(
-                onTap: () async {
-                  await current_song.selectFromQueue(index);
-                },
-                leading: songss.coverImage != null
-                    ? Image.network(songss.coverImage!)
-                    : const Icon(Icons.music_note, color: Colors.white),
-                title: Text(
-                  songss.title ?? "Unknown",
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20,
+      return SizedBox(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(left: 10.0, right: 10, top: 10),
+              child: Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.06),
+                  borderRadius: BorderRadius.circular(30),
+                  border: Border.all(
+                    color: Colors.white.withOpacity(0.08),
                   ),
                 ),
-                subtitle: Text(
-                  songss.artist
-                          ?.map((artist) => artist.artistName)
-                          .join(', ') ??
-                      "",
-                  style: const TextStyle(color: Colors.grey, fontSize: 13),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                trailing: IconButton(
-                  onPressed: () {
-                    Get.bottomSheet(
-                      elevation: 5,
-                      DraggableScrollableSheet(builder: (BuildContext context,
-                          ScrollController scrollController) {
-                        return ContextBottomSheet(
-                            controllers: scrollController,
-                            context: ActionContext(
-                                entityType: EntityType.song,
-                                entity: songss,
-                                page: PageContext.queue,
-                                songIndex: index,
-                                isOwner: false,
-                                isSaved: false));
-                      }),
-                      isScrollControlled: true,
-                    );
-                  },
-                  icon: const Icon(Icons.more_vert, color: Colors.white),
+                child: const Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.queue_music_rounded,
+                      color: Colors.white70,
+                      size: 18,
+                    ),
+                    SizedBox(height: 8),
+                    Text(
+                      "UP NEXT",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: 1.2,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
-          );
-        },
+            Expanded(
+              child: ListView(
+                shrinkWrap: true,
+                children: [
+                  Divider(),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Playing From",
+                          style: TextStyle(
+                              color: Colors.grey,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18),
+                        ),
+                        Text(
+                          "${current_song.current_song.value!.title}",
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20),
+                        )
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  ReorderableListView.builder(
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    scrollDirection: Axis.vertical,
+                    itemCount: current_song.queue.length,
+                    onReorder: reOrder,
+                    itemBuilder: (context, index) {
+                      final songss = current_song.queue[index];
+                      final isCurrent =
+                          current_song.currentIndex.value == index;
+                      return Dismissible(
+                        direction: DismissDirection.horizontal,
+                        background: Container(
+                          color: Colors.red,
+                          alignment: Alignment.centerLeft,
+                          padding: const EdgeInsets.only(left: 20),
+                          child: const Icon(Icons.delete, color: Colors.white),
+                        ),
+                        secondaryBackground: Container(
+                          color: Colors.red,
+                          alignment: Alignment.centerRight,
+                          padding: const EdgeInsets.only(right: 20),
+                          child: const Icon(Icons.delete, color: Colors.white),
+                        ),
+                        onDismissed: (_) {
+                          current_song.dismissQueue(index);
+                        },
+                        key: ValueKey(
+                            'dismiss_${songss.id}_${index}_${songss.hashCode}'),
+                        // key: UniqueKey(),
+                        child: Container(
+                          clipBehavior: Clip.hardEdge,
+                          decoration: BoxDecoration(
+                            color: isCurrent
+                                ? Colors.brown.shade500
+                                : Colors.transparent,
+                          ),
+                          child: ListTile(
+                            onTap: () async {
+                              await current_song.selectFromQueue(index);
+                            },
+                            leading: songss.coverImage != null
+                                ? Container(
+                                    height: 60,
+                                    width: 60,
+                                    clipBehavior: Clip.hardEdge,
+                                    decoration: BoxDecoration(
+                                        borderRadius:
+                                            BorderRadius.circular(10)),
+                                    child: CachedNetworkImage(
+                                      imageUrl: songss.coverImage!,
+                                      fit: BoxFit.cover,
+                                    ))
+                                : const Icon(Icons.music_note,
+                                    color: Colors.white),
+                            title: Text(
+                              songss.title ?? "Unknown",
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20,
+                              ),
+                            ),
+                            subtitle: Text(
+                              songss.artist
+                                      ?.map((artist) => artist.artistName)
+                                      .join(', ') ??
+                                  "",
+                              style: const TextStyle(
+                                  color: Colors.grey, fontSize: 13),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            trailing: IconButton(
+                              onPressed: () {
+                                Get.bottomSheet(
+                                  elevation: 5,
+                                  DraggableScrollableSheet(builder:
+                                      (BuildContext context,
+                                          ScrollController scrollController) {
+                                    return ContextBottomSheet(
+                                        controllers: scrollController,
+                                        context: ActionContext(
+                                            entityType: EntityType.song,
+                                            entity: songss,
+                                            page: PageContext.queue,
+                                            songIndex: index,
+                                            isOwner: false,
+                                            isSaved: false));
+                                  }),
+                                  isScrollControlled: true,
+                                );
+                              },
+                              icon: const Icon(Icons.more_vert,
+                                  color: Colors.white),
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  Divider(),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  ListTile(
+                    title: Text(
+                      "Auto-play",
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold),
+                    ),
+                    subtitle: Text(
+                      "Add similar content for endless listening",
+                      style: TextStyle(
+                          color: Colors.grey,
+                          fontSize: 13,
+                          fontWeight: FontWeight.bold),
+                    ),
+                    trailing: Switch(
+                      value: music_player.isRecom.value,
+                      activeColor: Colors.black,
+                      activeTrackColor: Colors.white,
+                      inactiveThumbColor: Colors.white70,
+                      inactiveTrackColor: Colors.grey.shade700,
+                      onChanged: (value) async {
+                        music_player.Recommentation_on_off(value);
+                        if (music_player.isRecom.value) {
+                          await music_player.get_all_songsFilter(
+                              '',
+                              current_song.current_song.value!.genre!.first
+                                      .genreName ??
+                                  "");
+                        } else {
+                          music_player.songsFilter.clear();
+                        }
+                      },
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  SizedBox(
+                    height: 48,
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 8, right: 5),
+                      child: ListView.separated(
+                          scrollDirection: Axis.horizontal,
+                          physics: const BouncingScrollPhysics(),
+                          itemCount: controller_song.genres.length,
+                          separatorBuilder: (_, __) =>
+                              const SizedBox(width: 10),
+                          itemBuilder: (context, index) {
+                            final genre = controller_song.genres[index];
+                            final selected_genre =music_player.genreIndex.value==index;
+                            return GestureDetector(
+                              onTap: () async {
+                                music_player.changeGenreIndex(index);
+                                if (music_player.isRecom.value) {
+                                  await music_player.get_all_songsFilter(
+                                      '', genre.genreName ?? "");
+                                } else {
+                                  music_player.songsFilter.clear();
+                                }
+                              },
+                              child: AnimatedContainer(
+                                duration: const Duration(milliseconds: 250),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 18,
+                                  vertical: 10,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: selected_genre
+                                      ? Colors.white
+                                      : const Color(0xff2E2E2E),
+                                  borderRadius: BorderRadius.circular(14),
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    genre.genreName ?? "",
+                                    style: TextStyle(
+                                      color: selected_genre
+                                          ? Colors.black
+                                          : Colors.white,
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  music_player.is_loading.value
+                      ? const Center(
+                          child: Padding(
+                            padding: EdgeInsets.all(20),
+                            child: CircularProgressIndicator(
+                              color: Colors.white,
+                            ),
+                          ),
+                        )
+                      : music_player.songsFilter.isEmpty
+                          ? Center(
+                              child: Padding(
+                                padding: const EdgeInsets.all(20.0),
+                                child: Text(
+                                  "No Songs",
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 15),
+                                ),
+                              ),
+                            )
+                          : ReorderableListView.builder(
+                              shrinkWrap: true,
+                              physics: NeverScrollableScrollPhysics(),
+                              scrollDirection: Axis.vertical,
+                              itemCount: music_player.songsFilter.length,
+                              onReorder: reOrder,
+                              itemBuilder: (context, index) {
+                                final songss = music_player.songsFilter[index];
+                                // final isCurrent = current_song.currentIndex.value == index;
+                                return Dismissible(
+                                  direction: DismissDirection.horizontal,
+                                  background: Container(
+                                    color: Colors.red,
+                                    alignment: Alignment.centerLeft,
+                                    padding: const EdgeInsets.only(left: 20),
+                                    child: const Icon(Icons.delete,
+                                        color: Colors.white),
+                                  ),
+                                  secondaryBackground: Container(
+                                    color: Colors.red,
+                                    alignment: Alignment.centerRight,
+                                    padding: const EdgeInsets.only(right: 20),
+                                    child: const Icon(Icons.delete,
+                                        color: Colors.white),
+                                  ),
+                                  onDismissed: (_) {
+                                    current_song.dismissQueue(index);
+                                  },
+                                  key: ValueKey(
+                                      'dismiss_${songss.id}_${index}_${songss.hashCode}'),
+                                  // key: UniqueKey(),
+                                  child: Container(
+                                    clipBehavior: Clip.hardEdge,
+                                    decoration: BoxDecoration(),
+                                    child: ListTile(
+                                      onTap: () async {
+                                        await current_song
+                                            .selectFromQueue(index);
+                                      },
+                                      leading: songss.coverImage != null
+                                          ? Container(
+                                              height: 60,
+                                              width: 60,
+                                              clipBehavior: Clip.hardEdge,
+                                              decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          10)),
+                                              child: CachedNetworkImage(
+                                                imageUrl: songss.coverImage!,
+                                                fit: BoxFit.cover,
+                                              ))
+                                          : const Icon(Icons.music_note,
+                                              color: Colors.white),
+                                      title: Text(
+                                        songss.title ?? "Unknown",
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 20,
+                                        ),
+                                      ),
+                                      subtitle: Text(
+                                        songss.artist
+                                                ?.map((artist) =>
+                                                    artist.artistName)
+                                                .join(', ') ??
+                                            "",
+                                        style: const TextStyle(
+                                            color: Colors.grey, fontSize: 13),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                      trailing: IconButton(
+                                        onPressed: () {
+                                          Get.bottomSheet(
+                                            elevation: 5,
+                                            DraggableScrollableSheet(builder:
+                                                (BuildContext context,
+                                                    ScrollController
+                                                        scrollController) {
+                                              return ContextBottomSheet(
+                                                  controllers: scrollController,
+                                                  context: ActionContext(
+                                                      entityType:
+                                                          EntityType.song,
+                                                      entity: songss,
+                                                      page: PageContext.queue,
+                                                      songIndex: index,
+                                                      isOwner: false,
+                                                      isSaved: false));
+                                            }),
+                                            isScrollControlled: true,
+                                          );
+                                        },
+                                        icon: const Icon(Icons.more_vert,
+                                            color: Colors.white),
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                  SizedBox(
+                    height: 40,
+                  )
+                ],
+              ),
+            ),
+          ],
+        ),
       );
     });
   }

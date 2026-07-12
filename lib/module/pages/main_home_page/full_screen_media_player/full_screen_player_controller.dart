@@ -10,6 +10,8 @@ import 'package:youtube_music/data/user_respository/user_history_respository.dar
 import 'package:youtube_music/module/pages/home/controllers/all_song_controller.dart';
 import 'package:youtube_music/services/audio_helper/audio_helper.dart';
 
+import '../../../../data/data_module/song_module.dart';
+import '../../../../data/user_respository/song_respository.dart';
 import 'full_screen_player_controller.dart';
 
 enum direction  {
@@ -51,6 +53,10 @@ class full_screen_media_player_controller extends base_controller
   final seekValue=0.obs;
   Timer? _seekOverlayTimer;
   final seekDirection = direction.left.obs;
+  final RxList<Song> songsFilter = <Song>[].obs;
+  final Song_Repository song_repository = Song_Repository();
+  final isRecom =false.obs;
+  final genreIndex=0.obs;
 
   @override
   void onInit() {
@@ -331,4 +337,27 @@ class full_screen_media_player_controller extends base_controller
       await audioPlayer.play();
     }
   }
+  // recommentation code
+  Future<void> get_all_songsFilter(String language,String genre) async {
+    try {
+      get_isloading(true);
+      noerror();
+      final result = await song_repository.Song_Filter(language,genre);
+      songsFilter.value = result;
+    } catch (e) {
+      get_error(e.toString());
+    } finally {
+      get_isloading(false);
+    }
+  }
+
+  void Recommentation_on_off(bool value){
+    isRecom.value=value;
+  }
+
+  void changeGenreIndex(int index){
+    genreIndex.value = index;
+  }
+
+
 }

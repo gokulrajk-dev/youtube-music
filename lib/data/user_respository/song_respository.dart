@@ -26,4 +26,10 @@ class Song_Repository{
     return data.map((e)=>Song.fromJson(e)).toList();
   }
 
+  Future<List<Song>> Song_Filter([String language='',String genre=''])async{
+    final response = await dio.get(Api_Endpoint.songFilter(language,genre));
+    final List data = response.data;
+    return data.map((e)=>Song.fromJson(e)).toList();
+  }
+
 }

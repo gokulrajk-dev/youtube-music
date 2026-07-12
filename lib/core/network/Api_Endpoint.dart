@@ -27,6 +27,13 @@ class Api_Endpoint {
 
   //
 
+  // recomentation api
+
+  static String songFilter(String language,String genre) {
+    return "/songs_app/Song_views/?language=$language&genre__genre_name=$genre";
+  }
+  //
+
   static String get_current_user_history(int page) {
     return '/songs_app/listen_history_views/?page=$page';
   }

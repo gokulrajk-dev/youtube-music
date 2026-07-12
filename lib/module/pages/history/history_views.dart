@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -49,21 +50,21 @@ class History_Views extends GetView<Histroy_Controller> {
           controller: controller.scrollController,
           physics: const BouncingScrollPhysics(),
           shrinkWrap: true,
-          itemCount: controller.history.length+1,
+          itemCount: controller.history.length + 1,
           itemBuilder: (context, index) {
-            if(index==controller.history.length){
+            if (index == controller.history.length) {
               return controller.hasValue.value
                   ? const Padding(
-                padding: EdgeInsets.all(20),
-                child: Center(
-                  child: CircularProgressIndicator(
-                    color: Colors.white,
-                  ),
-                ),
-              )
+                      padding: EdgeInsets.all(20),
+                      child: Center(
+                        child: CircularProgressIndicator(
+                          color: Colors.white,
+                        ),
+                      ),
+                    )
                   : const SizedBox(
-                height: 100,
-              );
+                      height: 100,
+                    );
             }
             final history_song = controller.history[index];
             final song = history_song.song!;
@@ -72,7 +73,8 @@ class History_Views extends GetView<Histroy_Controller> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  if (index == 0 || history_song.days != controller.history[index - 1].days)
+                  if (index == 0 ||
+                      history_song.days != controller.history[index - 1].days)
                     Padding(
                       padding: const EdgeInsets.only(bottom: 10.0),
                       child: Text(
@@ -112,7 +114,15 @@ class History_Views extends GetView<Histroy_Controller> {
                     },
                     style: ListTileStyle.drawer,
                     leading: song.coverImage != null
-                        ? Image.network(song.coverImage!)
+                        ? Container(
+                        width: 60,
+                        height: 60,
+                        clipBehavior: Clip.hardEdge,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10)
+                        ),
+                        child: CachedNetworkImage( imageUrl:song.coverImage!,fit: BoxFit.cover,)
+                    )
                         : const Icon(Icons.music_note, color: Colors.white),
                     title: Text(
                       song.title ?? "Unknown",
@@ -137,8 +147,9 @@ class History_Views extends GetView<Histroy_Controller> {
                       onPressed: () {
                         Get.bottomSheet(
                           elevation: 5,
-                          DraggableScrollableSheet(builder: (BuildContext context,
-                              ScrollController scrollController) {
+                          DraggableScrollableSheet(builder:
+                              (BuildContext context,
+                                  ScrollController scrollController) {
                             return ContextBottomSheet(
                                 controllers: scrollController,
                                 context: ActionContext(
