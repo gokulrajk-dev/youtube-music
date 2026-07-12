@@ -227,4 +227,5 @@ class Search_Controller extends base_controller {
     searchResults.clear();
     suggestions.clear();
   }
+
 }
