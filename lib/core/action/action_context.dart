@@ -1,6 +1,15 @@
-enum EntityType { song, album, playlist, artist,like }
+enum EntityType { song, album, playlist, artist, like }
 
-enum PageContext { home, album, artist, playlist, queue,like,history,library}
+enum PageContext {
+  home,
+  album,
+  artist,
+  playlist,
+  queue,
+  like,
+  history,
+  library,
+}
 
 class ActionContext {
   final EntityType entityType;
@@ -19,7 +28,5 @@ class ActionContext {
       this.isOwner = false,
       this.isSaved = false,
       this.isDownloaded = false,
-        this.songIndex
-      });
-
+      this.songIndex});
 }

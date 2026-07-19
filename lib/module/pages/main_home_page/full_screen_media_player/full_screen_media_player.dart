@@ -439,7 +439,6 @@ class _full_screen_media_playerState extends State<full_screen_media_player>
                             IconButton(
                               onPressed: () {
                                 song.shuffle_on_off();
-                                // song.setQueue(song.queue.toList(), song.current_song.value!.id);
                               },
                               icon: const Icon(CupertinoIcons.shuffle),
                               color: song.isshuffleenabled.value
@@ -925,7 +924,8 @@ class _List_songState extends State<List_song> {
                                         color: Colors.white),
                                   ),
                                   onDismissed: (_) {
-                                    current_song.dismissQueue(index);
+                                    //todo use the issongfilter to switch queue and recomemntation song
+                                    current_song.dismissQueue(index,true);
                                   },
                                   key: ValueKey(
                                       'dismiss_${songss.id}_${index}_${songss.hashCode}'),
@@ -987,7 +987,7 @@ class _List_songState extends State<List_song> {
                                                           EntityType.song,
                                                       entity: songss,
                                                       page: PageContext.queue,
-                                                      songIndex: index,
+                                                      // songIndex: index,
                                                       isOwner: false,
                                                       isSaved: false));
                                             }),

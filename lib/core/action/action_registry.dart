@@ -350,9 +350,10 @@ class ActionRegistry {
             ctx.entity is Album ? ctx.entity.songAlbum ?? [] : ctx.entity;
         Get.back();
         if (ctx.page == PageContext.queue) {
-          controller.autoplayNextDataType(song, ctx.songIndex ?? -1);
+          //todo use the issongfilter to switch queue and recomemntation song
+          controller.autoplayNextDataType(song, ctx.songIndex ?? -1,true);
         } else if (ctx.entityType == EntityType.album) {
-          controller.autoplayNextDataType(song, 0);
+          controller.autoplayNextDataType(song, 0,);
         } else {
           controller.autoplayNextDataType(song, -1);
         }

@@ -7,6 +7,7 @@ import 'package:youtube_music/services/helper_code/helper_code.dart';
 
 import '../../../../core/base/base_controller.dart';
 import '../../../../data/data_module/song_module.dart';
+import '../../main_home_page/full_screen_media_player/full_screen_player_controller.dart';
 
 class get_all_song_controller extends base_controller {
   final Song_Repository song_repository = Song_Repository();
@@ -35,8 +36,7 @@ class get_all_song_controller extends base_controller {
     }
   }
 
-
-Future<void> get_all_Genre() async {
+  Future<void> get_all_Genre() async {
     try {
       get_isloading(true);
       noerror();
@@ -80,7 +80,6 @@ class get_current_song extends base_controller {
     }
   }
 
-
   Future<void> play_Previous() async {
     if (currentIndex.value > 0) {
       currentIndex.value--;
@@ -88,30 +87,46 @@ class get_current_song extends base_controller {
     }
   }
 
-  Future<void> playNext(List<Song> song, int index) async {
+  Future<void> playNext(
+    List<Song> song,
+    int index,
+      [bool isSongFilter=false]
+  ) async {
     if (queue.isEmpty) {
       autoSongType(song, 0);
       Future.delayed(const Duration(milliseconds: 500), () {
         Get.toNamed(App_route.full_screen_media_player_page);
       });
       return;
-    };
+    }
+    ;
 
     // 🔵 CASE 1: From queue
     if (index != -1) {
       // remove that exact item
       if (index != currentIndex.value) {
         final item = queue.removeAt(index);
-
         if (index < currentIndex.value) {
           currentIndex.value--;
         }
         // insert next
         queue.insert(currentIndex.value + 1, item);
         queue.refresh();
+
         showGlobalMessage("${song.first.title} will play next");
         return;
       }
+    }
+
+    //todo use the issongfilter to switch queue and recomemntation song
+
+    if(isSongFilter){
+      final full_screen_media_player_controller music_player =
+          Get.find<full_screen_media_player_controller>();
+      music_player.songsFilter.removeWhere(
+        (element) => element.id == song.first.id,
+      );
+      music_player.songsFilter.refresh();
     }
 
     queue.insertAll(currentIndex.value + 1, song);
@@ -120,15 +135,25 @@ class get_current_song extends base_controller {
     showGlobalMessage("${song.first.title} will play next");
   }
 
-  void autoplayNextDataType(dynamic songId, int index) {
+  void autoplayNextDataType(dynamic songId, int index,[bool isSongfilter=false]) {
     if (songId is Song) {
-      playNext([songId], index);
+      playNext([songId], index,isSongfilter);
     } else if (songId is List<Song>) {
-      playNext(songId, index);
+      playNext(
+        songId,
+        index,isSongfilter
+      );
     }
   }
-
-  void dismissQueue(int index) async {
+  //todo use the issongfilter to switch queue and recomemntation song
+  void dismissQueue(int index,[isSongFilter =false]) async {
+    if(isSongFilter){
+      final full_screen_media_player_controller music_player =
+      Get.find<full_screen_media_player_controller>();
+      music_player.songsFilter.removeAt(index);
+      music_player.songsFilter.refresh();
+      return;
+    }
     if (queue.length == 1) {
       Get.back();
       clear_user();
